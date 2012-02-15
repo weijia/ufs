@@ -1,0 +1,1 @@
+..\otherBin\mongoDb\bin\mongod.exe --dbpath=..\..\data --journal

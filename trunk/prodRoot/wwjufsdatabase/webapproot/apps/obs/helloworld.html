@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>
+file tree
+</title>
+<script>
+
+$(document).ready( function() {
+    $('#container_id').fileTree({ root: '/' }, function(file) {
+        alert(file);
+    });
+});
+
+</script>
+</head>
+<body>
+<div id = "container_id"/>
+</body>
+</html>

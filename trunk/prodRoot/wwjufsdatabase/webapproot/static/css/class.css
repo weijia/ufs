@@ -1,0 +1,11 @@
+.thumbImage{padding:5px;width:100px;height:100px}
+.thumbImage:hover{background-color:blue;}
+.objDescription{background:black;opacity:0.2;margin-top:-10px;height:40px;font-size:16;
+    padding-left:10px;padding-top:10px;overflow:hidden;max-width:150px;min-width:150px}
+.tagEditor{}
+.tagText{margin-top:-100px;margin-left:120px;max-width:50px;}
+.objDescriptionTxt{max-width:150px;min-width:150px;}
+.dirTree{float:left;max-width:30%;max-height:100%;overflow-x:auto;min-height:100%;min-width:25%}
+.collectionList{white-space:nowrap;max-height:100%;min-width:150px;overflow-x:auto;min-height:100%}
+.connectedSortable { list-style-type: none; margin: 0; padding: 0; }
+.connectedSortable li { margin: 3px 3px 3px 0; padding: 1px; float:left; text-align:center; border:solid 1px grey}

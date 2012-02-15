@@ -1,0 +1,1 @@
+y=x.replace('.',_).replace('-','_')

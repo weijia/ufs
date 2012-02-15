@@ -1,0 +1,1 @@
+sys_itemTextAttr = 'sys_item_text'

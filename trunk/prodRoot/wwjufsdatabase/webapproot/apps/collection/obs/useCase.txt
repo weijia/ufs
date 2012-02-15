@@ -1,0 +1,2 @@
+http://127.0.0.1:8802/wwjufsdatabase/webapproot/apps/collection/collectionUpdater.py?jsonCollection={%22add%22:{%223b84d155-cc5c-428e-8009-12d5fdc68b2a%22:[%22D_0/Downloads%22]}}
+http://127.0.0.1:8802/wwjufsdatabase/webapproot/apps/collection/jqueryListOnCollection.py?collectionId=3b84d155-cc5c-428e-8009-12d5fdc68b2a&cnt=50&start=0

@@ -1,0 +1,4 @@
+
+
+class treeStorageInterface(ufsSimpleDbBaseInterface):
+  pass

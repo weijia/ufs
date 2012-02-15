@@ -1,0 +1,72 @@
+.dirTree{float:left;max-width:30%;max-height:100%;overflow-x:auto;min-height:100%;min-width:25%}
+#collectionList{white-space:nowrap;max-height:100%;min-width:150px;overflow-x:auto;}
+
+.quickTag{float:left;border: 1px solid #E0EAEF;padding:1px;color:grey;background-color:white}
+.quickTag:hover{background-color:0E8AF8;}
+
+.quickTag-tagged{color:black;font-weight:bold}
+.quickTag-untagged{color:grey}
+
+
+.submitting-tags{color:red;}
+.quickTag-changing{color:red;}
+
+/* start of not used anymore */
+/*
+.objDescription{background:black;opacity:0.2;float:left;height:40px;font-size:16;
+    padding-left:10px;padding-top:10px;overflow:hidden;max-width:150px;min-width:150px}
+.thumbImage:hover{background-color:blue;}
+.tagText{margin-top:-100px;margin-left:120px;max-width:50px;}
+*/
+/* end of not used anymore */
+
+
+/* start of item list style ---------------------------------------------------------------------*/
+#bigIconView ul{ list-style-type: none;}
+#bigIconView li:hover{background-color:#FECA40;}
+
+#bigIconView .objDescriptionTxt{max-width:150px;min-width:150px;overflow:hidden}
+#bigIconView .thumbImage{padding:5px;width:100px;height:100px}
+#bigIconView .tagEditor{max-width:150px;min-width:150px;}
+/*#bigIconView .autoLoadPageInnerMostContainer { list-style-type: none; margin: 0; padding: 0; }*/
+#bigIconView .autoLoadPageInnerMostContainer li { margin: 3px 3px 3px 0; padding: 1px; float:left; text-align:center; border:solid 1px grey}
+
+
+/*#bigIconView .ui-selecting { background: #FECA40; }*/
+/* The following style must be applied to li.ui-selected (instead of ui-selected) so the inner object
+ * will not change style independently (when li:hover, li change its background-color but p.ui-selected 
+ * in li does not change
+*/
+#bigIconView li.ui-selected { background: #F39814; color: white; }
+/* end of item list style ---------------------------------------------------------------------*/
+
+
+/* start of detailed list style ---------------------------------------------------------------*/
+#detailedView ul{ list-style-type: none;}
+#detailedView li:hover{background-color:#FECA40;}
+/*#detailedView .objDescriptionTxt:hover{background-color:#FECA40;}*/
+
+#detailedView .thumbImage{float:left; padding:1px;padding-right:20px;width:30px;height:30px}
+
+
+/* This element should be float so it will not be displayed in a new line */
+#detailedView .tagEditor{padding-left:20px;float:left}
+/*.connectedSortable li span { position: absolute; margin-left: -1.3em; }*/
+/* This element will also be used to enlarge the li element, so it should NOT have float:left style.
+   And it should also has the equal or larger height/padding-top then objDescription and image then the next li
+   element will not follow this element in x axis.
+*/
+#detailedView .placeholder{width:30px; height:30px;padding-top:10px;}
+
+/* padding was not able to impact span element as the line height was not changed. Check http://bbs.blueidea.com/thread-2705477-1-1.html */
+#detailedView .objDescriptionTxt{float:left;width:60%;overflow:hidden}
+
+/*#detailedView .ui-selecting { background: #FECA40; }*/
+/* The following style must be applied to li.ui-selected (instead of ui-selected) so the inner object
+ * will not change style independently (when li:hover, li change its background-color but p.ui-selected 
+ * in li does not change
+*/
+#detailedView li.ui-selected { background: #F39814; color: white; }
+
+
+

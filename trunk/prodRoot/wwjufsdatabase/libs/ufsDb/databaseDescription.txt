@@ -1,0 +1,12 @@
+sizeInfo, sizeInfo_reverse, headInfo, headInfo_reverse: used for identify object
+tagDb, tagStat, itemTagDb: used for tag system
+movedItemDb: moved objects
+objId2PathShove:
+originalCollectionDb:
+collectionCacheDb:
+collectionIdDb:
+collectionDb:
+parentItemDb:
+path2ObjIdShove:
+
+thumbNew, uuidNew, pathNew: thumb data base.

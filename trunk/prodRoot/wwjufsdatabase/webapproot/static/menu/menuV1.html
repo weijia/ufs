@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>菜单</title>
+<link href="layout.css" rel="stylesheet" type="text/css" />
+	<style>
+	#tabs { height: 800px; padding-right:200px}
+	.tabs-right .ui-tabs-nav { position: absolute !important; top: 0; bottom: 0; right:0; width:3em; border-bottom-width: 1px; border-right: 1px; padding:0; padding:0}
+    
+    .tabs-right .ui-tabs-nav li {border-bottom: 1px !important; margin-left:-4px !important;;}
+    
+    .tabs-right .ui-tabs-nav li {border-bottom: 1px !important; border-bottom-width: 1px !important;border-left:none; }
+    .tabs-right .ui-tabs-nav a {word-break:break-all; width:1em; white-space:normal}
+    .tabs-right .ui-tabs-selected { margin-left: -6px !important; }
+	</style>
+
+    <link rel="stylesheet" type="text/css" href="../../js/css/ui-lightness/jquery-ui-1.8.10.custom.css" />
+    <link href="menuV1.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="../../js/development-bundle/jquery-1.4.4.js"></script>
+    <script type="text/javascript" src="../../js/development-bundle/external/jquery.bgiframe-2.1.2.js"></script>
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.mouse.js"></script>
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.selectable.js"></script>
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.accordion.js"></script>
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.draggable.js"></script> 
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.position.js"></script> 
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.resizable.js"></script> 
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.dialog.js"></script>
+    <script type="text/javascript" src="../../js/development-bundle/ui/jquery.ui.tabs.js"></script>
+
+    <script src="../../js/jstree/_lib/jquery.cookie.js"
+    type="text/javascript"></script>
+
+</head>
+
+<body>
+<meta charset="utf-8">
+	
+	
+	<script>
+	$(function() {
+		$( "#tabs" ).tabs();
+		$( ".tabs-right .ui-tabs-nav, .tabs-right .ui-tabs-nav > *" )
+			.removeClass( "ui-corner-all ui-corner-top" )
+			.addClass( "ui-corner-right" );//this line will set the tab bar to be displayed as a right panel.
+        $( ".accordion" ).accordion({fillSpace: true});
+
+	});
+	</script>
+
+
+<div class="demo">
+
+<div id="tabs" class="tabs-right">
+	<ul>
+		<li><a href="#tabs-1">厨师推荐</a></li>
+		<li><a href="#tabs-2">热门</a></li>
+		<li><a href="#tabs-3">已点</a></li>
+	</ul>
+	<div id="tabs-1">
+        <div class="sidebar">
+            <div class="accordion" style="height:500px">
+
+                <h3><a href="#">冷菜</a></h3>
+                <div>
+                    <ul>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                    </ul>
+                </div>
+                <h3><a href="#">热菜</a></h3>
+                <div>
+                    <ul>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                    </ul>
+                </div>
+                <h3><a href="#">点心</a></h3>
+                <div>
+                    <ul>
+                        <li>List item one</li>
+                        <li>List item two</li>
+                        <li>List item three</li>
+                    </ul>
+                </div>
+                <h3><a href="#">饮料</a></h3>
+                <div>
+                    <ul>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                        <li>item1</li>
+                        <li>item2</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="layoutBorder"><img src="gongbao.jpg" class="demoImage"/></div>
+	</div>
+	<div id="tabs-2">
+		<p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+	</div>
+	<div id="tabs-3">
+		<p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
+		<p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+	</div>
+</div>
+
+</div><!-- End demo -->
+</body>
+</html>

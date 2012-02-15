@@ -1,0 +1,3 @@
+
+class nameStorageInterface(ufsSimpleDbBaseInterface):
+  pass

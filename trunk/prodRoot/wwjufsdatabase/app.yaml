@@ -1,0 +1,16 @@
+application: wwjufsdatabase
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /static
+  static_dir: webapproot/static
+- url: /js
+  static_dir: webapproot/js
+- url: /apps/(.*)
+  script: webapproot/apps/\1
+- url: /tests/(.*)
+  script: libs/tests/\1
+- url: /.*
+  script: main.py

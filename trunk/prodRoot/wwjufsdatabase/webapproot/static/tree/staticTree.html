@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>
+hello tree
+</title>
+<script src="http://www.google.com/jsapi"></script>
+<script>
+  // Load jQuery
+  google.load("jquery", "1");
+
+  // on page load complete, fire off a jQuery json-p query
+  // against Google web search
+  google.setOnLoadCallback(function() {
+    $.getJSON("http://ajax.googleapis.com/ajax/services/search/web?q=google&v=1.0&callback=?",
+
+      // on search completion, process the results
+      function (data) {
+        if (data.responseData.results &&
+            data.responseData.results.length > 0) {
+          var results = data.responseData.results;
+          
+          for (var i=0; i < results.length; i++) {
+            // Display each result however you wish
+            //alert(results[i].titleNoFormatting);
+          }    
+        }
+        
+      });
+    });
+</script>
+<script type="text/javascript" src="jstree/jquery.tree.min.js"></script>
+
+<script>
+
+//var your-tree-var = jQuery.tree.create();
+//your-tree-var.init( options * )
+
+$(function () { 
+	$("#basic_html").tree();
+});
+
+
+</script>
+</head>
+<body>
+<div class="demo source" id="basic_html">
+		<ul>
+			<li id="phtml_1" class="open"><a href="#"><ins>&nbsp;</ins>Root node 1</a>
+				<ul>
+					<li id="phtml_2"><a href="#"><ins>&nbsp;</ins>Child node 1</a></li>
+					<li id="phtml_3"><a href="#"><ins>&nbsp;</ins>Child node 2</a></li>
+
+					<li id="phtml_4"><a href="#"><ins>&nbsp;</ins>Some other child node with longer text</a></li>
+				</ul>
+			</li>
+			<li id="phtml_5"><a href="#"><ins>&nbsp;</ins>Root node 2</a></li>
+		</ul>
+	</div>
+</body>
+</html>

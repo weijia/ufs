@@ -1,0 +1,4 @@
+The following codes are originally from: http://appengine-cookbook.appspot.com/recipe/cachepy-faster-than-memcache-and-unlimited-quota/?id=ahJhcHBlbmdpbmUtY29va2Jvb2tynAELEgtSZWNpcGVJbmRleCI_YWhKaGNIQmxibWRwYm1VdFkyOXZhMkp2YjJ0eUdRc1NDRU5oZEdWbmIzSjVJZ3RUWTJGc1lXSnBiR2wwZVF3DAsSBlJlY2lwZSJAYWhKaGNIQmxibWRwYm1VdFkyOXZhMkp2YjJ0eUdRc1NDRU5oZEdWbmIzSjVJZ3RUWTJGc1lXSnBiR2wwZVF3Ngw
+
+cachepy.py
+cachepy_stat.py

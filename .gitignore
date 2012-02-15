@@ -1,0 +1,14 @@
+*.pyc
+*.dia~
+*.conf
+*.bak
+*.log
+*.lnk
+.svn
+trunk/otherBin
+trunk/prodRoot/android
+trunk/prodRoot/obs
+.project
+.pydevproject
+/data
+trunk/prodRoot/desktopApp/chromeExtension
