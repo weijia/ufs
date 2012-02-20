@@ -8,7 +8,7 @@ import win32file
 import win32con
 import cPickle
 from stat import ST_SIZE
-from dbus.mainloop.glib import threads_init
+#from dbus.mainloop.glib import threads_init
 
 
 ACTIONS = {
@@ -22,12 +22,12 @@ ACTIONS = {
 
 #Reference: http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html
 class changeNotifyThread(threading.Thread):
-    def __init__ ( self, path):
-        self.path_to_watch = path
+    def __init__ ( self, fullPath):
+        self.path_to_watch = fullPath
         threading.Thread.__init__ ( self )
 
     def run ( self ):
-        threads_init()
+        #threads_init()
         self.need_to_quit = False
         self.path_to_watch = os.path.abspath (self.path_to_watch)
         print "Watching %s at %s" % (self.path_to_watch, time.asctime ())

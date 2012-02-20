@@ -8,7 +8,6 @@ import localLibs.localTasks.infoCollector as infoCollector
 import encZipWriteOnlyStorageV2 as encZipWriteOnlyStorage
 import desktopApp.lib.compress.zipClass as zipClass
 import folderStorageV3 as folderStorage
-import wwjufsdatabase.libs.utils.simplejson as json
     
 def getTimeInSeconds(timeStructure):
     finalRes = []

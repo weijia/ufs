@@ -25,7 +25,7 @@ class changeNotifyForBeanstalkd(changeNotifyThread):
 
 
 
-class monitorService(object):
+class fileListService(object):
     '''
     classdocs
     '''
@@ -43,19 +43,17 @@ class monitorService(object):
         job = beanstalk.put(s)
     def startServer(self):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
-        beanstalk.use(gMonitorServiceTubeName)
-        beanstalk.watch(gMonitorServiceTubeName)
+        beanstalk.use(gFileListTubeName)
+        beanstalk.watch(gFileListTubeName)
         beanstalk.ignore('default')
         while True:
             job = beanstalk.reserve()
             print "got job", job.body
             item = json.loads(job.body)
-            t = changeNotifyForBeanstalkd(item["fullPath"])
-            self.notifyThreads.append(t)
-            t.start()
+            #self.notifyThreads.append(changeNotifyForBeanstalkd(item["fullPath"]))
             
             
             
 if __name__ == "__main__":
-    s = monitorService()
+    s = fileListService()
     s.startServer()
