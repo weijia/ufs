@@ -22,7 +22,7 @@ class changeNotifyForBeanstalkd(changeNotifyThread):
         s = json.dumps(itemDict, sort_keys=True, indent=4)
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         beanstalk.use(gFileListTubeName)
-        print beanstalk.using()
+        #print beanstalk.using()
         s = json.dumps(itemDict, sort_keys=True, indent=4)
         job = beanstalk.put(s)
 

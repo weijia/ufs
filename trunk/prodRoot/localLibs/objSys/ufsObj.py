@@ -100,6 +100,13 @@ class fsObjBase(objBase):
     def getObjUfsUrl(self):
         return objTools.getUfsUrlForPath(self.fullPath)
 
+class detailedFsObj(fsObjBase):
+    def ufsUrl(self):
+        return self.getObjUfsUrl()
+    def getItemInfo(self):
+        tmp = self.fillInfo(["timestamp", "fullPath", "headMd5", "size", "ufsUrl"])
+        return self.itemInfo
+
 class fsDirObj(fsObjBase): pass
 
 class fsObj(fsObjBase):
@@ -108,6 +115,9 @@ class fsObj(fsObjBase):
         return self.itemInfo
     
 class ufsUrlObj(fsObj):
+    '''
+    Object initialized using file:///C:/xxx/xxx format
+    '''
     def __init__(self, objUrl, existingItemInfo = {}):
         self.objUrl = objUrl
         objPath = objTools.getFullPathFromUfsUrl(objUrl)
