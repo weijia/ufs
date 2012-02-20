@@ -12,3 +12,4 @@ trunk/prodRoot/obs
 .pydevproject
 /data
 trunk/prodRoot/desktopApp/chromeExtension
+*.patch

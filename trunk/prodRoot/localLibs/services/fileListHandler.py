@@ -37,13 +37,13 @@ class fileListService(object):
         pass
     def addItem(self, fullPath):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
-        beanstalk.use(gMonitorServiceTubeName)
+        beanstalk.use(gFileListTubeName)
         itemDict = {"fullPath": fullPath}
         s = json.dumps(itemDict, sort_keys=True, indent=4)
         job = beanstalk.put(s)
     def startServer(self):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
-        beanstalk.use(gFileListTubeName)
+        #beanstalk.use(gFileListTubeName)
         beanstalk.watch(gFileListTubeName)
         beanstalk.ignore('default')
         while True:
@@ -55,5 +55,6 @@ class fileListService(object):
             
             
 if __name__ == "__main__":
+    print 'starting fileListHandler'
     s = fileListService()
     s.startServer()
