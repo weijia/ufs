@@ -8,23 +8,23 @@ import desktopApp.lib.compress.zipClass as zipClass
 gWorkingDir = "d:/tmp"
 
 class zippedCollectionWithInfo(object):
-    def __init__(self):
+    def __init__(self, workingDir = gWorkingDir):
         self.collectionInfoDict = {}
         self.zipFile = None
         self.zipFilePath = None
+        self.workingDir = workingDir
     def addItem(self, fullPath):
         #Get file info and add info to info dict
         fullPath = transform.transformDirToInternal(fullPath)
         itemObj = ufsObj.detailedFsObj(fullPath)
         self.collectionInfoDict[itemObj.ufsUrl()] = itemObj.getItemInfo()
         #Add file to zip
-        self.getZipFile().addfile(unicode(fullPath), unicode(fullPath))
-        #If size exceed certain value, generate a package and submit info to database
-        pass
+        return self.getZipFile().addfile(unicode(fullPath), unicode(fullPath))
+
     def getZipFile(self):
         if self.zipFile is None:
             self.zipFilePath = transform.transformDirToInternal(
-            fileTools.getTimestampWithFreeName(gWorkingDir, '.zip'))
+                fileTools.getTimestampWithFreeName(self.workingDir, '.zip'))
             self.zipFile = zipClass.ZFile(self.zipFilePath, 'w')
         return self.zipFile
     def finalizeZipFile(self):

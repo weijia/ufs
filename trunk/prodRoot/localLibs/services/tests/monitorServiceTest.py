@@ -8,4 +8,4 @@ import localLibs.services.monitorService as monitorService
             
 if __name__ == "__main__":
     s = monitorService.monitorService()
-    s.addItem("d:/tmp")
+    s.addItem("d:/tmp/monitoring")

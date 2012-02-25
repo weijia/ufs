@@ -46,6 +46,8 @@ class ZFile(object):
         # file system by this path, check zipfile line 541
         #self.zfile.write(encode2Local(path), encode2Local(arcname))
         self.zfile.write(encode2Local(path), encode2Local(arcname))
+        #return the info of the newly added file
+        return self.zfile.filelist[-1]
             
     def addfiles(self, paths):
         for path in paths:

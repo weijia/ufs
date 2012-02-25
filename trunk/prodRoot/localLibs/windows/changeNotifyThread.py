@@ -62,7 +62,7 @@ class changeNotifyThread(threading.Thread):
                     #print full_filename, ACTIONS.get (action, "Unknown")
                     self.callback(self.path_to_watch, file, ACTIONS.get (action, "Unknown"))
                     
-    def callback(self, fullPath):
+    def callback(self, pathToWatch, relativePath, action):
         pass
         
     def exit(self):

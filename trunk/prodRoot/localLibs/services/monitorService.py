@@ -4,6 +4,7 @@ Created on 2012-02-13
 @author: Richard
 '''
 import os
+import time
 import beanstalkc
 import localLibSys
 from localLibs.windows.changeNotifyThread import changeNotifyThread
@@ -17,8 +18,10 @@ gMonitorServiceTubeName = "monitorQueue"
 gFileListTubeName = "fileList"
 
 class changeNotifyForBeanstalkd(changeNotifyThread):
-    def callback(self, monitoringPath, fullPath, changeType):
-        itemDict = {"monitoringPath": monitoringPath, "fullPath": fullPath, "changeType":changeType}
+    def callback(self, pathToWatch, relativePath, changeType):
+        fullPath = transform.transformDirToInternal(os.path.join(pathToWatch, relativePath))
+        itemDict = {"monitoringPath": pathToWatch, "fullPath": fullPath, "changeType":changeType,
+                        "timestamp": time.time()}
         s = json.dumps(itemDict, sort_keys=True, indent=4)
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         beanstalk.use(gFileListTubeName)

@@ -83,3 +83,6 @@ def autoDecoder(orig):
     shall decode the string to unicode
     '''
     return orig
+
+if __name__ == "__main__":
+    print transformDirToInternal('d:/tmp')
