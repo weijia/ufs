@@ -1,2 +1,2 @@
 PATH=C:\Program Files (x86)\D-Bus\bin;C:\Program Files (x86)\Gtk+\bin;
-consoleWin.py
+C:\Python25\python.exe consoleWin.py

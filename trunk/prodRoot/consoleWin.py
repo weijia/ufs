@@ -1,14 +1,21 @@
 import localLibs.logWin.advScriptRunnerV3 as scriptRunner
 import localLibs.logWin.advScriptRunnerXmlRpcServer as advScriptRunnerXmlRpcServer
 
+autoStartAppList = ['mongodb.bat',
+                    'webserver-cgi',
+                    'cherrypyServerV3',
+                    'startBeanstalkd.bat',
+                    #'folderCollectionInitiator',
+                    #'collectionServiceApp.py',
+                    #'collectionMonitorNonRealtimeNotifierServiceV2',
+                    #'syncXmlRpcServerV2,
+                    'tubeDelayService',
+                    'monitorService',
+                    'fileListHandler'
+                    ]
+
 def main():
-    scriptRunner.startApplicationsNoReturn(['mongodb.bat',
-                                            'webserver-cgi.py',
-                                            'cherrypyServerV3.py',
-                                            'folderCollectionInitiator.py',
-                                            #'collectionServiceApp.py',
-                                            'collectionMonitorNonRealtimeNotifierServiceV2.py',
-                                            'syncXmlRpcServerV2.py'], 
+    scriptRunner.startApplicationsNoReturn(autoStartAppList, 
                                             advScriptRunnerXmlRpcServer.launcherXmlRpcThread)
 
 if __name__ == "__main__":

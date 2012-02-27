@@ -57,6 +57,10 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
         w.show_all()
         for i in self.initialApps:
             fullP = fileTools.findFileInProduct(i)
+            if fullP is None:
+                fullP = fileTools.findAppInProduct(i)
+                if fullP is None:
+                    print i, 'not found'
             #print '-----------------------------',fullP
             self.startAppWithParam([fullP])
         #w.set_skip_taskbar_hint(True)#Hide taskbar icon

@@ -37,7 +37,7 @@ class fileListService(object):
     '''
     classdocs
     '''
-    def __init__(self, zipCollectionRoot = gZipCollectionRoot, passwd = "123", workingDir = "d:/tmp/working"):
+    def __init__(self, zipCollectionRoot = gZipCollectionRoot, passwd = "123", workingDir = "d:/tmp/working", fileListTubeName = gFileListTubeName):
         '''
         Constructor
         '''
@@ -48,16 +48,17 @@ class fileListService(object):
         self.decCopier = encryptionStorageBase.arc4DecSimpleCopier(passwd)
         self.curStorageSize = 0
         self.addedList = []
+        self.fileListTubeName = fileListTubeName
     def addItem(self, fullPath):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
-        beanstalk.use(gFileListTubeName)
+        beanstalk.use(self.fileListTubeName)
         itemDict = {"fullPath": fullPath}
         s = json.dumps(itemDict, sort_keys=True, indent=4)
         job = beanstalk.put(s)
     def startServer(self):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
-        #beanstalk.use(gFileListTubeName)
-        beanstalk.watch(gFileListTubeName)
+        #beanstalk.use(self.fileListTubeName)
+        beanstalk.watch(self.fileListTubeName)
         beanstalk.ignore('default')
         while True:
             job = beanstalk.reserve()
@@ -77,7 +78,7 @@ class fileListService(object):
                 targetPath = getStorgePathWithDateFolder(self.zipCollectionRoot)
                 self.encCopier.copy(zipFullPath, targetPath)
                 print 'old file zipped, new file created'
-                #pprint(beanstalk.stats_tube(gFileListTubeName))
+                #pprint(beanstalk.stats_tube(self.fileListTubeName))
                 #print self.addedList
                 for addedJob, addedItem in self.addedList:
                     #print dir(addedJob)
