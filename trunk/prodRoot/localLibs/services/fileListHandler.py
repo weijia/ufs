@@ -18,7 +18,7 @@ import desktopApp.lib.archiver.encryptionStorageBase as encryptionStorageBase
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
 gMonitorServiceTubeName = "monitorQueue"
-gFileListTubeName = "fileList"
+gFileListTubeName = "fileListDelayed"
 
 gMaxZippedCollectionSize = 0.5*1024
 
