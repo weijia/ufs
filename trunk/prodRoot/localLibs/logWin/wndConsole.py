@@ -52,7 +52,7 @@ class wndConsole:
         #print cwd
         #self.prog = ['D:\\cygwin\\bin\\ls.exe','-l']
         ext = os.path.splitext(checkExistPath)[1]
-        print 'ext is:', ext
+        #print 'ext is:', ext
         if ".py" == ext:
             pythonWinPathList = ['e:/python27/pythonw.exe','d:/python25/pythonw.exe','c:/python27/pythonw.exe', 'c:/python26/pythonw.exe', 'c:/python25/pythonw.exe']
             for i in pythonWinPathList:

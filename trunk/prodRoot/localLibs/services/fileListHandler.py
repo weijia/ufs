@@ -49,6 +49,7 @@ class fileListService(object):
         self.curStorageSize = 0
         self.addedList = []
         self.fileListTubeName = fileListTubeName
+        self.monitoringList = []
     def addItem(self, fullPath):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         beanstalk.use(self.fileListTubeName)
@@ -69,15 +70,20 @@ class fileListService(object):
                 print 'Path not exists'
                 job.delete()
                 continue
+            if not (item['monitoringPath'] in self.monitoringList):
+                self.monitoringList.append(item['monitoringPath'])
             info = self.storage.addItem(item["fullPath"])
             #print "zipped size", info.compress_size
             self.curStorageSize += info.compress_size
             self.addedList.append([job, item])
             if self.curStorageSize > gMaxZippedCollectionSize:
+                self.storage.addAdditionalInfo({"monitoringPathList": self.monitoringList})
                 zipFullPath = self.storage.finalizeZipFile()
                 targetPath = getStorgePathWithDateFolder(self.zipCollectionRoot)
                 self.encCopier.copy(zipFullPath, targetPath)
-                print 'old file zipped, new file created'
+                self.monitoringList = []
+                
+                #print 'old file zipped, new file created'
                 #pprint(beanstalk.stats_tube(self.fileListTubeName))
                 #print self.addedList
                 for addedJob, addedItem in self.addedList:

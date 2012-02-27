@@ -20,7 +20,8 @@ gFileListTubeName = "fileList"
 class changeNotifyForBeanstalkd(changeNotifyThread):
     def callback(self, pathToWatch, relativePath, changeType):
         fullPath = transform.transformDirToInternal(os.path.join(pathToWatch, relativePath))
-        itemDict = {"monitoringPath": pathToWatch, "fullPath": fullPath, "changeType":changeType,
+        itemDict = {"monitoringPath": transform.transformDirToInternal(pathToWatch),
+                        "fullPath": fullPath, "changeType":changeType,
                         "timestamp": time.time()}
         s = json.dumps(itemDict, sort_keys=True, indent=4)
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
