@@ -6,10 +6,9 @@ Created on 2012-02-13
 import beanstalkc
 import os
 
-from pprint import pprint
+#from pprint import pprint
 
 import localLibSys
-from localLibs.windows.changeNotifyThread import changeNotifyThread
 import wwjufsdatabase.libs.utils.simplejson as json
 from localLibs.storage.infoStorage.zippedCollectionWithInfo import zippedCollectionWithInfo
 from localLibs.localFs.tmpFile import getStorgePathWithDateFolder
@@ -21,15 +20,6 @@ gMonitorServiceTubeName = "monitorQueue"
 gFileListTubeName = "fileListDelayed"
 
 gMaxZippedCollectionSize = 0.5*1024
-
-class changeNotifyForBeanstalkd(changeNotifyThread):
-    def callback(self, monitoringPath, fullPath, changeType):
-        itemDict = {"monitoringPath": monitoringPath, "fullPath": fullPath, "changeType":changeType}
-        s = json.dumps(itemDict, sort_keys=True, indent=4)
-        beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
-        beanstalk.use(gMonitorServiceTubeName)
-        s = json.dumps(itemDict, sort_keys=True, indent=4)
-        job = beanstalk.put(s)
 
 gZipCollectionRoot = "d:/tmp/generating"
 
@@ -50,12 +40,14 @@ class fileListService(object):
         self.addedList = []
         self.fileListTubeName = fileListTubeName
         self.monitoringList = []
+    '''
     def addItem(self, fullPath):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         beanstalk.use(self.fileListTubeName)
         itemDict = {"fullPath": fullPath}
         s = json.dumps(itemDict, sort_keys=True, indent=4)
         job = beanstalk.put(s)
+    '''
     def startServer(self):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         #beanstalk.use(self.fileListTubeName)
@@ -65,7 +57,6 @@ class fileListService(object):
             job = beanstalk.reserve()
             print "got job", job.body
             item = json.loads(job.body)
-            #self.notifyThreads.append(changeNotifyForBeanstalkd(item["fullPath"]))
             if not os.path.exists(item["fullPath"]):
                 print 'Path not exists'
                 job.delete()

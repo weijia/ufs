@@ -16,6 +16,7 @@ gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
 gMonitorServiceTubeName = "monitorQueue"
 gFileListTubeName = "fileList"
+gMaxMonitoringItems = 100
 
 class changeNotifyForBeanstalkd(changeNotifyThread):
     def callback(self, pathToWatch, relativePath, changeType):
@@ -54,6 +55,9 @@ class monitorService(object):
         beanstalk.watch(gMonitorServiceTubeName)
         #beanstalk.ignore(gMonitorServiceTubeName)
         beanstalk.ignore('default')
+        #Kick all items to active when start, as we bury them in the previous processing
+        kickedItemNum = beanstalk.kick(gMaxMonitoringItems)
+        print kickedItemNum
         while True:
             job = beanstalk.reserve()
             print "got job", job.body
@@ -65,7 +69,7 @@ class monitorService(object):
             t = changeNotifyForBeanstalkd(fullPath)
             self.notifyThreads[fullPath] = t
             t.start()
-            
+            job.bury()
             
             
 if __name__ == "__main__":

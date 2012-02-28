@@ -17,7 +17,7 @@ gBeanstalkdServerPort = 11300
 gInputTubeName = "fileList"
 gOutputTubeName = "fileListDelayed"
 gItemDelayTime = 5
-
+gDefaultTtr = 3600*24
 
 class tubeDelayService(object):
     '''
@@ -64,6 +64,7 @@ class tubeDelayService(object):
                     #Item not updated for time out time, add it to output queue
                     outputBeanstalk.put(job.body)
                     print "output item:", item
+                    job.delete()
                 elif savedItem["timestamp"] < item["timestamp"]:
                     #Received a new notification for an path, update saved info
                     self.itemToProcess[fullPath] = item
