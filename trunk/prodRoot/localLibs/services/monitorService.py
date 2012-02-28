@@ -55,21 +55,24 @@ class monitorService(object):
         beanstalk.watch(gMonitorServiceTubeName)
         #beanstalk.ignore(gMonitorServiceTubeName)
         beanstalk.ignore('default')
-        #Kick all items to active when start, as we bury them in the previous processing
-        kickedItemNum = beanstalk.kick(gMaxMonitoringItems)
-        print kickedItemNum
+        #!!!Not working. Kick all items to active when start, as we bury them in the previous processing
+        #kickedItemNum = beanstalk.kick(gMaxMonitoringItems)
+        #print kickedItemNum
         while True:
             job = beanstalk.reserve()
             print "got job", job.body
             item = json.loads(job.body)
             fullPath = transform.transformDirToInternal(item["fullPath"])
+            if self.notifyThreads.has_key(fullPath):
+                #Notifier already added.
+                continue
             if not os.path.exists(item["fullPath"]) or self.notifyThreads.has_key(fullPath):
                 job.delete()
                 continue
             t = changeNotifyForBeanstalkd(fullPath)
             self.notifyThreads[fullPath] = t
             t.start()
-            job.bury()
+            #job.bury()
             
             
 if __name__ == "__main__":
