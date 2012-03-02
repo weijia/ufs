@@ -33,14 +33,7 @@ class fileListHandlerBase(object):
         '''
         self.fileListTubeName = fileListTubeName
         self.addedList = []
-    '''
-    def addItem(self, fullPath):
-        beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
-        beanstalk.use(self.fileListTubeName)
-        itemDict = {"fullPath": fullPath}
-        s = json.dumps(itemDict, sort_keys=True, indent=4)
-        job = beanstalk.put(s)
-    '''
+
     def startServer(self):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         #beanstalk.use(self.fileListTubeName)

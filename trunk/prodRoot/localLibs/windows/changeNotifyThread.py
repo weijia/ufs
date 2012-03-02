@@ -24,7 +24,7 @@ ACTIONS = {
 class changeNotifyThread(threading.Thread):
     def __init__ ( self, fullPath):
         self.path_to_watch = fullPath
-        threading.Thread.__init__ ( self )
+        super(changeNotifyThread, self).__init__ ()
 
     def run ( self ):
         #threads_init()
