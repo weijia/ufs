@@ -7,7 +7,6 @@ import os
 import time
 import beanstalkc
 import localLibSys
-import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.transform as transform
 from beanstalkServiceBase import beanstalkServiceBase
 import threading

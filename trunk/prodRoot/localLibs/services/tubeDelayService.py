@@ -7,8 +7,6 @@ import os
 import time
 import beanstalkc
 import localLibSys
-from localLibs.windows.changeNotifyThread import changeNotifyThread
-import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.transform as transform
 from beanstalkServiceBase import beanstalkServiceBase
 
@@ -63,14 +61,7 @@ class tubeDelayService(beanstalkServiceBase):
             #New notification, add it
             self.itemToProcess[fullPath] = item
             #print item, job, gItemDelayTime
-            '''
-            print job.stats(), job.jid
-            print type(gItemDelayTime)
-            print "%d, %d"%(job.jid, gItemDelayTime)
-            job.conn._interact('release %d %d %d\r\n' % (job.jid, beanstalkc.DEFAULT_PRIORITY, gItemDelayTime),
-                       ['RELEASED', 'BURIED'],
-                       ['NOT_FOUND'])
-            '''
+            #priority is necessary to avoid error for requesting priority to be an int in beanstalkc
             job.release(priority = beanstalkc.DEFAULT_PRIORITY, delay = gItemDelayTime)
             print "new item added"
                 

@@ -9,7 +9,6 @@ import os
 #from pprint import pprint
 
 import localLibSys
-import wwjufsdatabase.libs.utils.simplejson as json
 from localLibs.storage.infoStorage.zippedCollectionWithInfo import zippedCollectionWithInfo
 from localLibs.localFs.tmpFile import getStorgePathWithDateFolder
 import desktopApp.lib.archiver.encryptionStorageBase as encryptionStorageBase
