@@ -44,7 +44,7 @@ class fileListHandler(fileListHandlerBase):
     def processJob(self, job, item):
         if not (item['monitoringPath'] in self.monitoringList):
             self.monitoringList.append(item['monitoringPath'])
-        info = self.storage.addItem(item["fullPath"])
+        info = self.storage.addItem(item["fullPath"])   
         #print "zipped size", info.compress_size
         self.curStorageSize += info.compress_size
 

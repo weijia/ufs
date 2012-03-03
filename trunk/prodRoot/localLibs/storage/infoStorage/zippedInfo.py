@@ -1,3 +1,4 @@
+import re
 import localLibSys
 import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.transform as transform
@@ -7,6 +8,8 @@ import desktopApp.lib.compress.zipClass as zipClass
 
 gWorkingDir = "d:/tmp"
 gDefaultInfoSize = 100
+gInfoFilePrefix = 'zippedCollFile'
+gInfoFileExt = ".log"
 
 class zippedInfo(object):
     def __init__(self, workingDir = gWorkingDir):
@@ -27,18 +30,13 @@ class zippedInfo(object):
         #return self.getZipFile().addfile(unicode(fullPath), unicode(fullPath))
         return gDefaultInfoSize
 
-    def getZipFile(self):
-        if self.zipFile is None:
-            self.zipFilePath = transform.transformDirToInternal(
-                fileTools.getTimestampWithFreeName(self.workingDir, '.zip'))
-            self.zipFile = zipClass.ZFile(self.zipFilePath, 'w')
-        return self.zipFile
+
     def finalizeZipFile(self):
         #Add info to zip file
         self.additionalInfoDict["collectionContentInfo"] = self.collectionInfoDict
         s = json.dumps(self.additionalInfoDict, sort_keys=True, indent=4)
         infoFilePath = transform.transformDirToInternal(
-                fileTools.getTimestampWithFreeName(self.workingDir, '.log', 'zippedCollFile'))
+                fileTools.getTimestampWithFreeName(self.workingDir, gInfoFileExt, gInfoFilePrefix))
         logFile = open(infoFilePath, 'w')
         logFile.write(s)
         logFile.close()
@@ -47,3 +45,19 @@ class zippedInfo(object):
         #Set attribute so new zip will be created if this object is still in use
         self.zipFile = None
         return self.zipFilePath
+    
+    def enumItems(self, archiveFullPath):
+        zipFile = zipClass.ZFile(self.zipFilePath, 'r')
+        for i in zipFile.list():
+            if not (re.search("^"+gInfoFilePrefix + ".*" + gInfoFileExt + "$", i) is None):
+                yield zipFile.extract(i, self.workingDir)
+            
+            
+    ################################################
+    # The following functions are not recommended to be called from outside of this class
+    def getZipFile(self):
+        if self.zipFile is None:
+            self.zipFilePath = transform.transformDirToInternal(
+                fileTools.getTimestampWithFreeName(self.workingDir, '.zip'))
+            self.zipFile = zipClass.ZFile(self.zipFilePath, 'w')
+        return self.zipFile

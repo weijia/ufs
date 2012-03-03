@@ -64,6 +64,9 @@ class ZFile(object):
             self.extract(p, path)
             
     def extract(self, filename, path):
+        '''
+        Extract filename to path. Target  file would be path/filename
+        '''
         if not filename.endswith('/'):
             f = os.path.join(path, filename)
             dir = os.path.dirname(f)
@@ -72,6 +75,9 @@ class ZFile(object):
             #print 'extracting:', f
             zipFilename = encode2Local(filename)
             file(f, 'wb').write(self.zfile.read(zipFilename))
+            return f
+        
+        raise "Invalid filename"
     def list(self):
         for i in self.zfile.namelist():
             yield decode2Local(i)
