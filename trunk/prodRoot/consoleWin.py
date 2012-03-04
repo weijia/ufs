@@ -9,7 +9,7 @@ autoStartAppList = ['mongodb.bat',
                     #'collectionServiceApp.py',
                     #'collectionMonitorNonRealtimeNotifierServiceV2',
                     #'syncXmlRpcServerV2,
-                    'tubeDelayService',
+                    'tubeDelayServiceV2',
                     'monitorServiceV2',
                     'folderScanner'
                     ]

@@ -51,7 +51,7 @@ class monitorService(beanstalkServiceBase):
     def processCmd(self, job, item):
         fullPath = transform.transformDirToInternal(item["fullPath"])
         blackList = item["blackList"]
-        targetTube = item["targetTube"]
+        targetTube = item["targetTubeName"]
         if not os.path.exists(fullPath) or self.notifyThreads.has_key(fullPath):
             job.delete()
         t = changeNotifyForBeanstalkd(fullPath, targetTube, blackList)
