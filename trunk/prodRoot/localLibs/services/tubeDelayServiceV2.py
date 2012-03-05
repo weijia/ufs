@@ -13,8 +13,8 @@ from beanstalkServiceBaseV2 import beanstalkServiceBase, beanstalkServiceApp
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
-gInputTubeName = "fileListTube"
-gOutputTubeName = "fileListDelayed"
+#gInputTubeName = "fileListTube"
+#gOutputTubeName = "fileListDelayed"
 gItemDelayTime = 5
 gDefaultTtr = 3600*24
 
