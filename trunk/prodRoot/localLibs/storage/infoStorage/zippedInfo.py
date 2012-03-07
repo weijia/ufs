@@ -51,6 +51,7 @@ class zippedInfo(object):
         for i in zipFile.list():
             print 'enumItems------------------------------', "^"+gInfoFilePrefix + ".*" + gInfoFileExt + "$", i
             print i
+            #i would be like: "tmp/working/zippedCollFile1330392748.82.log"
             if not (re.search("^(.+\/)*"+gInfoFilePrefix + ".*" + gInfoFileExt + "$", i) is None):
                 print 'enumItems------------------------------'
                 print i
