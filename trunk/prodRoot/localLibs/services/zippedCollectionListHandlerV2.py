@@ -13,7 +13,10 @@ import localLibSys
 import wwjufsdatabase.libs.utils.transform as transform
 from beanstalkServiceBaseV2 import beanstalkServiceBase, beanstalkServiceApp
 from localLibs.storage.infoStorage.zippedInfo import zippedInfo
+import desktopApp.lib.archiver.encryptionStorageBase as encryptionStorageBase
 import wwjufsdatabase.libs.utils.simplejson as json
+import wwjufsdatabase.libs.utils.fileTools as fileTools
+import wwjufsdatabase.libs.utils.misc as misc
 import localLibs.collection.collectionDatabaseV2 as collectionDatabase
 import localLibs.objSys.objectDatabaseV3 as objectDatabase
 
@@ -25,14 +28,21 @@ gItemDelayTime = 5
 gDefaultTtr = 3600*24
 gZipFolderCollectionPrefix = "zippedColllectionWithInfo://"
 gZippedCollectionListServiceCmdTubeName = 'zippedCollectionListServiceCmdTube'
+gInfoFilePrefix = 'zippedCollFile'
+gInfoFileDecryptedExt = ".zip"
+
 
 class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
-    def __init__ ( self, tubeName, workingDir = "d:/tmp/working/zippedCollectionListHandler"):
+    def __init__ ( self, tubeName, workingDir = "d:/tmp/working/zippedCollectionListHandler", passwd = '123'):
+        misc.ensureDir(workingDir)
         super(zippedCollectionListHandler, self).__init__(tubeName)
         threading.Thread.__init__(self)
         self.collectionDict = {}
         self.dbInst = objectDatabase.objectDatabase()
         self.workingDir = workingDir
+        self.encCopier = encryptionStorageBase.arc4EncSimpleCopier(passwd)
+        self.decCopier = encryptionStorageBase.arc4DecSimpleCopier(passwd)
+        
     def run(self):
         self.startServer()
             
@@ -48,11 +58,14 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
             #This item is not in the collection, so we need to extract info from this item
             newObj = self.dbInst.getFsObjFromFullPath(fullPath)
             self.collectionDict[monitoringFullPath].addObj(relativePath, newObj["uuid"])
-            for i in zippedInfo(self.workingDir).enumItems(fullPath):
+            zipFilePath = transform.transformDirToInternal(
+                fileTools.getTimestampWithFreeName(self.workingDir, gInfoFileDecryptedExt, gInfoFilePrefix))
+            self.decCopier.copy(fullPath, zipFilePath)
+            for i in zippedInfo(self.workingDir).enumItems(zipFilePath):
                 fp = open(i, 'r')
                 loadedFileInfo = json.load(fp)
                 print loadedFileInfo
-            for i in zippedInfo(self.workingDir).enumZippedFiles(fullPath):
+            for i in zippedInfo(self.workingDir).enumZippedFiles(zipFilePath):
                 fp = open(i, 'r')
                 loadedFileInfo = json.load(fp)
                 print loadedFileInfo
@@ -60,11 +73,15 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
             #This item is not in the collection, so we need to extract info from this item
             newObj = self.dbInst.getFsObjFromFullPath(fullPath)
             self.collectionDict[monitoringFullPath].addObj(relativePath, newObj["uuid"])
-            for i in zippedInfo(self.workingDir).enumItems(fullPath):
+            zipFilePath = transform.transformDirToInternal(
+                fileTools.getTimestampWithFreeName(self.workingDir, gInfoFileDecryptedExt, gInfoFilePrefix))
+            self.decCopier.copy(fullPath, zipFilePath)
+            for i in zippedInfo(self.workingDir).enumItems(zipFilePath):
+                print i
                 fp = open(i, 'r')
                 loadedFileInfo = json.load(fp)
                 print loadedFileInfo
-            for i in zippedInfo(self.workingDir).enumZippedFiles(fullPath):
+            for i in zippedInfo(self.workingDir).enumZippedFiles(zipFilePath):
                 fp = open(i, 'r')
                 loadedFileInfo = json.load(fp)
                 print loadedFileInfo

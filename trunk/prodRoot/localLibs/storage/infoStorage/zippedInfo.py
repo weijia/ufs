@@ -47,13 +47,13 @@ class zippedInfo(object):
         return self.zipFilePath
     
     def enumItems(self, archiveFullPath):
-        zipFile = zipClass.ZFile(self.zipFilePath, 'r')
+        zipFile = zipClass.ZFile(archiveFullPath, 'r')
         for i in zipFile.list():
             if not (re.search("^"+gInfoFilePrefix + ".*" + gInfoFileExt + "$", i) is None):
                 yield zipFile.extract(i, self.workingDir)
             
     def enumZippedFiles(self, archiveFullPath):
-        zipFile = zipClass.ZFile(self.zipFilePath, 'r')
+        zipFile = zipClass.ZFile(archiveFullPath, 'r')
         for i in zipFile.list():
             if (re.search("^"+gInfoFilePrefix + ".*" + gInfoFileExt + "$", i) is None):
                 yield zipFile.extract(i, self.workingDir)

@@ -6,6 +6,9 @@ Created on 2012-02-13
 import os
 import time
 import beanstalkc
+import traceback
+
+
 import localLibSys
 from localLibs.windows.changeNotifyThread import changeNotifyThread
 import wwjufsdatabase.libs.utils.simplejson as json
@@ -57,7 +60,7 @@ class beanstalkServiceApp(beanstalkServiceBase):
                     #If return True, the job was processed, release and delay it
                     job.release(priority = beanstalkc.DEFAULT_PRIORITY, delay = gItemDelayTime)
             except Exception,e:
-                print e
+                traceback.print_exc()
                 raise e
                 #job.delete()
     def processItem(self, job, item):
