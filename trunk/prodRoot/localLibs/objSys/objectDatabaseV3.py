@@ -129,7 +129,7 @@ class objectDatabase:
             return self.getFsContainerObjFromFullPath(fullPath)
         ufsUrl = objInFs.getObjUfsUrl()
         if not objInFs.exists():
-            #print fullPath
+            print fullPath
             raise 'obj does not exists'
             return None
         for i in self.objDb.find({"ufsUrl": ufsUrl}).sort("timestamp", -1):

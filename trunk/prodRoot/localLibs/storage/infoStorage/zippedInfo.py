@@ -44,6 +44,7 @@ class zippedInfo(object):
         self.zipFile.close()
         #Set attribute so new zip will be created if this object is still in use
         self.zipFile = None
+        self.additionalInfoDict = {}
         return self.zipFilePath
     
     def enumItems(self, archiveFullPath):

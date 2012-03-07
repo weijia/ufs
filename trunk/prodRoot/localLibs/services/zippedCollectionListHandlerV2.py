@@ -54,6 +54,9 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
         #Save the item in the archive collection: zippedInfoColllection://D:/tmp/
         fullPath = transform.transformDirToInternal(item["fullPath"])
         relativePath = transform.getRelativePathFromFull(fullPath, monitoringFullPath)
+        if not os.path.exists(fullPath):
+            job.delete()
+            return False#No job release, job was deleted.
         if not self.collectionDict[monitoringFullPath].exists(relativePath):
             #This item is not in the collection, so we need to extract info from this item
             newObj = self.dbInst.getFsObjFromFullPath(fullPath)
@@ -86,7 +89,7 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
             for i in zippedInfo(self.workingDir).enumZippedFiles(zipFilePath):
                 fp = open(i, 'r')
                 print 'data file extracted:', i
-        return True
+        return True#Release job
             
             
 class zippedCollectionListService(beanstalkServiceApp):
