@@ -8,28 +8,30 @@ import time
 import beanstalkc
 import localLibSys
 import wwjufsdatabase.libs.utils.transform as transform
-from beanstalkServiceBase import beanstalkServiceBase
+from beanstalkServiceBaseV2 import beanstalkServiceBase, beanstalkServiceApp
 import threading
 from stat import *
 
 gFolderScannerTubeName = "folderScannerTube"
 
-class folderScannerThread(threading.Thread):
-    def __init__ ( self, rootFolder, targetTubeName, blackList = []):
+class folderScannerThread(beanstalkServiceApp, threading.Thread):
+    def __init__ ( self, tubeName, rootFolder, blackList = []):
         self.blackList = blackList
-        self.targetTube = beanstalkServiceBase(targetTubeName)
         self.rootFolder = transform.transformDirToInternal(rootFolder)
-        super(folderScannerThread, self).__init__ ()
+        super(folderScannerThread, self).__init__ (tubeName)
+        threading.Thread.__init__(self)
         
     def run(self):
+        print 'Start scanning'
         for i in os.walk(self.rootFolder):
             for j in i[2]:
+                print j
                 fullPath = transform.transformDirToInternal(os.path.join(i[0], j))
                 paramDict = {"fullPath": fullPath, "timestamp": os.stat(fullPath)[ST_MTIME],
                              "monitoringPath": self.rootFolder}
-                self.targetTube.addItem(paramDict)
+                self.addItem(paramDict)
 
-class folderScanner(beanstalkServiceBase):
+class folderScanner(beanstalkServiceApp):
     '''
     classdocs
     '''
@@ -40,15 +42,19 @@ class folderScanner(beanstalkServiceBase):
         super(folderScanner, self).__init__(tubeName)
         self.scannerThreadDict = {}
         
-    def processCmd(self, job, item):
+    def processItem(self, job, item):
         fullPath = transform.transformDirToInternal(item["fullPath"])
         blackList = item["blackList"]
         targetTubeName = item["targetTubeName"]
         if not os.path.exists(fullPath) or self.scannerThreadDict.has_key(fullPath):
+            print "Path not exist: ", fullPath
             job.delete()
-        t = folderScannerThread(fullPath, targetTubeName, blackList)
+            return False#Job Deleted
+        t = folderScannerThread(targetTubeName, fullPath, blackList)
         self.scannerThreadDict[fullPath] = t
+        print 'Starting new working thread'
         t.start()
+        return True
         
         
 if __name__ == "__main__":

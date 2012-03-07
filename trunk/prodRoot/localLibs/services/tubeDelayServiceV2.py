@@ -17,7 +17,7 @@ gBeanstalkdServerPort = 11300
 #gOutputTubeName = "fileListDelayed"
 gItemDelayTime = 5
 gDefaultTtr = 3600*24
-
+gDefaultTubeDelayServiceTubeName = 'tubeDelayServiceCmdTube'
 
 class tubeDelayThread(beanstalkServiceApp, threading.Thread):
     def __init__ ( self, inputTubeName, outputTubeName, blackList = []):
@@ -32,6 +32,7 @@ class tubeDelayThread(beanstalkServiceApp, threading.Thread):
         self.outputBeanstalk.use(self.outputTubeName)
         self.outputBeanstalk.ignore(self.outputTubeName)
         #self.outputBeanstalk.ignore('default')
+        print 'Calling start server, output to: ', self.outputTubeName
         self.startServer()
             
     def processItem(self, job, item):
@@ -74,7 +75,7 @@ class tubeDelayService(beanstalkServiceApp):
     '''
     classdocs
     '''
-    def __init__(self, tubeName):
+    def __init__(self, tubeName = gDefaultTubeDelayServiceTubeName):
         super(tubeDelayService, self).__init__(tubeName)
         self.taskDict = {}
         
@@ -84,17 +85,19 @@ class tubeDelayService(beanstalkServiceApp):
         blackList = item["blackList"]
         inputTubeName = item["inputTubeName"]
         outputTubeName = item["outputTubeName"]
-        if not os.path.exists(inputTubeName) or self.taskDict.has_key(inputTubeName):
+        if self.taskDict.has_key(inputTubeName):
+            #Job already exist, delete it
+            print "job already exist"
             job.delete()
+            return False
         t = tubeDelayThread(inputTubeName, outputTubeName, blackList)
         self.taskDict[inputTubeName] = t
         t.start()
-        job.delete()
-                
+        return True
             
             
             
             
 if __name__ == "__main__":
-    s = tubeDelayService('tubeDelayServiceCmdTube')
+    s = tubeDelayService()
     s.startServer()

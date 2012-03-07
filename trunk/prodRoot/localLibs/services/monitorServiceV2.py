@@ -8,9 +8,8 @@ import time
 import beanstalkc
 import localLibSys
 from localLibs.windows.changeNotifyThread import changeNotifyThread
-import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.transform as transform
-from beanstalkServiceBase import beanstalkServiceBase
+from beanstalkServiceBaseV2 import beanstalkServiceBase, beanstalkServiceApp
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
@@ -37,7 +36,7 @@ class changeNotifyForBeanstalkd(changeNotifyThread):
 
 
 
-class monitorService(beanstalkServiceBase):
+class monitorService(beanstalkServiceApp):
     '''
     classdocs
     '''
@@ -48,15 +47,17 @@ class monitorService(beanstalkServiceBase):
         super(monitorService, self).__init__(tubeName)
         self.notifyThreads = {}
 
-    def processCmd(self, job, item):
+    def processItem(self, job, item):
         fullPath = transform.transformDirToInternal(item["fullPath"])
         blackList = item["blackList"]
         targetTube = item["targetTubeName"]
         if not os.path.exists(fullPath) or self.notifyThreads.has_key(fullPath):
             job.delete()
+            return False
         t = changeNotifyForBeanstalkd(fullPath, targetTube, blackList)
         self.notifyThreads[fullPath] = t
         t.start()
+        return True
 
 if __name__ == "__main__":
     s = monitorService()

@@ -15,7 +15,7 @@ import wwjufsdatabase.libs.utils.transform as transform
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
 gMonitorServiceTubeName = "monitorQueue"
-
+gItemDelayTime = 60*60*24#One day
 
 class beanstalkServiceBase(object):
     '''
@@ -32,6 +32,7 @@ class beanstalkServiceBase(object):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         beanstalk.use(self.tubeName)
         s = json.dumps(itemDict, sort_keys=True, indent=4)
+        print "add item:", s, self.tubeName
         job = beanstalk.put(s)
         
     def watchTube(self):
@@ -41,6 +42,7 @@ class beanstalkServiceBase(object):
         
 class beanstalkServiceApp(beanstalkServiceBase):
     def startServer(self):
+        print self.__class__, self.tubeName
         self.watchTube()
         #!!!Not working. Kick all items to active when start, as we bury them in the previous processing
         #kickedItemNum = beanstalk.kick(gMaxMonitoringItems)
@@ -50,7 +52,14 @@ class beanstalkServiceApp(beanstalkServiceBase):
             print "got job", job.body
             item = json.loads(job.body)
             print item
-            self.processItem(job, item)
+            try:
+                if self.processItem(job, item):
+                    #If return True, the job was processed, release and delay it
+                    job.release(priority = beanstalkc.DEFAULT_PRIORITY, delay = gItemDelayTime)
+            except Exception,e:
+                print e
+                raise e
+                #job.delete()
     def processItem(self, job, item):
         job.delete()
 

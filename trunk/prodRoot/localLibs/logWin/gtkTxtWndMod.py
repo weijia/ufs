@@ -33,13 +33,13 @@ class consoleWnd:
 
     def close_application(self, widget):
         try:
-          self.parent.consoleClose(self)
+            self.parent.consoleClose(self)
         except:
-          pass
+            pass
         try:
-          self.wC.close()
+            self.wC.close()
         except:
-          pass
+            pass
     def updateViewCallback(self, data):
         #print 'callback called'
         self.data = data
