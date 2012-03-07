@@ -61,7 +61,7 @@ class beanstalkServiceApp(beanstalkServiceBase):
                     job.release(priority = beanstalkc.DEFAULT_PRIORITY, delay = gItemDelayTime)
             except Exception,e:
                 traceback.print_exc()
-                raise e
+                #raise e
                 #job.delete()
     def processItem(self, job, item):
         job.delete()

@@ -9,7 +9,7 @@ import desktopApp.lib.compress.zipClass as zipClass
 gWorkingDir = "d:/tmp"
 gDefaultInfoSize = 100
 gInfoFilePrefix = 'zippedCollFile'
-gInfoFileExt = ".log"
+gInfoFileExt = "\.log"
 
 class zippedInfo(object):
     def __init__(self, workingDir = gWorkingDir):
@@ -49,8 +49,14 @@ class zippedInfo(object):
     def enumItems(self, archiveFullPath):
         zipFile = zipClass.ZFile(archiveFullPath, 'r')
         for i in zipFile.list():
-            if not (re.search("^"+gInfoFilePrefix + ".*" + gInfoFileExt + "$", i) is None):
-                yield zipFile.extract(i, self.workingDir)
+            print 'enumItems------------------------------', "^"+gInfoFilePrefix + ".*" + gInfoFileExt + "$", i
+            print i
+            if not (re.search("^(.+\/)*"+gInfoFilePrefix + ".*" + gInfoFileExt + "$", i) is None):
+                print 'enumItems------------------------------'
+                print i
+                infoFilePath = zipFile.extract(i, self.workingDir)
+                print 'returning ----------'
+                yield infoFilePath
             
     def enumZippedFiles(self, archiveFullPath):
         zipFile = zipClass.ZFile(archiveFullPath, 'r')
@@ -65,3 +71,5 @@ class zippedInfo(object):
                 fileTools.getTimestampWithFreeName(self.workingDir, '.zip'))
             self.zipFile = zipClass.ZFile(self.zipFilePath, 'w')
         return self.zipFile
+    
+    

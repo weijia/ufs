@@ -62,13 +62,14 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
                 fileTools.getTimestampWithFreeName(self.workingDir, gInfoFileDecryptedExt, gInfoFilePrefix))
             self.decCopier.copy(fullPath, zipFilePath)
             for i in zippedInfo(self.workingDir).enumItems(zipFilePath):
+                print '--------------------------------------------------'
+                print i
                 fp = open(i, 'r')
                 loadedFileInfo = json.load(fp)
                 print loadedFileInfo
             for i in zippedInfo(self.workingDir).enumZippedFiles(zipFilePath):
                 fp = open(i, 'r')
-                loadedFileInfo = json.load(fp)
-                print loadedFileInfo
+                print 'data file extracted:', i
         else:
             #This item is not in the collection, so we need to extract info from this item
             newObj = self.dbInst.getFsObjFromFullPath(fullPath)
@@ -77,14 +78,14 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
                 fileTools.getTimestampWithFreeName(self.workingDir, gInfoFileDecryptedExt, gInfoFilePrefix))
             self.decCopier.copy(fullPath, zipFilePath)
             for i in zippedInfo(self.workingDir).enumItems(zipFilePath):
+                print '--------------------------------------------------'
                 print i
                 fp = open(i, 'r')
                 loadedFileInfo = json.load(fp)
                 print loadedFileInfo
             for i in zippedInfo(self.workingDir).enumZippedFiles(zipFilePath):
                 fp = open(i, 'r')
-                loadedFileInfo = json.load(fp)
-                print loadedFileInfo
+                print 'data file extracted:', i
         return True
             
             

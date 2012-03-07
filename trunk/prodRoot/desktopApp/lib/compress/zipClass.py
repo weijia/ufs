@@ -74,6 +74,7 @@ class ZFile(object):
                 os.makedirs(dir)
             #print 'extracting:', f
             zipFilename = encode2Local(filename)
+            print '--------------filename:', f, filename, path
             file(f, 'wb').write(self.zfile.read(zipFilename))
             return f
         
