@@ -4,6 +4,11 @@ import ffmpegThumb
 import appThumb
         
 def getThumb(path, targetDir):
+    '''
+    path: Full Path. The path of the file whose thumbnail will be generated
+    targetDir: Directory Path. The target directory where the generated thumbnail will be put in.
+    Return: the thumbnail fullPath
+    '''
     newPath = None
     ext = path.split('.')[-1].lower()
     if ext in ['exe']:

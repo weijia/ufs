@@ -21,10 +21,14 @@ class zippedInfo(object):
     def addAdditionalInfo(self, addInfo):
         for i in addInfo:
             self.additionalInfoDict[i] = addInfo[i]
-    def addItem(self, fullPath):
+            
+    def getItemFromFullPath(self, fullPath):
         #Get file info and add info to info dict
         fullPath = transform.transformDirToInternal(fullPath)
         itemObj = ufsObj.detailedFsObj(fullPath)
+        return itemObj
+    def addItem(self, fullPath):
+        itemObj = self.getItemFromFullPath(fullPath)
         self.collectionInfoDict[itemObj.ufsUrl()] = itemObj.getItemInfo()
         #Add file to zip
         #return self.getZipFile().addfile(unicode(fullPath), unicode(fullPath))
