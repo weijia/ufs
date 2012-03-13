@@ -4,7 +4,7 @@ import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.transform as transform
 import localLibs.objSys.ufsObj as ufsObj
 import wwjufsdatabase.libs.utils.fileTools as fileTools
-import desktopApp.lib.compress.zipClass as zipClass
+import localLibs.compress.zipClass as zipClass
 
 gWorkingDir = "d:/tmp"
 gDefaultInfoSize = 100
