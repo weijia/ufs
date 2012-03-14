@@ -11,10 +11,11 @@ import threading
 
 import localLibSys
 from localLibs.storage.infoStorage.zippedCollectionWithInfo import zippedCollectionWithInfo
+from localLibs.storage.infoStorage.zippedInfoWithThumb import zippedInfoWithThumb
 from localLibs.localFs.tmpFile import getStorgePathWithDateFolder
-import desktopApp.lib.archiver.encryptionStorageBase as encryptionStorageBase
+import localLibs.archiver.encryptionStorageBase as encryptionStorageBase
 from fileListHandlerBase import fileListHandlerBase
-from beanstalkServiceBaseV2 import beanstalkServiceBase, beanstalkServiceApp
+from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp
 
 
 gBeanstalkdServerHost = '127.0.0.1'
@@ -27,13 +28,12 @@ gMaxZippedCollectionSize = 0.5*1024
 gZipCollectionRoot = "d:/tmp/generating"
 
 
-class fileArchiveThread(beanstalkServiceApp, threading.Thread):
+class fileArchiveThread(beanstalkWorkingThread):
     def __init__ ( self, inputTubeName, storage, zipCollectionRoot = gZipCollectionRoot, passwd = "123"):
         '''
         Constructor
         '''
         super(fileArchiveThread, self).__init__(inputTubeName)
-        threading.Thread.__init__(self)
         self.storage = storage
         self.zipCollectionRoot = zipCollectionRoot
         self.encCopier = encryptionStorageBase.arc4EncSimpleCopier(passwd)
@@ -63,12 +63,14 @@ class fileArchiveThread(beanstalkServiceApp, threading.Thread):
             return True
         #Return False as jobs are not processed completely
         return True
+    
 
+        
 class fileArchiveService(beanstalkServiceApp):
     '''
     classdocs
     '''
-    def __init__(self, tubeName):
+    def __init__(self, tubeName = "fileArchiveServiceTubeName"):
         super(fileArchiveService, self).__init__(tubeName)
         self.taskDict = {}
         
@@ -77,10 +79,10 @@ class fileArchiveService(beanstalkServiceApp):
         #monitoringFullPath = transform.transformDirToInternal(item["monitoringPath"])
         workingDir = item["workingDir"]
         inputTubeName = item["inputTubeName"]
-        if not os.path.exists(inputTubeName) or self.taskDict.has_key(inputTubeName):
+        if self.taskDict.has_key(inputTubeName):
             job.delete()
             return False
-        t = fileArchiveThread(inputTubeName, zippedCollectionWithInfo(workingDir))
+        t = fileArchiveThread(inputTubeName, zippedInfoWithThumb(workingDir))
         self.taskDict[inputTubeName] = t
         t.start()
         return True
@@ -89,5 +91,5 @@ class fileArchiveService(beanstalkServiceApp):
 if __name__ == "__main__":
     print 'starting fileListHandler'
     workingDir = "d:/tmp/working"
-    s = fileArchiveService("fileArchiveService")
+    s = fileArchiveService()
     s.startServer()

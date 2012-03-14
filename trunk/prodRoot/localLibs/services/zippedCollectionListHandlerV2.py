@@ -13,7 +13,7 @@ import localLibSys
 import wwjufsdatabase.libs.utils.transform as transform
 from beanstalkServiceBaseV2 import beanstalkServiceBase, beanstalkServiceApp
 from localLibs.storage.infoStorage.zippedInfo import zippedInfo
-import desktopApp.lib.archiver.encryptionStorageBase as encryptionStorageBase
+import localLibs.archiver.encryptionStorageBase as encryptionStorageBase
 import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.fileTools as fileTools
 import wwjufsdatabase.libs.utils.misc as misc

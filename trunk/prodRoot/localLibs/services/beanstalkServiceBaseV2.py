@@ -7,12 +7,11 @@ import os
 import time
 import beanstalkc
 import traceback
-
+import threading
 
 import localLibSys
 from localLibs.windows.changeNotifyThread import changeNotifyThread
 import wwjufsdatabase.libs.utils.simplejson as json
-import wwjufsdatabase.libs.utils.transform as transform
 
 
 gBeanstalkdServerHost = '127.0.0.1'
@@ -39,6 +38,7 @@ class beanstalkServiceBase(object):
         job = beanstalk.put(s)
         
     def watchTube(self):
+        print 'watch tube: ', self.tubeName
         self.beanstalk.watch(self.tubeName)
         self.beanstalk.ignore('default')
         
@@ -66,6 +66,13 @@ class beanstalkServiceApp(beanstalkServiceBase):
     def processItem(self, job, item):
         job.delete()
 
+
+class beanstalkWorkingThread(beanstalkServiceApp, threading.Thread):
+    def __init__ ( self, inputTubeName):
+        super(beanstalkWorkingThread, self).__init__(inputTubeName)
+        threading.Thread.__init__(self)
+    def run(self):
+        self.startServer()
         
 if __name__ == "__main__":
     s = beanstalkServiceBase()

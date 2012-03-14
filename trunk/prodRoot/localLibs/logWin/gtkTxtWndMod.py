@@ -160,6 +160,7 @@ class consoleWnd:
     def startApp(self, cwd = 'D:\\code\\python\\developing\\ufs', progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
         #print '------------------------------',progAndParm
         self.wC.runConsoleApp(self, cwd, progAndParm)
+        self.window.set_title(' '.join(progAndParm))
     def startAppWithParam(self, progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
         cwd = os.path.dirname(progAndParm[0])
         self.startApp(cwd, progAndParm)

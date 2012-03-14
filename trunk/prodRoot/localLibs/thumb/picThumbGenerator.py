@@ -5,6 +5,12 @@ import magic
 class pictureFormatNotSupported:
     pass
 
+def getProdRoot():
+    c = os.getcwd()
+    while c.find('prodRoot') != -1:
+      c = os.path.dirname(c)
+    return os.path.join(c,'prodRoot')
+    
     
 def picFormatSupported(ext):
     pat = re.compile("jpe{0,1}g", re.I)
@@ -19,7 +25,10 @@ def picFormatSupported(ext):
 
         
 def picFormatSupportedV2(fullPath):
-    magicPath = os.path.join(os.getcwd(), "share\\file\\magic")
+    magicPath = os.path.join(getProdRoot(), "share\\file\\magic")
+    print 'magic path: ',magicPath
+    if not os.path.exists(magicPath):
+        raise "Magic file lost"
     #print "magic path is", magicPath
     #os.environ["MAGIC"] = magicPath
     m = magic.Magic(magic_file=magicPath)

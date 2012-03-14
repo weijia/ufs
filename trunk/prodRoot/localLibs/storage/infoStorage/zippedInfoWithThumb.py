@@ -8,9 +8,9 @@ from localLibs.thumb.thumbInterface import getThumb
 gWorkingDir = "d:/tmp/working"
 gDefaultInfoSize = 100
 
-class zippedCollectionWithInfo(zippedInfo):
+class zippedInfoWithThumb(zippedInfo):
     def __init__(self, workingDir = gWorkingDir):
-        super(zippedCollectionWithInfo, self).__init__(workingDir)
+        super(zippedInfoWithThumb, self).__init__(workingDir)
     def addItem(self, fullPath):
         itemObj = self.getItemFromFullPath(fullPath)
         infoDict = itemObj.getItemInfo()
