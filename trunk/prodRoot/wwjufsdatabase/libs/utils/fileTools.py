@@ -24,6 +24,7 @@ def getFreeNameFromFullPath(fullPath):
     return res
   
 def getTimestampWithFreeName(path, ext, prefix = ''):
+    #print path, ext, prefix
     filename = unicode(prefix + str(time.time()))
     return getFreeName(path, filename, ext)
     

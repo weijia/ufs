@@ -90,8 +90,12 @@ class objectDatabase:
         objInfoDict["user"] = self.user
         #objInfoDict["ufsUrl"] = ufsUrl
         objInfoDict["addedTimestamp"] = time.time()
+        ncl(objInfoDict)
         self.objDb.insert(objInfoDict.getItemInfo(), safe=True)
-        ncl('returning new obj')
+        ncl(objInfoDict)
+        del objInfoDict["_id"]
+        ncl('returning new obj', objInfoDict["uuid"])
+        ncl(objInfoDict)
         return objInfoDict
         
     def getFsContainerObjFromFullPath(self, fullPath):
@@ -126,7 +130,9 @@ class objectDatabase:
         '''
         objInFs = ufsObj.fsObj(fullPath)
         if objInFs.isContainer():
-            return self.getFsContainerObjFromFullPath(fullPath)
+            res = self.getFsContainerObjFromFullPath(fullPath)
+            ncl("returning: ", res["uuid"])
+            return res
         ufsUrl = objInFs.getObjUfsUrl()
         if not objInFs.exists():
             print fullPath
@@ -138,12 +144,17 @@ class objectDatabase:
                 #Object size NOT changed
                 if objInFs["timestamp"] == i["timestamp"]:
                     #Object size and time NOT changed, treated it as NOT changed.
+                    del i["_id"]
+                    ncl(i)
                     return ufsObj.ufsUrlObj(ufsUrl, i)
                 if objInFs["headMd5"] == i["headMd5"]:
                     #The file is changed, but the content is not changed. Update the timestamp for the obj or add new item with new timestamp?
-                    cl('existing item as size and hash is the same, return existing info')
+                    ncl('existing item as size and hash is the same, return existing info')
                     #Update the timestamp in the database as the item's timestamp in file system is different
                     self.objDb.find_and_modify({"uuid":i["uuid"]}, {"$set": {"timestamp":objInFs["timestamp"]}})
+                    ncl("returnning: ", i["uuid"])
+                    del i["_id"]
+                    ncl(i)
                     return ufsObj.ufsUrlObj(ufsUrl, i)
         #The item is updated add the new item
         latestInfo = objInFs.getItemInfo()

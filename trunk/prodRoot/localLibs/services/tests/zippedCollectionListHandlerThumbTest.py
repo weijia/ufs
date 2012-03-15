@@ -15,7 +15,7 @@ monitorServiceV2->fileListTube
 '''
 
 
-gAutoArchiveFullPath = "D:\\userdata\\q19420\\My Documents\\Tencent Files\\10132994\\Image"
+gAutoArchiveFullPath = "D:\\sys\\qq\\68657368\\Image"
 gWorkingDir = "D:/tmp/working/fileArchiveService"
 
 

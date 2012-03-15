@@ -16,13 +16,14 @@ from localLibs.localFs.tmpFile import getStorgePathWithDateFolder
 import localLibs.archiver.encryptionStorageBase as encryptionStorageBase
 from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp
 import localLibs.objSys.objectDatabaseV3 as objectDatabase
+import wwjufsdatabase.libs.utils.misc as misc
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
 gMonitorServiceTubeName = "monitorQueue"
 gFileListTubeName = "fileListDelayed"
 
-gMaxZippedCollectionSize = 0.5*1024
+gMaxZippedCollectionSize = 0.005*1024
 
 gZipCollectionRoot = "d:/tmp/generating"
 
@@ -47,9 +48,10 @@ class fileArchiveThread(beanstalkWorkingThread):
         if not (item['monitoringPath'] in self.monitoringList):
             self.monitoringList.append(item['monitoringPath'])
         itemObj = self.dbInst.getFsObjFromFullPath(item["fullPath"])
-        info = self.storage.addItem(itemObj)   
+        #print itemObj["uuid"]
+        addedItemSize = self.storage.addItem(itemObj)   
         #print "zipped size", info.compress_size
-        self.curStorageSize += info.compress_size
+        self.curStorageSize += addedItemSize
 
         if self.curStorageSize > gMaxZippedCollectionSize:
             self.storage.addAdditionalInfo({"monitoringPathList": self.monitoringList})
@@ -74,11 +76,13 @@ class fileArchiveService(beanstalkServiceApp):
     def __init__(self, tubeName = "fileArchiveServiceTubeName"):
         super(fileArchiveService, self).__init__(tubeName)
         self.taskDict = {}
+
         
     def processItem(self, job, item):
         #fullPath = transform.transformDirToInternal(item["fullPath"])
         #monitoringFullPath = transform.transformDirToInternal(item["monitoringPath"])
         workingDir = item["workingDir"]
+        misc.ensureDir(workingDir)
         inputTubeName = item["inputTubeName"]
         if self.taskDict.has_key(inputTubeName):
             job.delete()

@@ -16,6 +16,8 @@ import wwjufsdatabase.libs.utils.objTools as objTools
 class objBase(UserDict.DictMixin):
     def __init__(self, existingItemInfo = {}):
         self.itemInfo = copy.copy(existingItemInfo)
+        if self.itemInfo.has_key("_id"):
+            del self.itemInfo["_id"]
         
     def __getitem__(self, key):
         if self.itemInfo.has_key(key):
@@ -36,7 +38,7 @@ class objBase(UserDict.DictMixin):
         return value
 
     def __delitem__(self, key):
-        pass
+        del self.itemInfo[key]
     
     def keys(self):
         return self.itemInfo.keys()
@@ -49,6 +51,8 @@ class fsObjBase(objBase):
         self.fullPath = transform.transformDirToInternal(fullPath)
         self.itemInfo = copy.copy(existingItemInfo)
         self.itemInfo["fullPath"] = self.fullPath
+        if self.itemInfo.has_key("_id"):
+            del self.itemInfo["_id"]
     def isContainer(self):
         return os.path.isdir(self.fullPath)
     
@@ -104,7 +108,7 @@ class detailedFsObj(fsObjBase):
     def ufsUrl(self):
         return self.getObjUfsUrl()
     def getItemInfo(self):
-        tmp = self.fillInfo(["timestamp", "fullPath", "headMd5", "size", "ufsUrl"])
+        tmp = self.fillInfo(["timestamp", "fullPath", "headMd5", "size", "ufsUrl", "uuid"])
         return self.itemInfo
 
 class fsDirObj(fsObjBase): pass

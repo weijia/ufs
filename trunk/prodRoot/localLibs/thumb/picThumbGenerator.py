@@ -1,6 +1,6 @@
 import os
 import re
-import magic
+
 
 class pictureFormatNotSupported:
     pass
@@ -8,9 +8,12 @@ class pictureFormatNotSupported:
 def getProdRoot():
     c = os.getcwd()
     while c.find('prodRoot') != -1:
-      c = os.path.dirname(c)
+        c = os.path.dirname(c)
     return os.path.join(c,'prodRoot')
-    
+
+rootPath = getProdRoot()
+os.environ["PATH"] = os.environ["PATH"]+";"+rootPath
+import magic
     
 def picFormatSupported(ext):
     pat = re.compile("jpe{0,1}g", re.I)
@@ -25,17 +28,18 @@ def picFormatSupported(ext):
 
         
 def picFormatSupportedV2(fullPath):
-    magicPath = os.path.join(getProdRoot(), "share\\file\\magic")
-    print 'magic path: ',magicPath
+    rootPath = getProdRoot()
+    magicPath = os.path.join(rootPath, "share\\file\\magic")
+    #print 'magic path: ',magicPath
     if not os.path.exists(magicPath):
         raise "Magic file lost"
     #print "magic path is", magicPath
     #os.environ["MAGIC"] = magicPath
     m = magic.Magic(magic_file=magicPath)
     res = m.from_file(fullPath)
-    print res
+    #print res
     if res.find('image') != -1:
-        print 'image', fullPath
+        #print 'image', fullPath
         return True
     else:
         return False
@@ -50,24 +54,26 @@ def genPicThumb(local_path, dest_dir):
     #print ext
     #if picFormatSupported(ext):
     if picFormatSupportedV2(local_path):
-      #It is a jpeg file, currently no other type supported
-      import Image #Using PIL lib 
-      im = Image.open(local_path)
-      # convert to thumbnail image
-      im.thumbnail((128, 128), Image.ANTIALIAS)
-      # don't save if thumbnail already exists
-      #Use _T as the thumb file end to indicate the end of the original firl
-      thumb_path_without_ext = os.path.join(dest_dir, basename.split(".")[0]+"_T")
-      import random
-      while os.path.exists(thumb_path_without_ext+".jpg"):
-        thumb_path_without_ext += str(random.randint(0,10))
-      thumb_path = thumb_path_without_ext+'.jpg'
-      print thumb_path.encode("utf8","replace")
-      im.save(thumb_path,  "JPEG")
-      return thumb_path
+        #It is a jpeg file, currently no other type supported
+        import Image #Using PIL lib 
+        im = Image.open(local_path)
+        # convert to thumbnail image
+        im.thumbnail((128, 128), Image.ANTIALIAS)
+        # don't save if thumbnail already exists
+        #Use _T as the thumb file end to indicate the end of the original firl
+        thumb_path_without_ext = os.path.join(dest_dir, basename.split(".")[0]+"_T")
+        import random
+        while os.path.exists(thumb_path_without_ext+".jpg"):
+            thumb_path_without_ext += str(random.randint(0,10))
+        thumb_path = thumb_path_without_ext+'.jpg'
+        #print thumb_path.encode("utf8","replace")
+        if im.mode != "RGB":
+            im = im.convert("RGB")
+        im.save(thumb_path,  "JPEG")
+        return thumb_path
     else:
-      print 'non jpeg file not supported'
-      raise pictureFormatNotSupported
+        print 'non jpeg file not supported'
+        raise pictureFormatNotSupported
     
 
 def returnThumbString(local_path):
