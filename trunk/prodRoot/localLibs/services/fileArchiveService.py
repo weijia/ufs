@@ -14,9 +14,8 @@ from localLibs.storage.infoStorage.zippedCollectionWithInfo import zippedCollect
 from localLibs.storage.infoStorage.zippedInfoWithThumb import zippedInfoWithThumb
 from localLibs.localFs.tmpFile import getStorgePathWithDateFolder
 import localLibs.archiver.encryptionStorageBase as encryptionStorageBase
-from fileListHandlerBase import fileListHandlerBase
 from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp
-
+import localLibs.objSys.objectDatabaseV3 as objectDatabase
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
@@ -42,11 +41,13 @@ class fileArchiveThread(beanstalkWorkingThread):
         #self.addedList = []
         #self.fileListTubeName = fileListTubeName
         self.monitoringList = []
+        self.dbInst = objectDatabase.objectDatabase()
 
     def processItem(self, job, item):
         if not (item['monitoringPath'] in self.monitoringList):
             self.monitoringList.append(item['monitoringPath'])
-        info = self.storage.addItem(item["fullPath"])   
+        itemObj = self.dbInst.getFsObjFromFullPath(item["fullPath"])
+        info = self.storage.addItem(itemObj)   
         #print "zipped size", info.compress_size
         self.curStorageSize += info.compress_size
 

@@ -11,9 +11,9 @@ gDefaultInfoSize = 100
 class zippedInfoWithThumb(zippedInfo):
     def __init__(self, workingDir = gWorkingDir):
         super(zippedInfoWithThumb, self).__init__(workingDir)
-    def addItem(self, fullPath):
-        itemObj = self.getItemFromFullPath(fullPath)
+    def addItem(self, itemObj):
         infoDict = itemObj.getItemInfo()
+        fullPath = itemObj["fullPath"]
         #Add thumb info
         thumbFullPath = getThumb(fullPath, gWorkingDir)
         if not (thumbFullPath is None):

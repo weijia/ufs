@@ -27,8 +27,7 @@ class zippedInfo(object):
         fullPath = transform.transformDirToInternal(fullPath)
         itemObj = ufsObj.detailedFsObj(fullPath)
         return itemObj
-    def addItem(self, fullPath):
-        itemObj = self.getItemFromFullPath(fullPath)
+    def addItem(self, itemObj):
         self.collectionInfoDict[itemObj.ufsUrl()] = itemObj.getItemInfo()
         #Add file to zip
         #return self.getZipFile().addfile(unicode(fullPath), unicode(fullPath))
