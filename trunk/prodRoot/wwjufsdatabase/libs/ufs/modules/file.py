@@ -19,6 +19,8 @@ class fileCollection:
         self.userSession = userSession
         #print 'creating file collection', self.fullPath
     def listNamedChildren(self, start, cnt, isTree):
+        if cnt is None:
+            cnt = MAX_ELEMENTS_IN_COLLECTION
         #Retrieve children from database
         folderObj = self.objDbSys.getFsObjFromFullPath(self.fullPath)
         #print folderObj

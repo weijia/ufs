@@ -37,7 +37,9 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
         misc.ensureDir(workingDir)
         super(zippedCollectionListHandler, self).__init__(tubeName)
         threading.Thread.__init__(self)
-        self.collectionDict = {}
+        # Stores collection instance for given monitoring path, all zipped objects
+        # in this monitoring path will be stored in this collection
+        self.collectionInDbForMonitoringPath = {}
         self.dbInst = objectDatabase.objectDatabase()
         self.workingDir = workingDir
         self.encCopier = encryptionStorageBase.arc4EncSimpleCopier(passwd)
@@ -49,18 +51,21 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
     def processItem(self, job, item):
         monitoringFullPath = transform.transformDirToInternal(item['monitoringPath'])
         archiveId = gZipFolderCollectionPrefix + monitoringFullPath
-        if not self.collectionDict.has_key(monitoringFullPath):
-            self.collectionDict[monitoringFullPath] = collectionDatabase.collectionOnMongoDbBase(archiveId, self.dbInst.getCollectionDb())
+        if not self.collectionInDbForMonitoringPath.has_key(monitoringFullPath):
+            self.collectionInDbForMonitoringPath[monitoringFullPath] = collectionDatabase.collectionOnMongoDbBase(archiveId, self.dbInst.getCollectionDb())
         #Save the item in the archive collection: zippedInfoColllection://D:/tmp/
         fullPath = transform.transformDirToInternal(item["fullPath"])
         relativePath = transform.getRelativePathFromFull(fullPath, monitoringFullPath)
         if not os.path.exists(fullPath):
             job.delete()
             return False#No job release, job was deleted.
-        if not self.collectionDict[monitoringFullPath].exists(relativePath):
+        #################################################################
+        # Start process the 
+        #################################################################
+        if not self.collectionInDbForMonitoringPath[monitoringFullPath].exists(relativePath):
             #This item is not in the collection, so we need to extract info from this item
             newObj = self.dbInst.getFsObjFromFullPath(fullPath)
-            self.collectionDict[monitoringFullPath].addObj(relativePath, newObj["uuid"])
+            self.collectionInDbForMonitoringPath[monitoringFullPath].addObj(relativePath, newObj["uuid"])
             zipFilePath = transform.transformDirToInternal(
                 fileTools.getTimestampWithFreeName(self.workingDir, gInfoFileDecryptedExt, gInfoFilePrefix))
             self.decCopier.copy(fullPath, zipFilePath)
@@ -73,10 +78,11 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
             for i in zippedInfo(self.workingDir).enumZippedFiles(zipFilePath):
                 fp = open(i, 'r')
                 print 'data file extracted:', i
+        '''
         else:
             #This item is not in the collection, so we need to extract info from this item
             newObj = self.dbInst.getFsObjFromFullPath(fullPath)
-            self.collectionDict[monitoringFullPath].addObj(relativePath, newObj["uuid"])
+            self.collectionInDbForMonitoringPath[monitoringFullPath].addObj(relativePath, newObj["uuid"])
             zipFilePath = transform.transformDirToInternal(
                 fileTools.getTimestampWithFreeName(self.workingDir, gInfoFileDecryptedExt, gInfoFilePrefix))
             self.decCopier.copy(fullPath, zipFilePath)
@@ -89,6 +95,7 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
             for i in zippedInfo(self.workingDir).enumZippedFiles(zipFilePath):
                 fp = open(i, 'r')
                 print 'data file extracted:', i
+        '''
         return True#Release job
             
             

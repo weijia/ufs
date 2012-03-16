@@ -1,5 +1,6 @@
 import os
 import re
+import wwjufsdatabase.libs.utils.transform as transform
 
 
 class pictureFormatNotSupported:
@@ -70,7 +71,7 @@ def genPicThumb(local_path, dest_dir):
         if im.mode != "RGB":
             im = im.convert("RGB")
         im.save(thumb_path,  "JPEG")
-        return thumb_path
+        return transform.transformDirToInternal(thumb_path)
     else:
         print 'non jpeg file not supported'
         raise pictureFormatNotSupported

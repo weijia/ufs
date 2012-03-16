@@ -52,7 +52,7 @@ class fileArchiveThread(beanstalkWorkingThread):
         addedItemSize = self.storage.addItem(itemObj)   
         #print "zipped size", info.compress_size
         self.curStorageSize += addedItemSize
-
+        #print "current size:", self.curStorageSize
         if self.curStorageSize > gMaxZippedCollectionSize:
             self.storage.addAdditionalInfo({"monitoringPathList": self.monitoringList})
             zipFullPath = self.storage.finalizeZipFile()

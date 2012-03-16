@@ -39,7 +39,7 @@ class zippedCollectionListHandler(fileListHandlerBase):
         '''
         self.encCopier = encryptionStorageBase.arc4EncSimpleCopier(passwd)
         self.decCopier = encryptionStorageBase.arc4DecSimpleCopier(passwd)
-        self.collectionDict = {}
+        self.collectionInDbForMonitoringPath = {}
         self.workingDir = workingDir
         self.dbInst = objectDatabase()
         super(zippedCollectionListHandler, self).__init__(fileListTubeName)
@@ -47,15 +47,15 @@ class zippedCollectionListHandler(fileListHandlerBase):
     def processJob(self, job, item):
         monitoringFullPath = transform.transformDirToInternal(item['monitoringPath'])
         archiveId = "zippedInfoColllection://" + monitoringFullPath
-        if not self.collectionDict.has_key(monitoringFullPath):
-            self.collectionDict[monitoringFullPath] = collectionDatabase.collectionOnMongoDbBase(archiveId, self.dbInst.getCollectionDb())
+        if not self.collectionInDbForMonitoringPath.has_key(monitoringFullPath):
+            self.collectionInDbForMonitoringPath[monitoringFullPath] = collectionDatabase.collectionOnMongoDbBase(archiveId, self.dbInst.getCollectionDb())
         #Save the item in the archive collection: zippedInfoColllection://D:/tmp/
         fullPath = transform.transformDirToInternal(item["fullPath"])
         relativePath = transform.getRelativePathFromFull(fullPath, monitoringFullPath)
-        if not self.collectionDict[monitoringFullPath].exists(relativePath):
+        if not self.collectionInDbForMonitoringPath[monitoringFullPath].exists(relativePath):
             #This item is not in the collection, so we need to extract info from this item
             newObj = self.dbInst.getFsObjFromFullPath(fullPath)
-            self.collectionDict[monitoringFullPath].addObj(relativePath, newObj["uuid"])
+            self.collectionInDbForMonitoringPath[monitoringFullPath].addObj(relativePath, newObj["uuid"])
             for i in zippedInfo(self.workingDir).enumItems(fullPath):
                 fp = open(i, 'r')
                 loadedFileInfo = json.load(fp)

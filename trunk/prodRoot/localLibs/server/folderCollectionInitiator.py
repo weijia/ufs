@@ -108,7 +108,7 @@ class folderCollectionServer(threadSvrBase.notifierServer):
         '''
         super(folderCollectionServer, self).__init__(port)
         
-    def create(self, rootPath, retNum, username, passwd, notifyServer):
+    def create(self, rootPath, retNum, username, passwd, notifyServer = None):
         threadInst = workThread(rootPath, username, passwd, notifyServer = notifyServer)
         res = threadInst.getPartialResult(retNum)
         clientId = self.createProcessor(threadInst)

@@ -2,7 +2,7 @@ import os.path
 import cherrypy
 from cherrypy.lib.static import serve_file
 #import sqlite3
-import wwjufsdatabase.libs.thumb.thumbInterface as thumbLib
+import localLibs.thumb.thumbInterface as thumbLib
 #from desktopApp.lib.transform import *
 import uuid
 import logging
