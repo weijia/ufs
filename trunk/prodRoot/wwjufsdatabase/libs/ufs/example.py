@@ -1,4 +1,5 @@
 import ufsTreeItem
+import ufsV2
 '''
 import libs.collection.collectionManager as collectionManager
 import libs.ufsDb.dbSys as dbSys
@@ -13,7 +14,7 @@ except ImportError:
     pass
 '''
 class exampleTreeItem(ufsTreeItem.ufsTreeItemBase):
-    def __init__(self, id = ufsRootItemUuid):
+    def __init__(self, itemId = ufsV2.ufsRootItemUuid):
         pass
     def isContainer(self, fullPath):
         '''

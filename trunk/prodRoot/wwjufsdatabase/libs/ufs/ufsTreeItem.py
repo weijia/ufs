@@ -37,7 +37,7 @@ def getUfsTreeItem(ufsUrl, req):
         #print ufsItemModule.getUfsTreeItem(itemUrl, req).listNamedChildren()
     #import winUfs
     #return winUfs.getUfsTreeItem(itemUrl)
-    import sys
+    #import sys
     #print >>sys.stderr, "creating item"
     #raise "hello world"
     return ufsItemModule.getUfsTreeItem(itemUrl, req)

@@ -13,8 +13,8 @@ except ImportError:
     pass
 '''
 class tasklistTreeItem(ufsTreeItem.ufsTreeItemBase):
-    def __init__(self, id, req):
-        self.id = id
+    def __init__(self, itemId, req):
+        self.id = itemId
         self.req = req
     def isContainer(self, fullPath):
         '''

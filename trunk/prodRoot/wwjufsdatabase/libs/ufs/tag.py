@@ -36,7 +36,7 @@ class tagCollectionItem(ufsTreeItem.ufsTreeItemBase):
         #Return {fullPath:name}
         res = odict.OrderedDict()
         cnt = 0
-        import sys
+        #import sys
         #print >>sys.stderr, "listing children"
         for i, j in self.tagS.getAllTags():
             res[u"tag://,"+i] = i + u"("+unicode(str(j))+u")"

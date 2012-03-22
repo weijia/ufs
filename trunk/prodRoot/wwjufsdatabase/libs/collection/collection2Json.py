@@ -32,6 +32,7 @@ def containerListJson(treeItemToPopulate, start, cnt, isTree = False, req = None
             itemId = stringTools.jsIdEncoding(f)
             #print 'before get is container'
             encoded = urllib.quote(encodingTools.translateToPageEncoding(f))
+            item = {}
             if itemId in checkedItems:
                 item["class"] = "jstree-checked"
             else:
@@ -51,7 +52,9 @@ def containerListJson(treeItemToPopulate, start, cnt, isTree = False, req = None
                 item["tags"] = tList
             r.append(item)
             #break
-    except IOError:#Exception,e:
-        r.append(u'<li id="%s" class="jstree-closed">Could not load directory: %s</a></li>' % str(e))
+    except IOError, e:#Exception,e:
+        item = {}
+        item["data"] = str(e)
+        r.append(item)
     #print json.dumps(r, indent = 4)
     return json.dumps(r, indent = 4)

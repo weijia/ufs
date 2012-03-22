@@ -17,21 +17,32 @@ def jqueryListOnCollection(req):
     #Get request param: collectionId, start, cnt
     param = webUtils.paramWithDefault({u"collectionId":u"-1", u"tree":u"n", u"start":0, u"cnt":40}, req.getQueryInfo())
     #print param
+
     if param["collectionId"] == "-1":
-        p = ufs.ufsRootItem()
+        ####################################
+        # It is the root element of the tree
+        ####################################
+        collectionItemList = ufs.ufsRootItem()
     elif not objTools.isUuid(param["collectionId"]):
+        #############################################
         #It is not uuid://xxxx-xxx-xxx-xxx-xxxx-xxxx
+        #############################################
         param["collectionId"] = stringTools.jsIdDecoding(param["collectionId"])
         if not objTools.isUfsUrl(param["collectionId"]):
             param["collectionId"] = u"file:///"+param["collectionId"]
-        p = ufsCollection.getUfsCollection(param["collectionId"], req)
+        #Change URL to file:///D:/tmp etc.
+        collectionItemList = ufsCollection.getUfsCollection(param["collectionId"], req)
     req.resp.genJsonHead()
-    #print p.listNamedChildren(0, 40, False)
+    #print collectionItemList.listNamedChildren(0, 40, False)
+    ##############################################
+    # Get checked item for tree
+    ##############################################
     try:
-        co = collectionManager.getCollection(gCheckedCollectionId, req.getDbSys()).getRange(0, None)
+        checkedItemList = collectionManager.getCollection(gCheckedCollectionId, req.getDbSys()).getRange(0, None)
     except KeyError:
-        co = []
+        checkedItemList = []
     #print "before containerListJson"
+    # Check if we are generating the tree.
     if param["tree"] == u"n":
         #print "false"
         isTree = False
@@ -44,7 +55,10 @@ def jqueryListOnCollection(req):
     #print start, cnt
     #print >>sys.stderr, "-------------", start, cnt
     #data = "1"
-    data = collection2Json.containerListJson(p, start, cnt, isTree, req, co)
+    ####################################################
+    # Generate JSON string for collection
+    ####################################################
+    data = collection2Json.containerListJson(collectionItemList, start, cnt, isTree, req, checkedItemList)
     
     #print data
     if data == u"":

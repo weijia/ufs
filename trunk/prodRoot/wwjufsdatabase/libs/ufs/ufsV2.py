@@ -1,31 +1,13 @@
 #import libSys
-import ufsTreeItem
+#import ufsTreeItem
 import libs.collection.collectionManager as collectionManager
 import libs.ufsDb.dbSys as dbSys
 import libs.services.nameServiceV2 as nameService
 import libs.utils.configurationTools as configurationTools
 import libs.utils.objTools as objTools
-try:
-    import localLibSys
-    import localLibs.windows.winUfs as winUfs
-except ImportError:
-    pass
 import libs.utils.odict as odict
 
 ufsRootItemUuid = u'3fe6382b-0219-40c7-add3-2f3b60aeb368'
-
-
-
-#import libSys
-
-import os
-import libs.collection.collectionManager as collectionManager
-#import libs.ufsDb.dbSys as dbSys
-#import libs.services.nameServiceV2 as nameService
-import libs.utils.configurationTools as configurationTools
-import libs.utils.objTools as objTools
-import libs.utils.transform as transform
-#import libs.utils.odict as odict
 
 
 class ufsCollectionInterface:
@@ -41,8 +23,11 @@ class ufsCollectionBase(ufsCollectionInterface):
             return True
         return False
 
-
-
+try:
+    import localLibSys
+    import localLibs.windows.winUfs as winUfs
+except:
+    pass
 
 def localDriverExist():
     if True:#try:
@@ -57,8 +42,8 @@ def getUfsUuidItemUrl(itemId = ufsRootItemUuid):
     return u"uuid"+configurationTools.getFsProtocolSeparator()+itemId
     
 class ufsRootItem(ufsCollectionBase):
-    def __init__(self, id = ufsRootItemUuid):
-        self.id = id
+    def __init__(self, itemId = ufsRootItemUuid):
+        self.id = itemId
     def listNamedChildren(self, start = 0, cnt = None, getParent = True):
         #Return {fullPath:name}
         db = dbSys.dbSysSmart()
@@ -75,6 +60,8 @@ class ufsRootItem(ufsCollectionBase):
         res[u"tag://,"] = u"Tag System"
         #Hard code the task system
         res[u"tasklist://,"] = u"Task List"
+        #Hard code the task system
+        res[u"zippedColllectionWithInfo://,"] = u"Zipped Collections"
         #Add other item in root item
         ns = nameService.nameService(db.getNameServiceDb())
         for i in co:

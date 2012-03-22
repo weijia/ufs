@@ -1,13 +1,14 @@
 #import libSys
 
 import os
-import libs.collection.collectionManager as collectionManager
+#import libs.collection.collectionManager as collectionManager
 #import libs.ufsDb.dbSys as dbSys
 #import libs.services.nameServiceV2 as nameService
-import libs.utils.configurationTools as configurationTools
-import libs.utils.objTools as objTools
+#import libs.utils.configurationTools as configurationTools
+#import libs.utils.objTools as objTools
 import libs.utils.transform as transform
 #import libs.utils.odict as odict
+from localLibs.logSys.logSys import *
 
 MAX_ELEMENTS_IN_COLLECTION = 99999
 
@@ -19,6 +20,9 @@ class fileCollection:
         self.userSession = userSession
         #print 'creating file collection', self.fullPath
     def listNamedChildren(self, start, cnt, isTree):
+        '''
+        Will return res = {"D:/file/full/path/filename": "filename",... }
+        '''
         if cnt is None:
             cnt = MAX_ELEMENTS_IN_COLLECTION
         #Retrieve children from database
@@ -42,7 +46,7 @@ class fileCollection:
                 cnt = MAX_ELEMENTS_IN_COLLECTION
             resList = proxy.create(self.fullPath, start + cnt, self.userSession.getUserName(), 
                                    self.userSession.getPasswd())
-            #print 'get collection from service'
+            cl('get collection from service', resList)
         res = {}
         #print start, cnt
         for i in resList[start:(start+cnt)]:
@@ -52,6 +56,9 @@ class fileCollection:
         
         
     def isChildContainer(self, child):
+        '''
+        Return True if this item has has children
+        '''
         for i in self.listNamedChildren(0, 1, False):
             return True
         return False
