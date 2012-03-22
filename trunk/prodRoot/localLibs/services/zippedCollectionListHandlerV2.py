@@ -30,7 +30,7 @@ gZipFolderCollectionPrefix = "zippedColllectionWithInfo://"
 gZippedCollectionListServiceCmdTubeName = 'zippedCollectionListServiceCmdTube'
 gInfoFilePrefix = 'zippedCollFile'
 gInfoFileDecryptedExt = ".zip"
-
+gZippedInfoCollectionId = u"uuid://7e61b299-3004-4f0a-94da-47601106da7b"
 
 class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
     def __init__ ( self, tubeName, workingDir = "d:/tmp/working/zippedCollectionListHandler", passwd = '123'):
@@ -44,6 +44,7 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
         self.workingDir = workingDir
         self.encCopier = encryptionStorageBase.arc4EncSimpleCopier(passwd)
         self.decCopier = encryptionStorageBase.arc4DecSimpleCopier(passwd)
+        self.zippedInfoCollectionList = collectionDatabase.collectionOnMongoDbBase(gZippedInfoCollectionId, self.dbInst.getCollectionDb())
         
     def run(self):
         self.startServer()
@@ -53,6 +54,9 @@ class zippedCollectionListHandler(beanstalkServiceApp, threading.Thread):
         archiveId = gZipFolderCollectionPrefix + monitoringFullPath
         if not self.collectionInDbForMonitoringPath.has_key(monitoringFullPath):
             self.collectionInDbForMonitoringPath[monitoringFullPath] = collectionDatabase.collectionOnMongoDbBase(archiveId, self.dbInst.getCollectionDb())
+            objUuid = self.dbInst.addVirtualObj({"monitoringPath": monitoringFullPath, "zippedInfoCollectionId": archiveId});
+            idInCol = objUuid
+            self.zippedInfoCollectionList.addObj(idInCol, objUuid)
         #Save the item in the archive collection: zippedInfoColllection://D:/tmp/
         fullPath = transform.transformDirToInternal(item["fullPath"])
         relativePath = transform.getRelativePathFromFull(fullPath, monitoringFullPath)

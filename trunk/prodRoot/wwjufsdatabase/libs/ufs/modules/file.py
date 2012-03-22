@@ -57,7 +57,7 @@ class fileCollection:
         
     def isChildContainer(self, child):
         '''
-        Return True if this item has has children
+        Return True if a child has children
         '''
         for i in self.listNamedChildren(0, 1, False):
             return True
