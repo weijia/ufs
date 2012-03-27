@@ -20,10 +20,11 @@ gDefaultTtr = 3600*24
 gDefaultTubeDelayServiceTubeName = 'tubeDelayServiceCmdTube'
 
 class tubeDelayThread(beanstalkServiceApp, threading.Thread):
-    def __init__ ( self, inputTubeName, outputTubeName, blackList = []):
+    def __init__ ( self, inputTubeName, outputTubeName, delaySeconds, blackList = []):
         self.blackList = blackList
         self.outputTubeName = outputTubeName
         self.itemToProcess = {}
+        self.delaySeconds = delaySeconds
         super(tubeDelayThread, self).__init__(inputTubeName)
         threading.Thread.__init__(self)
         
@@ -85,12 +86,16 @@ class tubeDelayService(beanstalkServiceApp):
         blackList = item["blackList"]
         inputTubeName = item["inputTubeName"]
         outputTubeName = item["outputTubeName"]
+        try:
+            delaySeconds = item["delaySeconds"]
+        except KeyError:
+            delaySeconds = gItemDelayTime
         if self.taskDict.has_key(inputTubeName):
             #Job already exist, delete it
             print "job already exist"
             job.delete()
             return False
-        t = tubeDelayThread(inputTubeName, outputTubeName, blackList)
+        t = tubeDelayThread(inputTubeName, outputTubeName, delaySeconds, blackList)
         self.taskDict[inputTubeName] = t
         t.start()
         return True
