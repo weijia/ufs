@@ -73,9 +73,10 @@ class fileArchiveService(beanstalkServiceApp):
     '''
     classdocs
     '''
-    def __init__(self, tubeName = "fileArchiveServiceTubeName"):
-        super(fileArchiveService, self).__init__(tubeName)
+    def __init__(self, storageClass = zippedInfoWithThumb, serviceControlTubeName = "fileArchiveServiceTubeName"):
+        super(fileArchiveService, self).__init__(serviceControlTubeName)
         self.taskDict = {}
+        self.storageClass = storageClass
 
         
     def processItem(self, job, item):
@@ -87,7 +88,7 @@ class fileArchiveService(beanstalkServiceApp):
         if self.taskDict.has_key(inputTubeName):
             job.delete()
             return False
-        t = fileArchiveThread(inputTubeName, zippedInfoWithThumb(workingDir))
+        t = fileArchiveThread(inputTubeName, self.storageClass(workingDir))
         self.taskDict[inputTubeName] = t
         t.start()
         return True

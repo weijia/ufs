@@ -4,10 +4,8 @@ Created on 2012-02-20
 @author: Richard
 '''
 import localLibSys
-import localLibs.services.folderScanner as folderScanner
-import localLibs.services.monitorServiceV2 as monitorService
-from localLibs.services.tubeDelayServiceV2 import tubeDelayService
-from localLibs.services.zippedCollectionListHandlerV2 import zippedCollectionListService
+from localLibs.services.clients.zippedCollectionListHandlerClient import 
+
 '''
 fileScanner->fileListTube
 monitorServiceV2->fileListTube

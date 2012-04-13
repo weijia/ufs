@@ -12,7 +12,7 @@ import libs.utils.odict as odict
 def getUfsUuidItemUrl(itemId = ufsRootItemUuid):
     return u"uuid"+configurationTools.getFsProtocolSeparator()+itemId
     
-class fileCollection:
+class collectionInDb:
     def __init__(self, fullPath, objDb):
         self.fullPath = fullPath
         self.objDb = objDb
@@ -26,4 +26,4 @@ class fileCollection:
 def getUfsTreeItem(itemUrl, req):
     #The itemUrl does not include the protocol part
     #For example: for uuid://xxxxx-xxxxx itemUrl will be xxxxx-xxxxx
-    return fileCollection(itemUrl, req)
+    return collectionInDb(itemUrl, req)
