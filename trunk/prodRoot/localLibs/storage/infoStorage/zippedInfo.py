@@ -2,17 +2,18 @@ import re
 import localLibSys
 import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.transform as transform
-import localLibs.objSys.ufsObj as ufsObj
+#import localLibs.objSys.ufsObj as ufsObj
 import wwjufsdatabase.libs.utils.fileTools as fileTools
 import localLibs.compress.zipClass as zipClass
 from localLibs.logSys.logSys import *
+from infoStorageForArchiveInterface import infoStorageForArhiveInterface
 
 gWorkingDir = "d:/tmp"
 gDefaultInfoSize = 100
 gInfoFilePrefix = 'zippedCollFile'
 gInfoFileExt = "log"
 
-class zippedInfo(object):
+class zippedInfo(infoStorageForArhiveInterface):
     def __init__(self, workingDir = gWorkingDir):
         self.collectionInfoDict = {}
         self.additionalInfoDict = {}
@@ -30,7 +31,7 @@ class zippedInfo(object):
         return gDefaultInfoSize
 
 
-    def finalizeZipFile(self):
+    def finalizeOneTrunk(self):
         #Add info to zip file
         self.additionalInfoDict["collectionContentInfo"] = self.collectionInfoDict
         ncl(self.collectionInfoDict)
@@ -47,6 +48,9 @@ class zippedInfo(object):
         self.additionalInfoDict = {}
         return self.zipFilePath
     
+    ################################################
+    # The following functions are used for reading storage
+    ################################################
     def enumItems(self, archiveFullPath):
         zipFile = zipClass.ZFile(archiveFullPath, 'r')
         for i in zipFile.list():
@@ -67,6 +71,7 @@ class zippedInfo(object):
                 yield zipFile.extract(i, self.workingDir)
     ################################################
     # The following functions are not recommended to be called from outside of this class
+    ################################################
     def getZipFile(self):
         if self.zipFile is None:
             self.zipFilePath = transform.transformDirToInternal(

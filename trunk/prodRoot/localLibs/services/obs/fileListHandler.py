@@ -50,7 +50,7 @@ class fileListHandler(fileListHandlerBase):
 
         if self.curStorageSize > gMaxZippedCollectionSize:
             self.storage.addAdditionalInfo({"monitoringPathList": self.monitoringList})
-            zipFullPath = self.storage.finalizeZipFile()
+            zipFullPath = self.storage.finalizeOneTrunk()
             targetPath = getStorgePathWithDateFolder(self.zipCollectionRoot)
             self.encCopier.copy(zipFullPath, targetPath)
             self.monitoringList = []

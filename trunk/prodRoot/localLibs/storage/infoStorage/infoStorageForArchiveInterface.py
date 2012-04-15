@@ -18,9 +18,9 @@ class infoStorageForArhiveInterface(object):
         '''
         pass
     
-    def finalizeZipFile(self):
+    def finalizeOneTrunk(self):
         '''
-        Would change to other name such as finalizeDataTrunk etc. It is used to tell the storage to finalize
-        the trunk. It is mostly the controller want to limit the size of trunk in the storage.
+        It is used to tell the storage to finalize
+        a trunk. It is mostly the controller want to limit the size of trunk in the storage.
         '''
         pass
