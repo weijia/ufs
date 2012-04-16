@@ -4,8 +4,7 @@ Created on 2012-02-13
 @author: Richard
 '''
 import beanstalkc
-import os
-import threading
+
 
 #from pprint import pprint
 
@@ -19,12 +18,6 @@ import localLibs.objSys.objectDatabaseV3 as objectDatabase
 import wwjufsdatabase.libs.utils.misc as misc
 
 
-gMonitorServiceTubeName = "monitorQueue"
-gFileListTubeName = "fileListDelayed"
-
-gMaxZippedCollectionSize = 0.005*1024
-
-gZipCollectionRoot = "d:/tmp/generating"
 
 
 class autoProcessServiceThread(beanstalkWorkingThread):

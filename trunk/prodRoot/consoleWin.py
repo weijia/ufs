@@ -11,7 +11,7 @@ autoStartAppList = ['mongodb.bat',
                     'tubeDelayServiceV2',
                     'monitorServiceV2',
                     'folderScanner',
-                    'zippedCollectionListHandlerV2',
+                    #'zippedCollectionListHandlerV2',
                     'FileArchiveServiceV2'
                     ]
 
