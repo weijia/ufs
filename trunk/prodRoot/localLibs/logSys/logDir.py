@@ -1,6 +1,6 @@
 import localLibSys
 import wwjufsdatabase.libs.utils.fileTools as fileTools
-import wwjufsdatabase.libs.utils.misc as misc
+import localLibs.utils.misc as misc
 import os
 
 class logDir:

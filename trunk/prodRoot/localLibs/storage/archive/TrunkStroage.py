@@ -19,9 +19,6 @@ class TrunkStorageInterface(object):
     def finalize_one_trunk(self):
         pass
     
-    def add_info(self, infoDict):
-        pass
-    
 
     
 class TrunkStorage(zippedInfo):
@@ -31,9 +28,8 @@ class TrunkStorage(zippedInfo):
     def add_info(self, infoDict):
         self.addAdditionalInfo(infoDict)
             
-    def add_file(self, itemObj):
-        fullPath = itemObj["fullPath"]
-        self.getZipFile().addfile(unicode(fullPath), unicode(fullPath))
+    def add_file(self, full_path):
+        self.getZipFile().addfile(unicode(full_path), unicode(full_path))
 
 
     def finalize_one_trunk(self):

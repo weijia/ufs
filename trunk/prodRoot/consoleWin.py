@@ -11,8 +11,8 @@ autoStartAppList = ['mongodb.bat',
                     'tubeDelayServiceV2',
                     'monitorServiceV2',
                     'folderScanner',
-                    'zippedCollectionListHandlerV2',
-                    'fileArchiveService'
+                    #'zippedCollectionListHandlerV2',
+                    'FileArchiveServiceV2'
                     ]
 
 def main():

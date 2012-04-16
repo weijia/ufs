@@ -4,8 +4,7 @@ Created on 2012-02-13
 @author: Richard
 '''
 import beanstalkc
-import os
-import threading
+
 
 #from pprint import pprint
 
@@ -18,14 +17,7 @@ from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp
 import localLibs.objSys.objectDatabaseV3 as objectDatabase
 import wwjufsdatabase.libs.utils.misc as misc
 
-gBeanstalkdServerHost = '127.0.0.1'
-gBeanstalkdServerPort = 11300
-gMonitorServiceTubeName = "monitorQueue"
-gFileListTubeName = "fileListDelayed"
 
-gMaxZippedCollectionSize = 0.005*1024
-
-gZipCollectionRoot = "d:/tmp/generating"
 
 
 class autoProcessServiceThread(beanstalkWorkingThread):
@@ -61,12 +53,12 @@ class autoProcessServiceThread(beanstalkWorkingThread):
     
 
         
-class autoProcessService(beanstalkServiceApp):
+class AutoProcessService(beanstalkServiceApp):
     '''
     classdocs
     '''
-    def __init__(self, tubeName = "fileArchiveServiceTubeName"):
-        super(autoProcessService, self).__init__(tubeName)
+    def __init__(self, tubeName = "AutoProcessServiceTubeName"):
+        super(AutoProcessService, self).__init__(tubeName)
         self.taskDict = {}
 
         
@@ -86,6 +78,5 @@ class autoProcessService(beanstalkServiceApp):
                 
 
 if __name__ == "__main__":
-    workingDir = "d:/tmp/working"
-    s = autoProcessService()
+    s = AutoProcessService()
     s.startServer()

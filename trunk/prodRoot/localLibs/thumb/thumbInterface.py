@@ -2,6 +2,8 @@ import picThumbGenerator
 #import movieThumb
 import ffmpegThumb
 import appThumb
+import localLibSys
+from wwjufsdatabase.libs.utils.transform import transformDirToInternal
         
 def getThumb(path, targetDir):
     '''
@@ -26,4 +28,4 @@ def getThumb(path, targetDir):
                     #return newPath
             except:
                 pass
-    return newPath
+    return transformDirToInternal(newPath)
