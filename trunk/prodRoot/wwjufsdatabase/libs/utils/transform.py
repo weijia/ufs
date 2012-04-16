@@ -1,6 +1,7 @@
 import os
 import sys
-#from logSys import *
+import localLibSys
+from localLibs.logSys import *
 
 localStringEncoding = 'gb2312'
 
@@ -39,7 +40,7 @@ def formatRelativePath(relativePath):
     '''
     #Remove trail '/'
     newDir = newDir.rstrip(u'/')
-    return newDir
+    return unicode(newDir)
 
 
 def transformDirToInternal(originalDir):
@@ -70,7 +71,7 @@ def transformDirToInternal(originalDir):
         if len(newDir) == 2:
             #C: or E:
             newDir = newDir + u"/"
-    return newDir
+    return unicode(newDir)
 
 def getRelativePathFromFull(fullPath, rootPath):
     rootPath = transformDirToInternal(rootPath)
