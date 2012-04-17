@@ -10,47 +10,11 @@ import beanstalkc
 
 import localLibSys
 from localLibs.storage.infoStorage.zippedCollectionWithInfo import zippedCollectionWithInfo
-from localLibs.storage.infoStorage.zippedInfoWithThumb import zippedInfoWithThumb
-from localLibs.localFs.tmpFile import getStorgePathWithDateFolder
-import localLibs.archiver.encryptionStorageBase as encryptionStorageBase
+from localLibs.services.clients.zippedCollectionListHandlerThumbClientV2 import AutoArchiveThumb
 from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp
-import localLibs.objSys.objectDatabaseV3 as objectDatabase
-import wwjufsdatabase.libs.utils.misc as misc
+import localLibs.utils.misc as misc
 
 
-
-
-class autoProcessServiceThread(beanstalkWorkingThread):
-    def __init__ ( self, inputTubeName, appList):
-        '''
-        Constructor
-        '''
-        super(autoProcessServiceThread, self).__init__(inputTubeName)
-        self.appList
-
-    def processItem(self, job, item):
-        if not (item['monitoringPath'] in self.monitoringList):
-            self.monitoringList.append(item['monitoringPath'])
-        itemObj = self.dbInst.getFsObjFromFullPath(item["fullPath"])
-        #print itemObj["uuid"]
-        addedItemSize = self.storage.addItem(itemObj)   
-        #print "zipped size", info.compress_size
-        self.curStorageSize += addedItemSize
-        #print "current size:", self.curStorageSize
-        if self.curStorageSize > gMaxZippedCollectionSize:
-            self.storage.addAdditionalInfo({"monitoringPathList": self.monitoringList})
-            zipFullPath = self.storage.finalizeZipFile()
-            targetPath = getStorgePathWithDateFolder(self.zipCollectionRoot)
-            self.encCopier.copy(zipFullPath, targetPath)
-            self.monitoringList = []
-            #print 'old file zipped, new file created'
-            #TODO: Remove tmp file.
-            
-            #All jobs processed completely, return True
-            return True
-        #Return False as jobs are not processed completely
-        return True
-    
 
         
 class AutoProcessService(beanstalkServiceApp):
@@ -65,15 +29,16 @@ class AutoProcessService(beanstalkServiceApp):
     def processItem(self, job, item):
         #fullPath = transform.transformDirToInternal(item["fullPath"])
         #monitoringFullPath = transform.transformDirToInternal(item["monitoringPath"])
-        workingDir = item["workingDir"]
-        misc.ensureDir(workingDir)
-        inputTubeName = item["inputTubeName"]
-        if self.taskDict.has_key(inputTubeName):
-            job.delete()
-            return False
-        t = autoProcessServiceThread(inputTubeName, zippedInfoWithThumb(workingDir))
-        self.taskDict[inputTubeName] = t
-        t.start()
+        working_dir = item["WorkingDir"]
+        misc.ensureDir(working_dir)
+        
+        source_dir = item["SourceDir"]
+        misc.ensureDir(source_dir)
+        
+        target_dir = item["TargetDir"]
+        misc.ensureDir(target_dir)
+        
+        AutoArchiveThumb(source_dir, target_dir, working_dir)
         return True
                 
 

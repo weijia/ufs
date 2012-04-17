@@ -85,13 +85,14 @@ class FileArchiveService(beanstalkServiceApp):
     def processItem(self, job, item):
         #fullPath = transform.transformDirToInternal(item["fullPath"])
         #monitoringFullPath = transform.transformDirToInternal(item["monitoringPath"])
-        workingDir = item["workingDir"]
+        workingDir = item["WorkingDir"]
         misc.ensureDir(workingDir)
-        inputTubeName = item["inputTubeName"]
+        inputTubeName = item["InputTubeName"]
+        target_dir = item["TargetDir"]
         if self.taskDict.has_key(inputTubeName):
             job.delete()
             return False
-        t = FileArchiveThread(inputTubeName, self.storage_class(), self.collector_list, workingDir)
+        t = FileArchiveThread(inputTubeName, self.storage_class(target_dir), self.collector_list, workingDir)
         self.taskDict[inputTubeName] = t
         t.start()
         return True

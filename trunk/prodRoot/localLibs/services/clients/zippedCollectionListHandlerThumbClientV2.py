@@ -6,11 +6,11 @@ Created on 2012-02-20
 
 import uuid
 import localLibSys
-import localLibs.services.folderScanner as folderScanner
-import localLibs.services.monitorServiceV2 as monitorService
-from localLibs.services.tubeDelayServiceV2 import tubeDelayService
+import localLibs.services.beanstalkdServices.folderScanner as folderScanner
+import localLibs.services.beanstalkdServices.monitorServiceV2 as monitorService
+from localLibs.services.beanstalkdServices.tubeDelayServiceV2 import tubeDelayService
 #from localLibs.services.zippedCollectionListHandlerV2 import zippedCollectionListService
-from localLibs.services.FileArchiveServiceV2 import FileArchiveService
+from localLibs.services.beanstalkdServices.FileArchiveServiceV2 import FileArchiveService
 
 '''
 fileScanner -> collectionListTube+taskUuid
@@ -26,18 +26,20 @@ delayedCollectionListTubeName+taskUuid -> fileArchiveService
 
 gAutoArchiveFullPath = "D:\\userdata\\q19420\\My Documents\\Tencent Files\\10132994\\Image"
 gWorkingDir = "D:/tmp/working/fileArchiveService"
+g_default_target_dir = "D:/tmp/working/default_target_dir"
 
 
-def AutoArchiveThumb(fullPath = gAutoArchiveFullPath, workingDir = gWorkingDir,taskUuid = str(uuid.uuid4())):
+def AutoArchiveThumb(source_folder = gAutoArchiveFullPath, target_dir = g_default_target_dir,
+                     workingDir = gWorkingDir,taskUuid = str(uuid.uuid4())):
     inputTubeName = "collectionListTube"+taskUuid
     delayedCollectionListTubeName = "delayedCollectionListTubeName"+taskUuid
     
     s1 = folderScanner.folderScanner()
-    s1.addItem({"command": "folderScanner", "fullPath":fullPath,
+    s1.addItem({"command": "folderScanner", "fullPath":source_folder,
                "targetTubeName": inputTubeName,"blackList":[]})
 
     s2 = monitorService.monitorService()
-    s2.addItem({"command": "monitorService", "fullPath":fullPath,
+    s2.addItem({"command": "monitorService", "fullPath":source_folder,
                "targetTubeName": inputTubeName,"blackList":[]})
     
     s3 = tubeDelayService()
@@ -45,8 +47,8 @@ def AutoArchiveThumb(fullPath = gAutoArchiveFullPath, workingDir = gWorkingDir,t
                "outputTubeName": delayedCollectionListTubeName,"blackList":[]})
     
     s4 = FileArchiveService()
-    s4.addItem({"inputTubeName":delayedCollectionListTubeName, "workingDir":workingDir})
+    s4.addItem({"InputTubeName":delayedCollectionListTubeName, "WorkingDir":workingDir, "TargetDir": target_dir})
     
     
 if __name__ == "__main__":
-    autoArchiveThumb()
+    AutoArchiveThumb()
