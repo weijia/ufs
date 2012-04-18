@@ -35,20 +35,21 @@ class taskConsoleThread(threading.Thread):
 
         
 class wndConsole:
+    normal_priority_tasks = ["webserver-cgi", "startBeanstalkd.bat", "mongodb.bat", "cherrypyServerV3", "monitorServiceV2"]
     def __init__(self):
         self.threadList = []
         self.pList = []
-    def runConsoleApp(self, target, cwd = 'D:\\code\\python\\developing\\ufs', progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
-        checkExistPath = progAndParm
+    def runConsoleApp(self, target, cwd = 'D:\\code\\python\\developing\\ufs', progAndParam = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
+        checkExistPath = progAndParam
         if type(checkExistPath) == list:
             checkExistPath = checkExistPath[0]
             if not os.path.exists(checkExistPath):
                 #Do not execute if the file does not exist
                 return
         self.cwd = cwd
-        self.progAndParm = progAndParm
+        self.progAndParm = progAndParam
         #print target
-        #print '-------------------------',progAndParm
+        #print '-------------------------',progAndParam
         #print cwd
         #self.prog = ['D:\\cygwin\\bin\\ls.exe','-l']
         ext = os.path.splitext(checkExistPath)[1]
@@ -60,10 +61,10 @@ class wndConsole:
                     targetPythonExePath = i
                     break
             self.prog = [targetPythonExePath,'-u']
-            self.prog.extend(progAndParm)#Param 2 is the app
+            self.prog.extend(progAndParam)#Param 2 is the app
         else:
             self.prog = []
-            self.prog.extend(progAndParm)
+            self.prog.extend(progAndParam)
         #print '-------------------------',self.prog
         #return
         '''
@@ -75,18 +76,26 @@ class wndConsole:
         self.cwd = os.getcwd()
         '''
         #print self.prog
-        #self.SetTitle(progAndParm[0])
+        #self.SetTitle(progAndParam[0])
         if True:#try:
             #print self.prog
             p = subprocess.Popen(self.prog, cwd = self.cwd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, bufsize=0, creationflags = CREATE_NO_WINDOW)
             self.pList.append(p)
-            print "setting pid: %d to below normal priority"%p.pid
-            processManager.setPriority(p.pid, 1)
+
+            find_flag = False
+            for z in self.normal_priority_tasks:
+                if progAndParam[0].find(z) != -1:
+                    find_flag = True
+            if not find_flag:
+                processManager.setPriority(p.pid, 1)
+                print "setting pid: %d, %s to below normal priority"%(p.pid, progAndParam[0])
+            else:
+                print "pid: %d, %s use normal priority"%(p.pid, progAndParam[0])
             #print 'taskid:%d, pid:%d'%(int(p._handle), int(p.pid))
-            thr1 = taskConsoleThread(target, p.stdout, progAndParm[0])
+            thr1 = taskConsoleThread(target, p.stdout, progAndParam[0])
             thr1.start()
             self.threadList.append(thr1)
-            thr2 = taskConsoleThread(target, p.stderr, progAndParm[0])
+            thr2 = taskConsoleThread(target, p.stderr, progAndParam[0])
             thr2.start()
             self.threadList.append(thr2)
             #print 'launch ok'
