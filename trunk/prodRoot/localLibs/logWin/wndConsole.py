@@ -80,6 +80,8 @@ class wndConsole:
             #print self.prog
             p = subprocess.Popen(self.prog, cwd = self.cwd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, bufsize=0, creationflags = CREATE_NO_WINDOW)
             self.pList.append(p)
+            print "setting pid: %d to below normal priority"%p.pid
+            processManager.setPriority(p.pid, 1)
             #print 'taskid:%d, pid:%d'%(int(p._handle), int(p.pid))
             thr1 = taskConsoleThread(target, p.stdout, progAndParm[0])
             thr1.start()
