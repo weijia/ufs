@@ -65,16 +65,7 @@ class wndConsole:
         else:
             self.prog = []
             self.prog.extend(progAndParam)
-        #print '-------------------------',self.prog
-        #return
-        '''
-        #self.prog.append('D:\\code\\python\\webserver-cgi.py')
-        #self.cwd = 'D:\\code\\python\\'
-        #self.cwd = sys.argv[1]#Param 1 is the cwd
-        
-        import os
-        self.cwd = os.getcwd()
-        '''
+
         #print self.prog
         #self.SetTitle(progAndParam[0])
         if True:#try:
@@ -104,30 +95,7 @@ class wndConsole:
         #self.appStarted = True
     def close(self):
         import win32api
-        '''
-        #Following codes got from http://mail.python.org/pipermail/python-win32/2009-September/009543.html
-        import win32com.client
-        WMI = win32com.client.GetObject('winmgmts:')
-        processes = WMI.InstancesOf('Win32_Process')
-        for process in processes:
-            pid = process.Properties_('ProcessID').Value
-            parent = process.Properties_('ParentProcessId')
-            print 'process id and parent:', pid, parent
-            #Kill all child process
-            for process in processes:
-                pid = process.Properties_('ProcessID').Value
-                parent = process.Properties_('ParentProcessId')
-                handle = process.Properties_('Handle')
-                print pid, parent, handle
-                print 'pid is:',i.pid
-                if parent == i.pid:
-                    pass
-            print 'terminating: %d'%int(i._handle)
-            try:
-                print win32api.TerminateProcess(int(i._handle), -1)
-            except:
-                print 'TerminatProcess error'
-        '''
+
         for i in self.pList:
             print 'processing:', i.pid, int(i._handle)
             processManager.killChildProcessTree(i.pid)

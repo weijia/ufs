@@ -8,7 +8,7 @@ def setPriority(pid=None,priority=1):
         2 is normal priority.  Default sets the priority of the current
         python process but can take any valid process ID. """
         
-    import win32api,win32process,win32con
+    import win32process,win32con
     
     priorityclasses = [win32process.IDLE_PRIORITY_CLASS,
                        win32process.BELOW_NORMAL_PRIORITY_CLASS,
