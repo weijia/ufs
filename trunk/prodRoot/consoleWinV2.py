@@ -1,4 +1,4 @@
-import localLibs.logWin.advScriptRunnerV3 as scriptRunner
+from localLibs.logWin.AdvScriptRunnerWithTag import AdvScriptRunnerWithTag
 import localLibs.logWin.advScriptRunnerXmlRpcServer as advScriptRunnerXmlRpcServer
 
 autoStartAppList = ['mongodb.bat',
@@ -16,7 +16,8 @@ autoStartAppList = ['mongodb.bat',
                     ]
 
 def main():
-    scriptRunner.startApplicationsNoReturn(autoStartAppList, 
+    r = AdvScriptRunnerWithTag()
+    r.startApplicationsNoReturn(autoStartAppList, 
                                             advScriptRunnerXmlRpcServer.launcherXmlRpcThread)
 
 if __name__ == "__main__":
