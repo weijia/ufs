@@ -76,12 +76,14 @@ class wndConsole:
             find_flag = False
             for z in self.normal_priority_tasks:
                 if progAndParam[0].find(z) != -1:
+                    #Need normal priority for this app
                     find_flag = True
             if not find_flag:
                 processManager.setPriority(p.pid, 1)
-                print "setting pid: %d, %s to below normal priority"%(p.pid, progAndParam[0])
+                #print "setting pid: %d, %s to below normal priority"%(p.pid, progAndParam[0])
             else:
-                print "pid: %d, %s use normal priority"%(p.pid, progAndParam[0])
+                #print "pid: %d, %s use normal priority"%(p.pid, progAndParam[0])
+                pass
             #print 'taskid:%d, pid:%d'%(int(p._handle), int(p.pid))
             thr1 = taskConsoleThread(target, p.stdout, progAndParam[0])
             thr1.start()

@@ -1,4 +1,4 @@
-import gtkTxtWndMod as consoleWnd
+import consoleWnd
 #import localLibSys
 from localLibs.logSys.logSys import *
 

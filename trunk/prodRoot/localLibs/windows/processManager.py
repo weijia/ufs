@@ -30,7 +30,7 @@ def findProcessHandle(pid):
         handle = process.Properties_('Handle').Value
         #print childPid, parent
         if int(currentPid) == int(pid):
-            print 'find handle for pid:%d , is %d'%(int(pid), int(handle))
+            #print 'find handle for pid:%d , is %d'%(int(pid), int(handle))
             return int(handle)
     raise 'no handle for pid found'
     
@@ -43,7 +43,7 @@ def terminateProcessByPid(pid):
         handle = process.Properties_('Handle').Value
         #print childPid, parent
         if int(currentPid) == int(pid):
-            print 'find handle for pid:%d , is %d'%(int(pid), int(handle))
+            #print 'find handle for pid:%d , is %d'%(int(pid), int(handle))
             process.Terminate()
             return
     raise 'no handle for pid found'
@@ -58,7 +58,7 @@ def killChildProcessTree(pid, killRoot = False):
         handle = process.Properties_('Handle').Value
         #print childPid, parent
         if int(parent) == int(pid):
-            print '--------------------------------------------match'
+            #print '--------------------------------------------match'
             killChildProcessTree(childPid, True)
     if True == killRoot:
         handle = findProcessHandle(int(pid))

@@ -8,7 +8,7 @@ pygtk.require("2.0")
 class GUI(object):
     def __init__(self):
         self.builder = gtk.Builder()
-        self.builder.add_from_file("tagDialog.glade")
+        self.builder.add_from_file("TagDialog.glade")
         self.window1 = self.builder.get_object("dialog1")
         #self.liststore1 = self.builder.get_object("liststore1")
         #self.liststore1.append(["good"])

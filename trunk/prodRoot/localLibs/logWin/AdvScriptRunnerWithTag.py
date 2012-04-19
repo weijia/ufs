@@ -10,18 +10,20 @@ import gtkDropTarget
 import gtkDragMove
 import fileTools
 from advScriptRunnerV3 import advScriptRunner
+from TagDialog import TagDialog
 
 class AdvScriptRunnerWithTag(advScriptRunner):
     '''
-    def __init__(self, initalApps):
+    def __init__(self):
         super(AdvScriptRunnerWithTag, self).__init__()
-    '''
+        '''
     def startApplicationsNoReturn(self, l, launchServiceThreadClass):
         '''
         from dbus.mainloop.glib import threads_init
         threads_init()
         '''
         self.initialApps = l
+        self.dialog = TagDialog()
         self.startScriptRunnerApp(launchServiceThreadClass)
         gtk.gdk.threads_enter()
         gtk.main()
@@ -42,6 +44,7 @@ class AdvScriptRunnerWithTag(advScriptRunner):
         #print data.data
         #print data.get_targets()
         #Dropped file has a prefix of "file:///", remove it.
+        '''
         pa = data.data.replace('file:///','')
         #print '------------------------------dropped:', pa
         pa = pa.replace('\r','').replace('\n','').replace(chr(0),'')
@@ -51,6 +54,17 @@ class AdvScriptRunnerWithTag(advScriptRunner):
             print pa
         else:
             self.startAppWithParam([pa])
+        '''
+        pa = data.data.split("\n")
+        res = []
+        for i in pa:
+            v = i.replace('\r','').replace('\n','').replace(chr(0),'')
+            if v == "":
+                continue
+            res.append(v)
+        self.dialog.set_data(res)
+        self.dialog.show_dialog()
+        
         context.finish(True, False, time)
         
     def on_info(self, widget):

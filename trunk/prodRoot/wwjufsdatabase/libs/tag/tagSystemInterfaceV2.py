@@ -1,0 +1,1 @@
+import objSystemIntegratedTagSystemV2 as objSystemIntegratedTagSystemimport libSys#import libs.ufsDb.ufsDbSys as dbSysimport sessionBase as sessionBasedef getTagSysObj(dbSysInst):    return objSystemIntegratedTagSystem.tagSystemShoveDb(dbSysInst)

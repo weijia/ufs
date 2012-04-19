@@ -1,7 +1,7 @@
 import localLibSys
 import os
 import sqliteListShoveWithHistory
-import wwjufsdatabase.libs.utils.misc as misc
+import localLibs.utils.misc as misc
 
 gAppPath = 'd:/tmp/fileman/'
 gDbPath = os.path.join(gAppPath, 'db')

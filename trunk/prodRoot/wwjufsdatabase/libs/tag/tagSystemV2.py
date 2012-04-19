@@ -1,6 +1,6 @@
 import libSys
 import os
-import libs.utils.misc
+#import libs.utils.misc
 
 class tagSystemInterface:
     def tag(self, url, tagList):
@@ -46,6 +46,7 @@ class tagSystemShoveDb(tagSystemInterface):
         
     def tag(self, url, tagList):
         tagList = self.formatTagList(tagList)
+        already_in_db = False
         try:
             #The existing values will be deleted by database automatically, so the following is not needed
             #del itemTagDb[url]
@@ -60,14 +61,18 @@ class tagSystemShoveDb(tagSystemInterface):
                 if not (url in v):
                     v.append(url)
                     self.tagDb[i] = v
+                else:
+                    # Already in tagDb, ignore this operation
+                     already_in_db = True
             except KeyError:
                 self.tagDb[i] = [url]
-            try:
-                cnt = int(self.tagStatDb[i][0])
-            except KeyError:
-                cnt = 0
-            self.tagStatDb[i] = unicode(str(cnt+1))
-            print 'add stat for tag:',i , unicode(str(cnt+1))
+            if not already_in_db:
+                try:
+                    cnt = int(self.tagStatDb[i][0])
+                except KeyError:
+                    cnt = 0
+                self.tagStatDb[i] = unicode(str(cnt+1))
+                print 'add stat for tag:',i , unicode(str(cnt+1))
             
     def getTags(self, url):
         try:
