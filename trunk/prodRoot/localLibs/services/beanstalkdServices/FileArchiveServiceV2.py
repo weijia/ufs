@@ -22,6 +22,8 @@ import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.transform as transform
 import wwjufsdatabase.libs.utils.fileTools as fileTools
 from localLibs.storage.archive.ZipFilesStorage import ZipFilesStorage
+import wwjufsdatabase.libs.services.servicesV2 as service
+
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
@@ -42,31 +44,37 @@ class FileArchiveThread(beanstalkWorkingThread):
         self.storage = storage
         self.curStorageSize = 0
         self.monitoring_list = []
-        self.dbInst = objectDatabase.objectDatabase()
+        #self.dbInst = objectDatabase.objectDatabase()
         self.info_dict = {}
         self.collector_list = collector_list
         self.working_dir = working_dir
-
+        self.collectionId = storage.get_storage_id()
+        req = service.req()
+        self.dbInst = req.getObjDbSys()
+        self.collection = self.dbInst.getCollection(self.collectionId)
+        
     def processItem(self, job, item):
         if not (item['monitoringPath'] in self.monitoring_list):
             self.monitoring_list.append(item['monitoringPath'])
-            
+
         #Add item
         item_obj = self.dbInst.getFsObjFromFullPath(item["fullPath"])
-        for collector in self.collector_list:
-            addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
-            #print "zipped size", info.compress_size
-            self.curStorageSize += addedItemSize
-        #print "current size:", self.curStorageSize
-        if self.curStorageSize > gMaxZippedCollectionSize:
-            s = json.dumps(self.info_dict, sort_keys=True, indent=4)
-            infoFilePath = transform.transformDirToInternal(
-                fileTools.getTimestampWithFreeName(self.working_dir, "."+gInfoFileExt, gInfoFilePrefix))
-            logFile = open(infoFilePath, 'w')
-            logFile.write(s)
-            logFile.close()
-            self.storage.add_file(infoFilePath)
-            self.storage.finalize_one_trunk()
+        if not self.collection.exists(item_obj.getObjUfsUrl()):
+            self.collection.addObj(item_obj.getObjUfsUrl(), item_obj["uuid"])
+            for collector in self.collector_list:
+                addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
+                #print "zipped size", info.compress_size
+                self.curStorageSize += addedItemSize
+            #print "current size:", self.curStorageSize
+            if self.curStorageSize > gMaxZippedCollectionSize:
+                s = json.dumps(self.info_dict, sort_keys=True, indent=4)
+                infoFilePath = transform.transformDirToInternal(
+                    fileTools.getTimestampWithFreeName(self.working_dir, "."+gInfoFileExt, gInfoFilePrefix))
+                logFile = open(infoFilePath, 'w')
+                logFile.write(s)
+                logFile.close()
+                self.storage.add_file(infoFilePath)
+                self.storage.finalize_one_trunk()
         return True
     
 

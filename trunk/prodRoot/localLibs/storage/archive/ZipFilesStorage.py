@@ -21,7 +21,11 @@ class StorageInterface(object):
     
     def finalize_one_trunk(self):
         pass
-    
+    def get_storage_id(self):
+        '''
+        Used to identify this storage
+        '''
+        pass
 
     
 class ZipFilesStorage(object):
@@ -43,6 +47,8 @@ class ZipFilesStorage(object):
         #Set attribute so new zip will be created if this object is still in use
         self.zipFile = None
         return self.zipFilePath
+    def get_storage_id(self):
+        return "zip_file_storage://"+transform.transformDirToInternal(self.trunk_data_path)
     
     ################################################
     # The following functions are not recommended to be called from outside of this class
