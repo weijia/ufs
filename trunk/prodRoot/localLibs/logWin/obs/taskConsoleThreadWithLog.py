@@ -31,6 +31,6 @@ class taskConsoleThreadWithLog(threading.Thread):
                 break
             #print 'got output:',err
             self.target.updateViewCallback(err)
-        print 'quitting run: ',self.appname
+        #print 'quitting run: ',self.appname
     def quit(self):
         self.quitFlag = True

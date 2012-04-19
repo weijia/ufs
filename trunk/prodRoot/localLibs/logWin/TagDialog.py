@@ -114,7 +114,7 @@ class TagDialog(object):
                 url = i[1]
                 url = url.replace("file:///", "")
                 full_path = transform.transformDirToInternal(url)
-                print "full_path is:", full_path
+                #print "full_path is:", full_path
                 t.tag(full_path, tag_list)
         self.window1.hide()
 

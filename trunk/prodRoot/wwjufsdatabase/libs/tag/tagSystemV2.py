@@ -63,7 +63,7 @@ class tagSystemShoveDb(tagSystemInterface):
                     self.tagDb[i] = v
                 else:
                     # Already in tagDb, ignore this operation
-                     already_in_db = True
+                    already_in_db = True
             except KeyError:
                 self.tagDb[i] = [url]
             if not already_in_db:
