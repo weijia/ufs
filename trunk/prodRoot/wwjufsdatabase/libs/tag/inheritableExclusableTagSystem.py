@@ -104,10 +104,10 @@ class tagSystemShoveDb(inheritableTagSystem.tagSystemShoveDb):
             #Check if the tag is excluded, if it is excluded, remove the excluding tag
             if self.getExcludedTagStr(i) in inheritTags:
     '''         
-                
+    '''
     def getObjs(self, tag):
         raise "not supported"
-                
+    '''
     def getAllTags(self):
         for i, j in inheritableTagSystem.tagSystemShoveDb.getAllTags(self):
             if self.isExcludedTag(i):
