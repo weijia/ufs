@@ -31,7 +31,7 @@ gMonitorServiceTubeName = "monitorQueue"
 gFileListTubeName = "fileListDelayed"
 gInfoFilePrefix = 'zippedCollFile'
 gInfoFileExt = "log"
-gMaxZippedCollectionSize = 0.005*1024
+gMaxZippedCollectionSize = 2*1024*1024
 
 #g_working_dir = "d:/tmp/working/filearchivethread"
 
