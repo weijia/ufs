@@ -11,6 +11,7 @@ import gtkDragMove
 import fileTools
 from advScriptRunnerV3 import advScriptRunner
 from TagDialog import TagDialog
+import urllib
 
 class AdvScriptRunnerWithTag(advScriptRunner):
     '''
@@ -61,7 +62,7 @@ class AdvScriptRunnerWithTag(advScriptRunner):
             v = i.replace('\r','').replace('\n','').replace(chr(0),'')
             if v == "":
                 continue
-            res.append(v)
+            res.append(urllib.unquote(v))
         self.dialog.set_data(res)
         self.dialog.show_dialog()
         
