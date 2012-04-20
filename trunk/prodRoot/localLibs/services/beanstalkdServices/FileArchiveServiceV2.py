@@ -75,6 +75,8 @@ class FileArchiveThread(beanstalkWorkingThread):
                 logFile.close()
                 self.storage.add_file(infoFilePath)
                 self.storage.finalize_one_trunk()
+        else:
+            print "already in collection"
         return True
     
 

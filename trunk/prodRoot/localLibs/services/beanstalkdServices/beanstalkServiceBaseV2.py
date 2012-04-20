@@ -57,7 +57,7 @@ class beanstalkServiceApp(beanstalkServiceBase):
             print item
             try:
                 if self.processItem(job, item):
-                    #If return True, the job was processed, release and delay it
+                    #If return True, the job was processed but should be still in queue, release and delay it
                     job.release(priority = beanstalkc.DEFAULT_PRIORITY, delay = gItemDelayTime)
             except Exception,e:
                 traceback.print_exc()
