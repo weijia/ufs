@@ -8,7 +8,7 @@ import time
 import beanstalkc
 import localLibSys
 import wwjufsdatabase.libs.utils.transform as transform
-from beanstalkServiceBaseV2 import beanstalkServiceBase, beanstalkServiceApp
+from beanstalkServiceBaseV2 import beanstalkServiceApp
 import threading
 from stat import *
 
@@ -23,13 +23,19 @@ class folderScannerThread(beanstalkServiceApp, threading.Thread):
         
     def run(self):
         print 'Start scanning'
-        for i in os.walk(self.rootFolder):
-            for j in i[2]:
-                print j
-                fullPath = transform.transformDirToInternal(os.path.join(i[0], j))
-                paramDict = {"fullPath": fullPath, "timestamp": os.stat(fullPath)[ST_MTIME],
+        if not os.path.isdir(self.rootFolder):
+            print "not a folder"
+            paramDict = {"fullPath": self.rootFolder, "timestamp": os.stat(self.rootFolder)[ST_MTIME],
                              "monitoringPath": self.rootFolder}
-                self.addItem(paramDict)
+            self.addItem(paramDict)
+        else:
+            for i in os.walk(self.rootFolder):
+                for j in i[2]:
+                    print j
+                    fullPath = transform.transformDirToInternal(os.path.join(i[0], j))
+                    paramDict = {"fullPath": fullPath, "timestamp": os.stat(fullPath)[ST_MTIME],
+                                 "monitoringPath": self.rootFolder}
+                    self.addItem(paramDict)
 
 class folderScanner(beanstalkServiceApp):
     '''
@@ -54,7 +60,9 @@ class folderScanner(beanstalkServiceApp):
         self.scannerThreadDict[fullPath] = t
         print 'Starting new working thread'
         t.start()
-        return True
+        job.delete()
+        return False
+        #return True
         
         
 if __name__ == "__main__":

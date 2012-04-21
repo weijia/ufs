@@ -17,6 +17,7 @@ class ShoveForSession(UserDict.DictMixin):
             try:
                 l = i[key]
                 res.extend(l)
+                # TODO: need to verify if the tag retrieved is the exact one.
             except KeyError:
                 pass
         if len(res) == 0:

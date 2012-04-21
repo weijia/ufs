@@ -15,10 +15,10 @@ class tagSystemShoveDb(tagSystemV2.tagSystemShoveDb):
             try:
                 #print url
                 parent = cachedCollection.getOriginalParent(url, self.getSysDbInst())
-                #print parent
-                res.extend(tagSystemV2.tagSystemShoveDb.getTags(self, parent))
                 if url == parent:
                     break
+                #print parent
+                res.extend(tagSystemV2.tagSystemShoveDb.getTags(self, parent))
                 url = parent
             except KeyError:
                 #The parent db was not created before it is added? Add it?

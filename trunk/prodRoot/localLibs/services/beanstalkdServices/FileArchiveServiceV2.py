@@ -31,7 +31,7 @@ gMonitorServiceTubeName = "monitorQueue"
 gFileListTubeName = "fileListDelayed"
 gInfoFilePrefix = 'zippedCollFile'
 gInfoFileExt = "log"
-gMaxZippedCollectionSize = 0.005*1024
+gMaxZippedCollectionSize = 2*1024*1024
 
 #g_working_dir = "d:/tmp/working/filearchivethread"
 
@@ -75,6 +75,8 @@ class FileArchiveThread(beanstalkWorkingThread):
                 logFile.close()
                 self.storage.add_file(infoFilePath)
                 self.storage.finalize_one_trunk()
+        else:
+            print "already in collection"
         return True
     
 

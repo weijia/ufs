@@ -168,6 +168,13 @@ class tagSystemShoveDb(tagSystemInterface):
                     existing.remove(i)
                 except ValueError:
                     pass
+                #Need to remove it in the tag db
+                url_list = self.tagDb[i]
+                try:
+                    url_list.remove(url)
+                    self.tagDb[i] = url_list
+                except ValueError:
+                    pass
                 try:
                     cnt = int(self.tagStatDb[i][0])
                 except KeyError:
