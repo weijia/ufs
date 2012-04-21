@@ -52,6 +52,7 @@ class FileArchiveThread(beanstalkWorkingThread):
         req = service.req()
         self.dbInst = req.getObjDbSys()
         self.collection = self.dbInst.getCollection(self.collectionId)
+        self.saving_items = {}
         
     def processItem(self, job, item):
         if not (item['monitoringPath'] in self.monitoring_list):
@@ -60,12 +61,12 @@ class FileArchiveThread(beanstalkWorkingThread):
         #Add item
         item_obj = self.dbInst.getFsObjFromFullPath(item["fullPath"])
         if not self.collection.exists(item_obj.getObjUfsUrl()):
-            self.collection.addObj(item_obj.getObjUfsUrl(), item_obj["uuid"])
             for collector in self.collector_list:
                 addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
                 #print "zipped size", info.compress_size
                 self.curStorageSize += addedItemSize
             #print "current size:", self.curStorageSize
+            self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
             if self.curStorageSize > gMaxZippedCollectionSize:
                 s = json.dumps(self.info_dict, sort_keys=True, indent=4)
                 infoFilePath = transform.transformDirToInternal(
@@ -75,7 +76,13 @@ class FileArchiveThread(beanstalkWorkingThread):
                 logFile.close()
                 self.storage.add_file(infoFilePath)
                 self.storage.finalize_one_trunk()
-        return True
+                for i in self.saving_items:
+                    self.collection.addObj(i, self.saving_items[i])
+                self.saving_items = {}
+            return True#Return True will release the back to the tube
+        else:
+            job.delete()
+            return False#Do not need to put the item back to the tube
     
 
         
