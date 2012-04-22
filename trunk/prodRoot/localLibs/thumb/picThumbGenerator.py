@@ -43,6 +43,7 @@ def picFormatSupportedV2(fullPath):
         #print 'image', fullPath
         return True
     else:
+        
         return False
         
 def genPicThumb(local_path, dest_dir):

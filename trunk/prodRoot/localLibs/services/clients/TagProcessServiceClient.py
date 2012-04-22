@@ -15,7 +15,7 @@ gWorkingDir = "D:/tmp/working/fileArchiveService"
 g_default_target_dir = "D:/tmp/working/default_target_dir"
 
 
-def ProcessTagged(tag = u"test", target_dir = g_default_target_dir,
+def ProcessTagged(tag = u"download", target_dir = g_default_target_dir,
                      workingDir = gWorkingDir):
     
     s1 = TagProcessServiceBase.TagProcessServiceBase()
