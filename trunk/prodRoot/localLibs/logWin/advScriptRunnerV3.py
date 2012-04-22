@@ -9,7 +9,7 @@ class advScriptRunner(scriptRunner.dropRunWnd):
         self.serverThread = launchServiceThreadClass(self)
         self.serverThread.start()
     def quitAll(self):
-        self.serverThread.stopAllTasks()
+        self.serverThread.send_stop_to_all_registered_xml_rpc_server()
         self.serverThread.stop()
 
         

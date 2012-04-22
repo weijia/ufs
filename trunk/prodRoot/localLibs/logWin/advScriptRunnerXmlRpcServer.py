@@ -47,7 +47,7 @@ class launcherXmlRpcServer(xmlRpcServerBase.xmlRpcServerBase):
     def stop(self):
         #cherrypy.server.stop()
         pass
-    def stopAllTasks(self):
+    def send_stop_to_all_registered_xml_rpc_server(self):
         '''
         import sys
         sys.exit()
@@ -70,7 +70,7 @@ class launcherXmlRpcServer(xmlRpcServerBase.xmlRpcServerBase):
         time.sleep(3)
         print 'exit called'
 
-    stopAllTasks.exposed = True
+    send_stop_to_all_registered_xml_rpc_server.exposed = True
 
     
 class launcherXmlRpcThread(threading.Thread):
@@ -85,8 +85,8 @@ class launcherXmlRpcThread(threading.Thread):
     def stop(self):
         #cherrypy.server.stop()
         self.server.stop()
-    def stopAllTasks(self):
-        self.server.stopAllTasks()
+    def send_stop_to_all_registered_xml_rpc_server(self):
+        self.server.send_stop_to_all_registered_xml_rpc_server()
   
 def main():
     advScriptRunner.startApplicationsNoReturn([], launcherXmlRpcThread)
