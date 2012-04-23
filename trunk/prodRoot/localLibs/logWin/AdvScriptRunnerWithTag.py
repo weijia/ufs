@@ -3,7 +3,7 @@ pygtk.require('2.0')
 import gtk
 import gtkTaskbarIconForConsole
 #import gtkTxtWndMod
-import logWnd
+#import logWnd
 import localLibSys
 import localLibs.logSys.logDir as logDir
 import gtkDropTarget

@@ -99,12 +99,6 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
         self.app_name_to_task_dict[app_path_and_param_gen_str] = t
         self.task_to_menu_item_dict[t] = self.icon.addMenuItem(app_path_and_param_gen_str)
         
-#    def startApp(self, pa):
-#        '''
-#        pa is the fullPath for the application that are executing. And there is no param for it. So if it is an short cut, create param from shortcut
-#        '''
-#        param = [pa]
-#        self.startAppWithParam(param)
         
               
 def startApplicationsNoReturn(l):

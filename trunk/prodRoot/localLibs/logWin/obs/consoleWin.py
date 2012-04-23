@@ -154,7 +154,7 @@ class consoleWin(wx.Frame):
         self._init_ctrls(parent)
         #self.appStarted = False
         self.Bind(EVT_CUSTOM_EVENT, self.OnMyEvent, id=self.GetId())
-        self.threadList = []
+        self.log_collector_thread_list = []
         try:
             self.runConsoleApp(os.path.dirname(sys.argv[1]), sys.argv[1:])#Param 2 is the app
         except IndexError:
@@ -187,10 +187,10 @@ class consoleWin(wx.Frame):
             self.p = subprocess.Popen(self.prog, cwd = self.cwd, stdout = subprocess.PIPE, stderr = subprocess.PIPE,bufsize=0)
             thr1 = TestThread(self, self.p.stdout)
             thr1.start()
-            self.threadList.append(thr1)
+            self.log_collector_thread_list.append(thr1)
             thr2 = TestThread(self, self.p.stderr)
             thr2.start()
-            self.threadList.append(thr2)
+            self.log_collector_thread_list.append(thr2)
         except:
           pass
         #self.appStarted = True
@@ -229,9 +229,9 @@ class consoleWin(wx.Frame):
         event.Skip()
     def onClose(self):
         try:
-            for i in self.threadList:
+            for i in self.log_collector_thread_list:
                 i.quit()
-            if len(self.threadList):
+            if len(self.log_collector_thread_list):
                 self.killSelf()
             #import time
             #time.sleep(5)

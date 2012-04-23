@@ -20,9 +20,9 @@ except:
   sys.exit(1)  
 import os
 import gobject
-from wndConsole import *
+from ConsoleOutputWnd import ConsoleOutputWnd
 gtk.gdk.threads_init()
-import gtkTaskbarIconForConsole
+#import gtkTaskbarIconForConsole
 
 import fileTools
 
@@ -40,7 +40,7 @@ class consoleWnd:
         except:
             pass
         try:
-            self.wC.close()
+            self.console_output_wnd.close()
         except:
             pass
     def updateViewCallback(self, data):
@@ -86,7 +86,7 @@ class consoleWnd:
         self.topMostFlag = True
         self.topMost(None)
         
-        self.wC = wndConsole()
+        self.console_output_wnd = ConsoleOutputWnd()
         #window.show()
         self.isMinimized = True
         self.window.hide()
@@ -119,7 +119,7 @@ class consoleWnd:
         self.startApp(p, [appPath])
     def startApp(self, cwd = 'D:\\code\\python\\developing\\ufs', progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
         #print '------------------------------',progAndParm
-        self.wC.runConsoleApp(self, cwd, progAndParm)
+        self.console_output_wnd.runConsoleApp(self, cwd, progAndParm)
         self.window.set_title(' '.join(progAndParm))
     def startAppWithParam(self, progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
         cwd = os.path.dirname(progAndParm[0])

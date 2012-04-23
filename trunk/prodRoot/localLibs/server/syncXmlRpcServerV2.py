@@ -61,7 +61,7 @@ class syncXmlRpcServer(xmlRpcServerWithWorkerThreadBase.xmlRpcServerWithWorkerTh
         Constructor
         '''
         xmlRpcServerWithWorkerThreadBase.xmlRpcServerWithWorkerThreadBase.__init__(self, port)
-        self.threadList = list()
+        self.log_collector_thread_list = list()
 
     
     #Create a sync service
@@ -72,13 +72,13 @@ class syncXmlRpcServer(xmlRpcServerWithWorkerThreadBase.xmlRpcServerWithWorkerTh
         #Add additional notify info so the notification from dir scanner 
         #will be dispatched to specific thread
         encZipPathMonitorUrl, folderPathMonitorUrl = threadInst.getNotificationHandler()
-        self.threadList.append((encZipPathMonitorUrl, folderPathMonitorUrl, threadInst))
+        self.log_collector_thread_list.append((encZipPathMonitorUrl, folderPathMonitorUrl, threadInst))
 
     addSync.exposed = True
     
     def notify(self, notifyParam):
         cl("notify called", notifyParam)
-        for i in self.threadList:
+        for i in self.log_collector_thread_list:
             if (i[0] == notifyParam) or (i[1] == notifyParam):
                 i[2].msg("subClassRun", {"notificationSource": notifyParam})
     notify.exposed = True

@@ -15,6 +15,10 @@ class logWnd(consoleWnd.consoleWnd):
             self.logFile = None
         else:
             self.logFile = open(logFilePath, 'w')
+            
+    def close_application(self, widget):
+        super(logWnd, self).close_application(widget)
+        self.logFile.close()
         
     def updateView(self, param):
         if not (self.logFile is None):
@@ -64,7 +68,7 @@ class logWnd(consoleWnd.consoleWnd):
         self.window.show(*args)
         
     def min(self, data):
-        cl('min called')
+        ncl('min called')
         consoleWnd.consoleWnd.min(self, data)
         buf = self.textview.get_buffer()
         #False means do not get hidden text
