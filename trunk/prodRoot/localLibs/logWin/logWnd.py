@@ -18,6 +18,8 @@ class logWnd(consoleWnd.consoleWnd):
             
     def close_application(self, widget):
         consoleWnd.consoleWnd.close_application(self, widget)
+        if self.logFile is None:
+            return
         self.logFile.close()
         self.logFile = None
         

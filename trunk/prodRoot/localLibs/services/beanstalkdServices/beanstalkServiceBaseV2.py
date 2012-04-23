@@ -64,7 +64,11 @@ class beanstalkServiceApp(beanstalkServiceBase):
         #kickedItemNum = beanstalk.kick(gMaxMonitoringItems)
         #print kickedItemNum
         while True:
-            job = self.beanstalk.reserve()
+            try:
+                job = self.beanstalk.reserve()
+            except:
+                self.stop()
+                return
             print "got job", job.body
             item = json.loads(job.body)
             if item.has_key("command"):
