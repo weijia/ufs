@@ -55,14 +55,14 @@ def killChildProcessTree(pid, killRoot = False):
     for process in processes:
         childPid = process.Properties_('ProcessID').Value
         parent = process.Properties_('ParentProcessId').Value
-        handle = process.Properties_('Handle').Value
+        #handle = process.Properties_('Handle').Value
         #print childPid, parent
         if int(parent) == int(pid):
             #print '--------------------------------------------match'
             killChildProcessTree(childPid, True)
     if True == killRoot:
         handle = findProcessHandle(int(pid))
-        print 'terminating root:', handle
+        #print 'terminating root:', handle
         #win32api.TerminateProcess(handle, -1)
         terminateProcessByPid(pid)
 

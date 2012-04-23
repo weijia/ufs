@@ -53,7 +53,7 @@ class ThumbCollector(InfoCollectorInterface):
             #Add item info, it is not stored until finalize the current trunk
             ####################################################
             info_dict[obj_item.getObjUfsUrl()] = infoDict
-            ncl(infoDict)
+            cl(infoDict)
             return added_size
             
         else:

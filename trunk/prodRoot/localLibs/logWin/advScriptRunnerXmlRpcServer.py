@@ -80,7 +80,7 @@ class launcherXmlRpcThread(threading.Thread):
     def run(self):
         #Connect to server
         self.server = launcherXmlRpcServer(self.target, 8810)
-        xmlRpcServerBase.startMainServer(self.server)
+        xmlRpcServerBase.startMainServer(self.server, False)
         print 'quit running launcherXmlRpcThread(self.target)'
     def stop(self):
         #cherrypy.server.stop()

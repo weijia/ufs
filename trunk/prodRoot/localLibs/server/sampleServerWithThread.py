@@ -36,11 +36,17 @@ class sampleServer(threadSvrBase.xmlRpcServerWithThread):
         super(sampleServer, self).__init__(port)
         
     def sampleCreateOnServer(self):
+        '''
+        Ask server to do something
+        '''
         threadInst = sampleThread(clientId = "helloworld")
         return self.createProcessor(threadInst)
     sampleCreateOnServer.exposed = True
     
     def sampleMethod(self, threadHandle, clientId = "helloworld"):
+        '''
+        Ask working thread to do something.
+        '''
         cl(threadHandle, clientId)
         t = self.thread2Processor[(threadHandle)]
         t.msg("sampleMethod", {"clientId":clientId})

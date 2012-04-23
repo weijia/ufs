@@ -68,23 +68,31 @@ class FileArchiveThread(beanstalkWorkingThread):
             #print "current size:", self.curStorageSize
             self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
             if self.curStorageSize > gMaxZippedCollectionSize:
-                s = json.dumps(self.info_dict, sort_keys=True, indent=4)
-                infoFilePath = transform.transformDirToInternal(
-                    fileTools.getTimestampWithFreeName(self.working_dir, "."+gInfoFileExt, gInfoFilePrefix))
-                logFile = open(infoFilePath, 'w')
-                logFile.write(s)
-                logFile.close()
-                self.storage.add_file(infoFilePath)
-                self.storage.finalize_one_trunk()
-                for i in self.saving_items:
-                    self.collection.addObj(i, self.saving_items[i])
-                self.saving_items = {}
+                self.finalize()
             return True#Return True will release the back to the tube
+            
         else:
             job.delete()
+            print "skipping item which is already in collection"
             return False#Do not need to put the item back to the tube
     
+    def finalize(self):
+        if len(self.saving_items) == 0:
+            return
+        s = json.dumps(self.info_dict, sort_keys=True, indent=4)
+        infoFilePath = transform.transformDirToInternal(
+            fileTools.getTimestampWithFreeName(self.working_dir, "."+gInfoFileExt, gInfoFilePrefix))
+        logFile = open(infoFilePath, 'w')
+        logFile.write(s)
+        logFile.close()
+        self.storage.add_file(infoFilePath)
+        self.storage.finalize_one_trunk()
+        for i in self.saving_items:
+            self.collection.addObj(i, self.saving_items[i])
+        self.saving_items = {}
 
+    def stop(self):
+        print "file archive service stop called"
         
 class FileArchiveService(beanstalkServiceApp):
     '''

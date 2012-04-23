@@ -1,7 +1,8 @@
 import scriptRunnerV2 as scriptRunner
 import gobject
-import threading
+#import threading
 import gtk
+import time
 
 class advScriptRunner(scriptRunner.dropRunWnd):
     def startScriptRunnerApp(self, launchServiceThreadClass):
@@ -16,20 +17,20 @@ class advScriptRunner(scriptRunner.dropRunWnd):
     def addAppToIdleRunner(self, param):
         print 'callback called'
         gobject.idle_add(self.lauchServerLaunch, param)
-        import time
+        #import time
         time.sleep(0.1)
 
     def lauchServerLaunch(self, param):
         self.startAppWithParam(param)
     def close_application(self, widget):
+        '''
+        This is called when task bar icon menu "exit" was clicked. It is the very beginning of the quit process.
+        '''
         self.quitAll()
+        time.sleep(5)
         scriptRunner.dropRunWnd.close_application(self, widget)
 
 def startApplicationsNoReturn(l, launchServiceThreadClass):
-    '''
-    from dbus.mainloop.glib import threads_init
-    threads_init()
-    '''
     d = advScriptRunner()
     d.initialApps = l
     d.startScriptRunnerApp(launchServiceThreadClass)
@@ -37,7 +38,7 @@ def startApplicationsNoReturn(l, launchServiceThreadClass):
     gtk.main()
     gtk.gdk.threads_leave()
     print 'after gtk.gdk.threads_leave()'
-    d.quitAll()
+    #d.quitAll()
     print 'final quit'
     import sys
     sys.exit()

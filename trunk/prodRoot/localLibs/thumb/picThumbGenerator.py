@@ -43,7 +43,7 @@ def picFormatSupportedV2(fullPath):
         #print 'image', fullPath
         return True
     else:
-        
+        print "mime type have no thumb:", res
         return False
         
 def genPicThumb(local_path, dest_dir):

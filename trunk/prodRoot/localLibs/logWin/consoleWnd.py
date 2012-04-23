@@ -30,6 +30,9 @@ class consoleWnd:
     windowname = 'window1'
     textWndName = 'consoleTextWnd'
     builder = gtk.Builder()
+    '''
+    This class manages console windows, it will kill applications for every console window.
+    '''
 
     def close_application(self, widget):
         try:
@@ -68,21 +71,7 @@ class consoleWnd:
         window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_UTILITY)
         #window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
         #window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
-        '''
-        Gdk::WINDOW_TYPE_HINT_NORMAL, 
-        Gdk::WINDOW_TYPE_HINT_DIALOG, 
-        Gdk::WINDOW_TYPE_HINT_MENU, 
-        Gdk::WINDOW_TYPE_HINT_TOOLBAR, 
-        Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN, 
-        Gdk::WINDOW_TYPE_HINT_UTILITY, 
-        Gdk::WINDOW_TYPE_HINT_DOCK, 
-        Gdk::WINDOW_TYPE_HINT_DESKTOP, 
-        Gdk::WINDOW_TYPE_HINT_DROPDOWN_MENU, 
-        Gdk::WINDOW_TYPE_HINT_POPUP_MENU, 
-        Gdk::WINDOW_TYPE_HINT_TOOLTIP, 
-        Gdk::WINDOW_TYPE_HINT_NOTIFICATION, 
-        Gdk::WINDOW_TYPE_HINT_COMBO, 
-        '''
+
         #window.connect("destroy", self.close_application)
         #window.connect('window-state-event', self.new_window_state)
         window.set_title("Python console log window")
@@ -97,35 +86,6 @@ class consoleWnd:
         self.topMostFlag = True
         self.topMost(None)
         
-        '''
-        box1 = gtk.VBox(False, 0)
-        window.add(box1)
-        box1.show()
-
-        box2 = gtk.VBox(False, 10)
-        box2.set_border_width(2)
-        box1.pack_start(box2, True, True, 0)
-        box2.show()
-
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        textview = gtk.TextView()
-        self.textview = textview
-        textbuffer = textview.get_buffer()
-        sw.add(textview)
-        sw.show()
-        textview.show()
-        box2.pack_start(sw)
-        
-        #self.icon = gtkTaskbarIconForConsole.MyStatusIcon(self)
-        
-        button2 = gtk.Button("minimize")
-        button2.connect("clicked", self.min)
-        box2.pack_start(button2, False, True, 0)
-        button2.set_flags(gtk.CAN_DEFAULT)
-        button2.grab_default()
-        button2.show()
-        '''
         self.wC = wndConsole()
         #window.show()
         self.isMinimized = True

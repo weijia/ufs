@@ -4,6 +4,7 @@ import localLibs.logWin.advScriptRunnerXmlRpcServer as advScriptRunnerXmlRpcServ
 autoStartAppList = ['mongodb.bat',
                     'startBeanstalkd.bat',
                     'webserver-cgi',
+                    'XmlRpcServer2BeanstalkdServiceBridge',
                     'cherrypyServerV3',
                     'folderCollectionInitiator',
                     #'collectionMonitorNonRealtimeNotifierServiceV2',

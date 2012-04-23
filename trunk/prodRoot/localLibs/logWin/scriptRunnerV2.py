@@ -11,6 +11,9 @@ import gtkDragMove
 import fileTools
 
 class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
+    '''
+    This class will generate the floating element and the task bar icon.
+    '''
     def dropped(self, wid, context, x, y, data, info, time):
         # Got data.
         #print data.data
@@ -20,7 +23,7 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
         #print data
         #print data.data
         #print data.get_targets()
-        #Dropped file has a prefix of "file:///", remove it.
+        #Dropped file has a prefix of "file:///", remove it. And quoted using urllib.quote so " " is now %20
         pa = data.data.replace('file:///','')
         #print '------------------------------dropped:', pa
         pa = pa.replace('\r','').replace('\n','').replace(chr(0),'')
@@ -32,17 +35,20 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
         wid.drag_get_data(context, context.targets[-1], time)
         return True
     def clickM(self, mTxt):
-        self.mD[mTxt].show()
+        self.app_name_to_task_dict[mTxt].show()
     def consoleClose(self, t):
-        self.icon.rmMenuItem(self.tL[t])
-        for i in self.mD.keys():
-            if self.mD[i] == t:
-                del self.mD[i]
+        '''
+        Remove the coresponding menu item for the task
+        '''
+        self.icon.rmMenuItem(self.task_to_menu_item_dict[t])
+        for i in self.app_name_to_task_dict.keys():
+            if self.app_name_to_task_dict[i] == t:
+                del self.app_name_to_task_dict[i]
                 break
       
     def startScriptRunnerApp(self):
-        self.tL = {}
-        self.mD = {}
+        self.task_to_menu_item_dict = {}
+        self.app_name_to_task_dict = {}
         w = gtk.Window()
         self.window = w
         w.set_size_request(100, 100)
@@ -67,18 +73,8 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
 
     def close_application(self, widget):
         #self.window.hide()
-        # try:
-            # print 'calling close_application'
-            # from dbus.mainloop.glib import threads_init
-            # threads_init()
-            # print 'after threads_init'
-            # import appStarterForDbusQuitApp
-            # print 'calling stopService'
-            # appStarterForDbusQuitApp.stopService()
-        # except:
-            # pass
         print 'killing applications'
-        for i in self.tL.keys():
+        for i in self.task_to_menu_item_dict.keys():
             i.close_application(widget)
         self.icon.set_visible(False)
         gtk.main_quit()
@@ -94,14 +90,14 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
         t = logWnd.logWnd(self, l.getLogFilePath())
         t.startAppWithParam(param)
         cnt = 1
-        paN = str(param)
-        if self.mD.has_key(paN):
-            while self.mD.has_key(paN + '-' + str(cnt)):
+        app_path_and_param_gen_str = str(param)
+        if self.app_name_to_task_dict.has_key(app_path_and_param_gen_str):
+            while self.app_name_to_task_dict.has_key(app_path_and_param_gen_str + '-' + str(cnt)):
                 cnt +=1
-            paN = paN + '-' + str(cnt)
+            app_path_and_param_gen_str = app_path_and_param_gen_str + '-' + str(cnt)
           
-        self.mD[paN] = t
-        self.tL[t] = self.icon.addMenuItem(paN)
+        self.app_name_to_task_dict[app_path_and_param_gen_str] = t
+        self.task_to_menu_item_dict[t] = self.icon.addMenuItem(app_path_and_param_gen_str)
         
 #    def startApp(self, pa):
 #        '''

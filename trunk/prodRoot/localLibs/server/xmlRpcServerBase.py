@@ -44,8 +44,11 @@ class managedXmlRpcServerBase(xmlRpcServerBase):
     def __init__(self, port):
         xmlRpcServerBase.__init__(self, port)
         registerToTaskManager(self.getSelfServerUrl(port))
+    def stop(self):
+        pass
+    stop.exposed = True
     
-def startMainServer(rpcObj):
+def startMainServer(rpcObj, auto_reload = True):
     class Root:
         def index(self):
             return "I'm a standard index!"
@@ -56,7 +59,7 @@ def startMainServer(rpcObj):
     cherrypy.config.update({'environment': 'production',
                             'log.error_file': '../../../../site.log',
                             'log.screen': True,
-                            'engine.autoreload_on' : True,
+                            'engine.autoreload_on' : auto_reload,
                             'server.socket_port' : rpcObj.getServerPort(),
                             'request.dispatch': cherrypy.dispatch.XMLRPCDispatcher(),
                             'tools.xmlrpc.allow_none': 1,})

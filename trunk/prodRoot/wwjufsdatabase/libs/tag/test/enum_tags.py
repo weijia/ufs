@@ -9,6 +9,6 @@ if __name__ == '__main__':
     import wwjufsdatabase.libs.services.servicesV2 as service
     req = service.req()
     t = tagSystem.getTagSysObj(req.getDbSys())
-    e = t.getObjs(u"test")
+    e = t.getObjs(u"download")
     for i in e:
         print i

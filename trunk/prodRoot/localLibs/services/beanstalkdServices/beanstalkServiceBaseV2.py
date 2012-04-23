@@ -12,7 +12,7 @@ import threading
 import localLibSys
 from localLibs.windows.changeNotifyThread import changeNotifyThread
 import wwjufsdatabase.libs.utils.simplejson as json
-
+import localLibs.server.XmlRpcServer2BeanstalkdServiceBridge as bridge
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
@@ -44,6 +44,11 @@ class beanstalkServiceBase(object):
         
         
 class beanstalkServiceApp(beanstalkServiceBase):
+    def __init__(self, tube_name):
+        super(beanstalkServiceApp, self).__init__(tube_name)
+        bridge.subscribe(tube_name)
+        
+        
     def startServer(self):
         print self.__class__, self.tubeName
         self.watchTube()
@@ -54,6 +59,13 @@ class beanstalkServiceApp(beanstalkServiceBase):
             job = self.beanstalk.reserve()
             print "got job", job.body
             item = json.loads(job.body)
+            if item.has_key("command"):
+                if item["command"] == "quit":
+                    print "got a quit message"
+                    self.stop()
+                    job.delete()
+                    #return
+                    continue
             print item
             try:
                 if self.processItem(job, item):
@@ -65,6 +77,10 @@ class beanstalkServiceApp(beanstalkServiceBase):
                 #job.delete()
     def processItem(self, job, item):
         job.delete()
+        return False#Return False if we do not need to put the item back to tube
+    
+    def stop(self):
+        print "got a quit message"
 
 
 class beanstalkWorkingThread(beanstalkServiceApp, threading.Thread):

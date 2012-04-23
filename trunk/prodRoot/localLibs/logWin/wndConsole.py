@@ -100,7 +100,7 @@ class wndConsole:
         import win32api
 
         for i in self.pList:
-            print 'processing:', i.pid, int(i._handle)
+            #print 'processing:', i.pid, int(i._handle)
             processManager.killChildProcessTree(i.pid)
             win32api.TerminateProcess(int(i._handle), -1)
     
