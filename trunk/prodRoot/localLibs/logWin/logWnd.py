@@ -17,8 +17,9 @@ class logWnd(consoleWnd.consoleWnd):
             self.logFile = open(logFilePath, 'w')
             
     def close_application(self, widget):
-        super(logWnd, self).close_application(widget)
+        consoleWnd.consoleWnd.close_application(self, widget)
         self.logFile.close()
+        self.logFile = None
         
     def updateView(self, param):
         if not (self.logFile is None):

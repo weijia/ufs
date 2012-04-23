@@ -26,6 +26,14 @@ def subscribe(tube_name):
     res = proxy.subscribe(tube_name)
     print res
 
+def stop_beanstalkd_service(tube_name, beanstalk = None):
+    if beanstalk is None:
+        beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort).use(tube_name)
+    item_dict = {"command": "quit"}
+    s = json.dumps(item_dict, sort_keys=True, indent=4)
+    #1000 is a relative high priority. than 2^-31
+    beanstalk.put(s, priority = 1000)
+    
 class XmlRpcServer2BeanstalkdServiceBridge(xmlRpcServerBase.managedXmlRpcServerBase):
     '''
     classdocs
@@ -50,13 +58,11 @@ class XmlRpcServer2BeanstalkdServiceBridge(xmlRpcServerBase.managedXmlRpcServerB
     def stop(self):
         #Send messages to all beanstalkd service
         for i in self.beanstalkd_service_command_tube_names:
-            self.get_beanstalkd_instance().use(i)
-            item_dict = {"command": "quit"}
-            s = json.dumps(item_dict, sort_keys=True, indent=4)
-            print "add item:", s, i
-            job = self.beanstalk.put(s, priority = 1000)
+            print "add item to tube:", i
+            stop_beanstalkd_service(i, self.get_beanstalkd_instance())
     stop.exposed = True
-    
+
+        
 if __name__ == '__main__':
     # Set up site-wide config first so we get a log if errors occur.
     xmlRpcServerBase.startMainServer(XmlRpcServer2BeanstalkdServiceBridge(gXmlRpcServerPort))

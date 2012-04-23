@@ -47,6 +47,14 @@ class beanstalkServiceApp(beanstalkServiceBase):
     def __init__(self, tube_name):
         super(beanstalkServiceApp, self).__init__(tube_name)
         bridge.subscribe(tube_name)
+        import signal
+        signal.signal(signal.SIGTERM, self.term_signal)
+        
+    def term_signal(self):
+        print "term signal"
+        bridge.stop_beanstalkd_service(self.tubeName)
+        import time
+        time.sleep(5)
         
         
     def startServer(self):
