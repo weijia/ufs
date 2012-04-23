@@ -2,6 +2,7 @@ import os
 import re
 import wwjufsdatabase.libs.utils.transform as transform
 
+g_default_thumb_size = 256
 
 class pictureFormatNotSupported:
     pass
@@ -60,7 +61,7 @@ def genPicThumb(local_path, dest_dir):
         import Image #Using PIL lib 
         im = Image.open(local_path)
         # convert to thumbnail image
-        im.thumbnail((128, 128), Image.ANTIALIAS)
+        im.thumbnail((g_default_thumb_size, g_default_thumb_size), Image.ANTIALIAS)
         # don't save if thumbnail already exists
         #Use _T as the thumb file end to indicate the end of the original firl
         thumb_path_without_ext = os.path.join(dest_dir, basename.split(".")[0]+"_T")

@@ -16,8 +16,8 @@ class zippedInfo(object):
     def __init__(self, workingDir = gWorkingDir):
         self.collectionInfoDict = {}
         self.additionalInfoDict = {}
-        self.zipFile = None
-        self.zipFilePath = None
+        self.package_file = None
+        self.package_file_full_path = None
         self.workingDir = workingDir
     def addAdditionalInfo(self, addInfo):
         for i in addInfo:
@@ -41,11 +41,11 @@ class zippedInfo(object):
         logFile.write(s)
         logFile.close()
         self.getZipFile().addfile(unicode(infoFilePath), unicode(infoFilePath))
-        self.zipFile.close()
+        self.package_file.close()
         #Set attribute so new zip will be created if this object is still in use
-        self.zipFile = None
+        self.package_file = None
         self.additionalInfoDict = {}
-        return self.zipFilePath
+        return self.package_file_full_path
     
     def enumItems(self, archiveFullPath):
         zipFile = zipClass.ZFile(archiveFullPath, 'r')
@@ -68,10 +68,10 @@ class zippedInfo(object):
     ################################################
     # The following functions are not recommended to be called from outside of this class
     def getZipFile(self):
-        if self.zipFile is None:
-            self.zipFilePath = transform.transformDirToInternal(
+        if self.package_file is None:
+            self.package_file_full_path = transform.transformDirToInternal(
                 fileTools.getTimestampWithFreeName(self.workingDir, '.zip'))
-            self.zipFile = zipClass.ZFile(self.zipFilePath, 'w')
-        return self.zipFile
+            self.package_file = zipClass.ZFile(self.package_file_full_path, 'w')
+        return self.package_file
     
     

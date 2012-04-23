@@ -15,15 +15,15 @@ import localLibSys
 #from localLibs.localFs.tmpFile import getStorgePathWithDateFolder
 #import localLibs.archiver.encryptionStorageBase as encryptionStorageBase
 from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp
-import localLibs.objSys.objectDatabaseV3 as objectDatabase
+#import localLibs.objSys.objectDatabaseV3 as objectDatabase
 import localLibs.utils.misc as misc
 from localLibs.storage.infoCollectors.ThumbCollector import ThumbCollector
 import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.transform as transform
 import wwjufsdatabase.libs.utils.fileTools as fileTools
-from localLibs.storage.archive.ZipFilesStorage import ZipFilesStorage
+from localLibs.storage.archive.CompressedStorage import CompressedStorage
 import wwjufsdatabase.libs.services.servicesV2 as service
-
+from localLibs.logSys.logSys import *
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
@@ -68,6 +68,7 @@ class FileArchiveThread(beanstalkWorkingThread):
             #print "current size:", self.curStorageSize
             self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
             if self.curStorageSize > gMaxZippedCollectionSize:
+                cl("size exceed max")
                 self.finalize()
             return True#Return True will release the back to the tube
             
@@ -85,6 +86,7 @@ class FileArchiveThread(beanstalkWorkingThread):
         logFile = open(infoFilePath, 'w')
         logFile.write(s)
         logFile.close()
+        cl(infoFilePath)
         self.storage.add_file(infoFilePath)
         self.storage.finalize_one_trunk()
         for i in self.saving_items:
@@ -98,7 +100,7 @@ class FileArchiveService(beanstalkServiceApp):
     '''
     classdocs
     '''
-    def __init__(self, storage_class = ZipFilesStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName"):
+    def __init__(self, storage_class = CompressedStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName"):
         super(FileArchiveService, self).__init__(serviceControlTubeName)
         self.taskDict = {}
         self.storage_class = storage_class

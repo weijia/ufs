@@ -5,8 +5,8 @@ app = "..\\otherBin\\ffmpeg\\bin\\ffmpeg.exe"
 CREATE_NO_WINDOW = 0x8000000
 
 def ffmpegDumpVideo(inFile, outFile, frameTime = 10):
-    cmd = (u'%s -y -i "%s" -f image2 -ss %d -vframes 1 -s 128x128 -an "%s"'%(app, inFile, frameTime, outFile)).encode('gbk')
-    arg = (u' -y -i "%s" -f image2 -ss %d -vframes 1 -s 128x128 -an "%s"'%(inFile, frameTime, outFile)).encode('gbk')
+    cmd = (u'%s -y -i "%s" -f image2 -ss %d -vframes 1 -s 256x256 -an "%s"'%(app, inFile, frameTime, outFile)).encode('gbk')
+    #arg = (u' -y -i "%s" -f image2 -ss %d -vframes 1 -s 256x256 -an "%s"'%(inFile, frameTime, outFile)).encode('gbk')
     #os.system((u'%s -y -i "%s" -f image2 -ss %d -vframes 1 -s 128x128 -an "%s"'%(app, inFile, frameTime, outFile)).encode('gbk'))
     #return '%s -y -i "%s" -f image2 -ss 10 -vframes 1 -s 128x128 -an %s'%(app, inFile, outFile)
     #bufsize = 512
@@ -26,21 +26,21 @@ def ffmpegDumpVideo(inFile, outFile, frameTime = 10):
 
 
 def genVideoThumb(local_path, dest_dir):
-  #The ffmpeg application seems do not support output filename including %
-  basename = os.path.basename(local_path).replace('%','_')
-  thumb_path_without_ext = os.path.join(dest_dir, basename.split(".")[0]+"_T")
-  import random
-  while os.path.exists(thumb_path_without_ext+u".jpg"):
-    thumb_path_without_ext += unicode(random.randint(0,10))
-  thumb_path = thumb_path_without_ext+u'.jpg'
-  ffmpegDumpVideo(local_path, thumb_path)
-  #print thumb_path.encode('gbk', 'replace')
-  if not os.path.exists(thumb_path):
-    ffmpegDumpVideo(local_path, thumb_path, 1)
-  if os.path.exists(thumb_path):
-    return thumb_path
-  return None
+    #The ffmpeg application seems do not support output filename including %
+    basename = os.path.basename(local_path).replace('%','_')
+    thumb_path_without_ext = os.path.join(dest_dir, basename.split(".")[0]+"_T")
+    import random
+    while os.path.exists(thumb_path_without_ext+u".jpg"):
+        thumb_path_without_ext += unicode(random.randint(0,10))
+    thumb_path = thumb_path_without_ext+u'.jpg'
+    ffmpegDumpVideo(local_path, thumb_path)
+    #print thumb_path.encode('gbk', 'replace')
+    if not os.path.exists(thumb_path):
+        ffmpegDumpVideo(local_path, thumb_path, 1)
+    if os.path.exists(thumb_path):
+        return thumb_path
+    return None
 
   
 if __name__ == '__main__':
-  genVideoThumb('G:/app/wwj/outOfOrder/01 - Chio Sweetpie Captured on Webcam.wmv',"d:/tmp")
+    genVideoThumb('G:/app/wwj/outOfOrder/01 - Chio Sweetpie Captured on Webcam.wmv',"d:/tmp")

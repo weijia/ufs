@@ -52,6 +52,8 @@ def transformDirToInternal(originalDir):
     The input should be unicode. Anyway, we'll check it in this function.
     
     '''
+    if originalDir is None:
+        raise "tried to transform None to standard path"
     newDir = transformLocalStringToUnicode(os.path.abspath(originalDir))
     #print type(newDir)
     if sys.platform == 'win32':

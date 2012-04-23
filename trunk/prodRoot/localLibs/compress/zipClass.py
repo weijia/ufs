@@ -47,7 +47,7 @@ class ZFile(object):
         #self.zfile.write(encode2Local(path), encode2Local(arcname))
         self.zfile.write(encode2Local(path), encode2Local(arcname))
         #return the info of the newly added file
-        return self.zfile.filelist[-1]
+        return self.zfile.filelist[-1].compress_size
             
     def addfiles(self, paths):
         for path in paths:

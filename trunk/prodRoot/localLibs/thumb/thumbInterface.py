@@ -28,4 +28,6 @@ def getThumb(path, targetDir):
                     #return newPath
             except:
                 pass
+    if newPath is None:
+        return None
     return transformDirToInternal(newPath)
