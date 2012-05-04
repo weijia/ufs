@@ -54,7 +54,7 @@ class AdvScriptRunnerWithTag(advScriptRunner):
             #Normal file
             print pa
         else:
-            self.startAppWithParam([pa])
+            self.createConsolWndForApp([pa])
         '''
         pa = data.data.split("\n")
         res = []

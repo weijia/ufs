@@ -60,7 +60,7 @@ class advScriptRunner(scriptRunner.dropRunWnd):
         time.sleep(0.1)
 
     def lauchServerLaunch(self, param):
-        self.startAppWithParam(param)
+        self.create_console_wnd_for_app(param)
     
 
 def startApplicationsNoReturn(l):

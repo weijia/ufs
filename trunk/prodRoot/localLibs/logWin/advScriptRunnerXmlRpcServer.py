@@ -45,6 +45,7 @@ class launcherXmlRpcServer(xmlRpcServerBase.xmlRpcServerBase):
         ncl(callbackServerUrl, "registered")
     register.exposed = True
     def stop(self):
+        #The server is already stopped in send_stop_to_all_registered_xml_rpc_server
         #cherrypy.server.stop()
         pass
     def send_stop_to_all_registered_xml_rpc_server(self):
@@ -67,7 +68,7 @@ class launcherXmlRpcServer(xmlRpcServerBase.xmlRpcServerBase):
         cherrypy.server.stop()
         cl('launcherXmlRpcServer stop called')
         #sys.exit()
-        time.sleep(3)
+        time.sleep(5)
         print 'exit called'
 
     send_stop_to_all_registered_xml_rpc_server.exposed = True

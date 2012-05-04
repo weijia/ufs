@@ -27,7 +27,7 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
         pa = data.data.replace('file:///','')
         #print '------------------------------dropped:', pa
         pa = pa.replace('\r','').replace('\n','').replace(chr(0),'')
-        self.startAppWithParam([pa])
+        self.create_console_wnd_for_app([pa])
         context.finish(True, False, time)
 
     def drop_cb(self, wid, context, x, y, time):#Without this callback, got_data_cb will not be called
@@ -68,7 +68,7 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
                 if fullP is None:
                     print i, 'not found'
             #print '-----------------------------',fullP
-            self.startAppWithParam([fullP])
+            self.create_console_wnd_for_app([fullP])
         #w.set_skip_taskbar_hint(True)#Hide taskbar icon
 
     def close_application(self, widget):
@@ -81,7 +81,7 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
         print 'all application killed, after main_quit'
       
 
-    def startAppWithParam(self, param):
+    def create_console_wnd_for_app(self, param):
         '''
         Start an app with full path and parameters passed in a list
         param: [appFullPath, param1, param2, ...]

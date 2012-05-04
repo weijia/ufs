@@ -9,7 +9,7 @@ class advScriptRunner(scriptRunner.dropRunWnd):
         scriptRunner.dropRunWnd.startScriptRunnerApp(self)
         self.serverThread = launchServiceThreadClass(self)
         self.serverThread.start()
-    def quitAll(self):
+    def quitAllXmlRpcServer(self):
         self.serverThread.send_stop_to_all_registered_xml_rpc_server()
         self.serverThread.stop()
 
@@ -21,12 +21,12 @@ class advScriptRunner(scriptRunner.dropRunWnd):
         time.sleep(0.1)
 
     def lauchServerLaunch(self, param):
-        self.startAppWithParam(param)
+        self.create_console_wnd_for_app(param)
     def close_application(self, widget):
         '''
         This is called when task bar icon menu "exit" was clicked. It is the very beginning of the quit process.
         '''
-        self.quitAll()
+        self.quitAllXmlRpcServer()
         time.sleep(5)
         scriptRunner.dropRunWnd.close_application(self, widget)
 

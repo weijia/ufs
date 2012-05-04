@@ -20,8 +20,7 @@ except:
   sys.exit(1)  
 import os
 import gobject
-from ConsoleOutputWnd import ConsoleOutputWnd
-gtk.gdk.threads_init()
+from ConsoleOutputCollector import ConsoleOutputCollector
 #import gtkTaskbarIconForConsole
 
 import fileTools
@@ -33,27 +32,6 @@ class consoleWnd:
     '''
     This class manages console windows, it will kill applications for every console window.
     '''
-
-    def close_application(self, widget):
-        try:
-            self.parent.consoleClose(self)
-        except:
-            pass
-        try:
-            self.console_output_wnd.close()
-        except:
-            pass
-    def updateViewCallback(self, data):
-        #print 'callback called'
-        self.data = data
-        gobject.idle_add(self.updateView, None)
-        import time
-        time.sleep(0.1)
-
-    def updateView(self, param):
-        buf = self.textview.get_buffer()
-        buf.insert(buf.get_end_iter(), self.data)
-        self.data = ''
         
     def __init__(self, parent):
         gladefile = "consoleWnd.glade"
@@ -86,10 +64,33 @@ class consoleWnd:
         self.topMostFlag = True
         self.topMost(None)
         
-        self.console_output_wnd = ConsoleOutputWnd()
+        self.console_output_collector = ConsoleOutputCollector()
         #window.show()
         self.isMinimized = True
         self.window.hide()
+        
+    def close_application(self, widget):
+        try:
+            #Remove menu item in parent (taskbar menu)
+            self.parent.consoleClose(self)
+        except:
+            pass
+        try:
+            self.console_output_collector.close()
+        except:
+            pass
+    def updateViewCallback(self, data):
+        #print 'callback called'
+        self.data = data
+        gobject.idle_add(self.updateView, None)
+        import time
+        time.sleep(0.1)
+
+    def updateView(self, param):
+        buf = self.textview.get_buffer()
+        buf.insert(buf.get_end_iter(), self.data)
+        self.data = ''
+
         
     def topMost(self, widget):
         self.topMostFlag = not self.topMostFlag
@@ -98,6 +99,13 @@ class consoleWnd:
     def min(self, data):
         self.isMinimized = True
         self.window.hide()
+        
+    def startAppWithParam(self, progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
+        cwd = os.path.dirname(progAndParm[0])
+        #self.startApp(cwd, progAndParm)
+        self.console_output_collector.runConsoleApp(self, cwd, progAndParm)
+        self.window.set_title(' '.join(progAndParm))
+        
     '''
     def new_window_state(self, widget, event):
         """set the minimized variable to change the title to the same as the statusbar text"""
@@ -111,7 +119,7 @@ class consoleWnd:
                 print 'create task bar hint'
                 self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
         return False
-    '''
+
     def runApp(self, widget):
         self.quickStart('D:\\sandbox\\developing\\proxySmart\\twistedProxy.py')
     def quickStart(self, appPath):
@@ -119,13 +127,13 @@ class consoleWnd:
         self.startApp(p, [appPath])
     def startApp(self, cwd = 'D:\\code\\python\\developing\\ufs', progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
         #print '------------------------------',progAndParm
-        self.console_output_wnd.runConsoleApp(self, cwd, progAndParm)
+        self.console_output_collector.runConsoleApp(self, cwd, progAndParm)
         self.window.set_title(' '.join(progAndParm))
-    def startAppWithParam(self, progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
-        cwd = os.path.dirname(progAndParm[0])
-        self.startApp(cwd, progAndParm)
+    '''
+
         
 def main():
+    gtk.gdk.threads_init()
     gtk.gdk.threads_enter()
     gtk.main()
     gtk.gdk.threads_leave()
