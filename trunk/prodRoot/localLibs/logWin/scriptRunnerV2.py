@@ -66,7 +66,8 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
             if fullP is None:
                 fullP = fileTools.findAppInProduct(i)
                 if fullP is None:
-                    print i, 'not found'
+                    print i, 'not found ---- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+                    continue
             #print '-----------------------------',fullP
             self.create_console_wnd_for_app([fullP])
         #w.set_skip_taskbar_hint(True)#Hide taskbar icon

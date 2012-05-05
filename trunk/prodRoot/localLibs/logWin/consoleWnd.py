@@ -6,18 +6,18 @@ import os
 
 
 try:  
-  import pygtk  
-  pygtk.require ("2.0")  
+    import pygtk  
+    pygtk.require ("2.0")  
 except:  
-  pass  
+    pass  
   
 try:  
-  import gtk  
-  import gtk.glade
+    import gtk  
+    import gtk.glade
 except:  
-  print "You need to install pyGTK or GTKv2"  
-  print "or set your PYTHONPATH correctly."  
-  sys.exit(1)  
+    print "You need to install pyGTK or GTKv2"  
+    print "or set your PYTHONPATH correctly."  
+    sys.exit(1)  
 import os
 import gobject
 from ConsoleOutputCollector import ConsoleOutputCollector
@@ -81,15 +81,15 @@ class consoleWnd:
             pass
     def updateViewCallback(self, data):
         #print 'callback called'
-        self.data = data
-        gobject.idle_add(self.updateView, None)
+        #self.data = data
+        gobject.idle_add(self.updateView, data)
         import time
         time.sleep(0.1)
 
-    def updateView(self, param):
+    def updateView(self, data):
         buf = self.textview.get_buffer()
-        buf.insert(buf.get_end_iter(), self.data)
-        self.data = ''
+        buf.insert(buf.get_end_iter(), data)
+        #self.data = ''
 
         
     def topMost(self, widget):

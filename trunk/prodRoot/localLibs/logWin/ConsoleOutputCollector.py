@@ -103,7 +103,7 @@ class ConsoleOutputCollector:
         import win32api
         # TODO: do we need to kill applications?
         for i in self.pList:
-            #print 'processing:', i.pid, int(i._handle)
+            print 'processing:', i.pid, ", handle: ", int(i._handle)
             processManager.killChildProcessTree(i.pid)
             win32api.TerminateProcess(int(i._handle), -1)
     

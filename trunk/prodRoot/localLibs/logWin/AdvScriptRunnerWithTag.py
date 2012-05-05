@@ -30,7 +30,7 @@ class AdvScriptRunnerWithTag(advScriptRunner):
         gtk.main()
         gtk.gdk.threads_leave()
         print 'after gtk.gdk.threads_leave()'
-        self.quitAll()
+        #self.quitAllXmlRpcServer()
         print 'final quit'
         import sys
         sys.exit()
