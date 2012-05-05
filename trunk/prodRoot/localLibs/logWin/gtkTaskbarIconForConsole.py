@@ -95,7 +95,7 @@ class MyStatusIcon(gtk.StatusIcon):
         def on_quit(self, data):
                 print 'Exit'
                 self.set_visible(False)
-                self.parent.close_application(None)
+                self.parent.wnd_close_clicked(None)
                 #gtk.main_quit()
         def on_drop(self, data):
                 print data.data

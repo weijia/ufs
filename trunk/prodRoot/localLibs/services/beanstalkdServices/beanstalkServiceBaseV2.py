@@ -34,11 +34,11 @@ class beanstalkServiceBase(object):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         beanstalk.use(target_tube)
         s = json.dumps(item_dict, sort_keys=True, indent=4)
+        print "add item:", s, self.tubeName
         job = beanstalk.put(s)
         return job
     
     def addItem(self, itemDict):
-        print "add item:", s, self.tubeName
         return self.put_item(itemDict, self.tubeName)
         
     def watchTube(self):
@@ -80,7 +80,8 @@ class beanstalkServiceApp(beanstalkServiceBase):
     def register_cmd_tube(self):
         pid = os.getpid()
         print "current pid: ", pid
-        self.put_item({"pid": pid, "cmd_tube_name": self.tubeName}, gBeanstalkdLauncherServiceTubeName)
+        self.put_item({"cmd": "registration", "pid": pid, 
+                       "cmd_tube_name": self.tubeName}, gBeanstalkdLauncherServiceTubeName)
         
     def startServer(self):
         print self.__class__, self.tubeName

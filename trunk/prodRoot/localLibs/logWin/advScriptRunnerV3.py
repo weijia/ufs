@@ -3,6 +3,8 @@ import gobject
 #import threading
 import gtk
 import time
+import localLibSys
+from localLibs.services.beanstalkdServices.BeanstalkdLauncherService import BeanstalkdLauncherService
 
 class advScriptRunner(scriptRunner.dropRunWnd):
     def startScriptRunnerApp(self, launchServiceThreadClass):
@@ -10,7 +12,7 @@ class advScriptRunner(scriptRunner.dropRunWnd):
         self.serverThread = launchServiceThreadClass(self)
         self.serverThread.start()
     def quitAllXmlRpcServer(self):
-        self.serverThread.send_stop_to_all_registered_xml_rpc_server()
+        self.serverThread.send_stop_signal()
         self.serverThread.stop()
 
         
@@ -22,13 +24,14 @@ class advScriptRunner(scriptRunner.dropRunWnd):
 
     def lauchServerLaunch(self, param):
         self.create_console_wnd_for_app(param)
-    def close_application(self, widget):
+        
+    def wnd_close_clicked(self, widget):
         '''
         This is called when task bar icon menu "exit" was clicked. It is the very beginning of the quit process.
         '''
         self.quitAllXmlRpcServer()
         time.sleep(5)
-        scriptRunner.dropRunWnd.close_application(self, widget)
+        scriptRunner.dropRunWnd.wnd_close_clicked(self, widget)
 
 def startApplicationsNoReturn(l, launchServiceThreadClass):
     d = advScriptRunner()
@@ -46,7 +49,7 @@ def startApplicationsNoReturn(l, launchServiceThreadClass):
     
   
 def main():
-    startApplicationsNoReturn([])
+    startApplicationsNoReturn([], BeanstalkdLauncherService)
 
 if __name__ == "__main__":
     main()

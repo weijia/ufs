@@ -72,11 +72,11 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
             self.create_console_wnd_for_app([fullP])
         #w.set_skip_taskbar_hint(True)#Hide taskbar icon
 
-    def close_application(self, widget):
+    def wnd_close_clicked(self, widget):
         #self.window.hide()
         print 'killing applications'
         for i in self.task_to_menu_item_dict.keys():
-            i.close_application(widget)
+            i.wnd_close_clicked(widget)
         self.icon.set_visible(False)
         gtk.main_quit()
         print 'all application killed, after main_quit'

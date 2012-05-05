@@ -1,10 +1,10 @@
 from localLibs.logWin.AdvScriptRunnerWithTag import AdvScriptRunnerWithTag
-import localLibs.logWin.advScriptRunnerXmlRpcServer as advScriptRunnerXmlRpcServer
+from localLibs.services.beanstalkdServices.BeanstalkdLauncherService import BeanstalkdLauncherService 
 
 autoStartAppList = ['mongodb.bat',
                     'startBeanstalkd.bat',
                     'webserver-cgi',
-                    'XmlRpcServer2BeanstalkdServiceBridge',
+                    #'XmlRpcServer2BeanstalkdServiceBridge',
                     'cherrypyServerV3',
                     'BeanstalkdLauncherService',
                     'folderCollectionInitiator',
@@ -21,7 +21,7 @@ autoStartAppList = ['mongodb.bat',
 def main():
     r = AdvScriptRunnerWithTag()
     r.startApplicationsNoReturn(autoStartAppList, 
-                                            advScriptRunnerXmlRpcServer.launcherXmlRpcThread)
+                                            BeanstalkdLauncherService)
 
 if __name__ == "__main__":
     main()
