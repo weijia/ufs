@@ -16,7 +16,7 @@ from beanstalkServiceBaseV2 import beanstalkServiceBase, gBeanstalkdLauncherServ
 
         
 class BeanstalkdLauncherService(beanstalkServiceBase):
-    def __init__(self, tubeName):
+    def __init__(self, tubeName = gBeanstalkdLauncherServiceTubeName):
         super(BeanstalkdLauncherService, self).__init__(tubeName)
         self.taskid_cmd_tube_name_dict = {}
     def startServer(self):
@@ -50,14 +50,18 @@ class BeanstalkdLauncherService(beanstalkServiceBase):
                         print "not a correct registration, no pid"
                 elif item["cmd"] == "stop":
                     if item.has_key("pid"):
-                        if self.taskid_cmd_tube_name_dict.has_key("pid"):
-                            self.put_item({"cmd":"quit"})
+                        if self.taskid_cmd_tube_name_dict.has_key(item["pid"]):
+                            self.put_item({"cmd":"quit"}, self.taskid_cmd_tube_name_dict[item["pid"]])
                         else:
-                            print "no tube name registered for pid", item["pid"]
+                            print "no tube name registered for pid", item["pid"], self.taskid_cmd_tube_name_dict
                     else:
                         print "not a valid cmd", item
             
             job.delete()
+            
+    def send_stop_singals(self):
+        for i in self.taskid_cmd_tube_name_dict:
+            self.put_item({"cmd":"quit"}, self.taskid_cmd_tube_name_dict[i])
 
 
 if __name__ == "__main__":

@@ -100,11 +100,12 @@ class consoleWnd:
         self.isMinimized = True
         self.window.hide()
         
-    def startAppWithParam(self, progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
-        cwd = os.path.dirname(progAndParm[0])
+    def startAppWithParam(self, progAndParam = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
+        cwd = os.path.dirname(progAndParam[0])
         #self.startApp(cwd, progAndParm)
-        self.console_output_collector.runConsoleApp(self, cwd, progAndParm)
-        self.window.set_title(' '.join(progAndParm))
+        self.console_output_collector.runConsoleApp(self, cwd, progAndParam)
+        self.window.set_title(' '.join(progAndParam))
+        self.progAndParam = progAndParam
         
     '''
     def new_window_state(self, widget, event):

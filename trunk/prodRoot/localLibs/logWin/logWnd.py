@@ -1,6 +1,9 @@
 import consoleWnd
-#import localLibSys
+import localLibSys
 from localLibs.logSys.logSys import *
+import gobject
+import beanstalkc
+from localLibs.services.beanstalkdServices.BeanstalkdLauncherService import BeanstalkdLauncherService
 
 MAX_DISPLAYED_LINE_NUM = 400
 REMOVE_LINE_NUMBER = 300
@@ -74,10 +77,10 @@ class logWnd(consoleWnd.consoleWnd):
         buf.insert(buf.get_end_iter(), data)
         
     def show(self, *args):
-        '''
         cl('show called')
         if not self.isMinimized:
             return
+        '''
         buf = self.textview.get_buffer()
         ncl('setting text', self.curLines)
         buf.set_text(('\r\n').join(self.curLines)+self.lastLine)
@@ -93,8 +96,8 @@ class logWnd(consoleWnd.consoleWnd):
         
     def min(self, data):
         ncl('min called')
-        consoleWnd.consoleWnd.min(self, data)
         buf = self.textview.get_buffer()
-        self.kept_text = str(buf)
+        self.kept_text = buf.get_text(buf.get_start_iter(), buf.get_end_iter())
+        consoleWnd.consoleWnd.min(self, data)
         #False means do not get hidden text
         #self.curLines = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False).splitlines()
