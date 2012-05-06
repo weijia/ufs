@@ -26,10 +26,10 @@ class logWnd(consoleWnd.consoleWnd):
         consoleWnd.consoleWnd.close_app(self)
         if self.logFile is None:
             return
-        self.logFile.close()
+        self.logFile.kill_console_process_tree()
         self.logFile = None
         
-    def wnd_close_clicked(self, widget):
+    def on_quit_clicked(self, widget):
         self.send_stop_signal()
         
     def send_stop_signal(self):

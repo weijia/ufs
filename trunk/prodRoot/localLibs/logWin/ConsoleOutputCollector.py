@@ -4,7 +4,9 @@ import os
 import localLibSys
 import localLibs.windows.processManager as processManager
 CREATE_NO_WINDOW = 0x8000000
-
+from localLibs.services.beanstalkdServices.BeanstalkdLauncherService import BeanstalkdLauncherService
+import beanstalkc
+from localLibs.logSys.logSys import *
 
 class taskConsoleThread(threading.Thread):
     def __init__(self, target, fileD, appname = 'unknown'):
@@ -42,6 +44,7 @@ class ConsoleOutputCollector:
     def __init__(self):
         self.log_collector_thread_list = []
         self.pList = []
+        self.stopped = False
     def runConsoleApp(self, target, cwd = 'D:\\code\\python\\developing\\ufs', progAndParam = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
         checkExistPath = progAndParam
         if type(checkExistPath) == list:
@@ -76,6 +79,7 @@ class ConsoleOutputCollector:
             #print self.prog
             p = subprocess.Popen(self.prog, cwd = self.cwd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, bufsize=0, creationflags = CREATE_NO_WINDOW)
             self.pList.append(p)
+            print "created pid:", p.pid
 
             find_flag = False
             for z in self.normal_priority_tasks:
@@ -99,7 +103,7 @@ class ConsoleOutputCollector:
         else:#except:
             print 'launch exception'
         #self.appStarted = True
-    def close(self):
+    def kill_console_process_tree(self):
         import win32api
         # TODO: do we need to kill applications?
         for i in self.pList:
@@ -109,3 +113,14 @@ class ConsoleOutputCollector:
     
         for i in self.log_collector_thread_list:
             i.quit()
+
+    def send_stop_signal(self):
+        if not self.stopped:
+            try:
+                b = BeanstalkdLauncherService()
+                for i in self.console_output_collector.pList:
+                    b.addItem({"cmd":"stop", "pid": i.pid})
+                    cl("sending stop cmd to: ", i.pid)
+            except beanstalkc.SocketError:
+                pass
+            self.stopped = True

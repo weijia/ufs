@@ -28,25 +28,17 @@ def findProcessHandle(pid):
         currentPid = process.Properties_('ProcessID').Value
         parent = process.Properties_('ParentProcessId').Value
         handle = process.Properties_('Handle').Value
-        #print childPid, parent
+        print handle, currentPid
         if int(currentPid) == int(pid):
             #print 'find handle for pid:%d , is %d'%(int(pid), int(handle))
             return int(handle)
     raise 'no handle for pid found'
     
 def terminateProcessByPid(pid):
-    WMI = win32com.client.GetObject('winmgmts:')
-    processes = WMI.InstancesOf('Win32_Process')
-    for process in processes:
-        currentPid = process.Properties_('ProcessID').Value
-        parent = process.Properties_('ParentProcessId').Value
-        handle = process.Properties_('Handle').Value
-        #print childPid, parent
-        if int(currentPid) == int(pid):
-            #print 'find handle for pid:%d , is %d'%(int(pid), int(handle))
-            process.Terminate()
-            return
-    raise 'no handle for pid found'
+    PROCESS_TERMINATE = 1
+    handle = win32api.OpenProcess(PROCESS_TERMINATE, False, pid)
+    win32api.TerminateProcess(handle, -1)
+    win32api.CloseHandle(handle)
 
 
 def killChildProcessTree(pid, killRoot = False):
@@ -56,13 +48,10 @@ def killChildProcessTree(pid, killRoot = False):
         childPid = process.Properties_('ProcessID').Value
         parent = process.Properties_('ParentProcessId').Value
         #handle = process.Properties_('Handle').Value
-        #print childPid, parent
+        print "child: ",childPid, "parent: ", parent
         if int(parent) == int(pid):
             #print '--------------------------------------------match'
             killChildProcessTree(childPid, True)
     if True == killRoot:
-        handle = findProcessHandle(int(pid))
-        #print 'terminating root:', handle
-        #win32api.TerminateProcess(handle, -1)
         terminateProcessByPid(pid)
 

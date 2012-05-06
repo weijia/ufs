@@ -39,5 +39,5 @@ class dragMove:
             #print event.x_root,',',event.y_root
             self.dragMoveWnd.move(int(self.x + event.x_root - self.mousex), int(self.y + event.y_root - self.mousey))
     def button_release_event(self, widget, event):
-          #print 'release'
-          self.mouseDown = False
+        #print 'release'
+        self.mouseDown = False

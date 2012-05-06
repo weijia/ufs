@@ -10,9 +10,9 @@ import traceback
 import threading
 
 import localLibSys
-from localLibs.windows.changeNotifyThread import changeNotifyThread
+#from localLibs.windows.changeNotifyThread import changeNotifyThread
 import wwjufsdatabase.libs.utils.simplejson as json
-import localLibs.server.XmlRpcServer2BeanstalkdServiceBridge as bridge
+#import localLibs.server.XmlRpcServer2BeanstalkdServiceBridge as bridge
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
@@ -47,8 +47,8 @@ class beanstalkServiceBase(object):
         self.beanstalk.ignore('default')
         
     def is_term_signal(self, item):
-        if item.has_key("command"):
-            if item["command"] == "quit":
+        if item.has_key("cmd"):
+            if item["cmd"] == "quit":
                 print "got a quit message"
                 return True
         return False

@@ -11,11 +11,11 @@ import beanstalkc
 
 import localLibSys
 import wwjufsdatabase.libs.utils.simplejson as json
-from beanstalkServiceBaseV2 import beanstalkServiceBase, gBeanstalkdLauncherServiceTubeName
+from beanstalkServiceBaseV2 import beanstalkWorkingThread, gBeanstalkdLauncherServiceTubeName
 
 
         
-class BeanstalkdLauncherService(beanstalkServiceBase):
+class BeanstalkdLauncherService(beanstalkWorkingThread):
     def __init__(self, tubeName = gBeanstalkdLauncherServiceTubeName):
         super(BeanstalkdLauncherService, self).__init__(tubeName)
         self.taskid_cmd_tube_name_dict = {}
@@ -60,7 +60,7 @@ class BeanstalkdLauncherService(beanstalkServiceBase):
             
             job.delete()
             
-    def send_stop_singals(self):
+    def send_stop_signals(self):
         for i in self.taskid_cmd_tube_name_dict:
             self.put_item({"cmd":"quit"}, self.taskid_cmd_tube_name_dict[i])
 

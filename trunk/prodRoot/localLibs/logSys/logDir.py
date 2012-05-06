@@ -37,6 +37,6 @@ class logDir:
 if __name__ == '__main__':
     l = logDir("testLogDir")
     f = open(l.getLogFilePath(),'w')
-    f.close()
+    f.kill_console_process_tree()
             
             

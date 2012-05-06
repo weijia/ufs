@@ -1,5 +1,5 @@
-from localLibs.logWin.AdvScriptRunnerWithTag import AdvScriptRunnerWithTag
-from localLibs.services.beanstalkdServices.BeanstalkdLauncherService import BeanstalkdLauncherService 
+from localLibs.logWin.LauncherMain import LauncherMain
+#from localLibs.services.beanstalkdServices.BeanstalkdLauncherService import BeanstalkdLauncherService 
 
 autoStartAppList = ['mongodb.bat',
                     #'startBeanstalkd.bat',
@@ -19,9 +19,8 @@ autoStartAppList = ['mongodb.bat',
                     ]
 
 def main():
-    r = AdvScriptRunnerWithTag()
-    r.startApplicationsNoReturn(autoStartAppList, 
-                                            BeanstalkdLauncherService)
+    r = LauncherMain()
+    r.start_gui_msg_loop()
 
 if __name__ == "__main__":
     main()

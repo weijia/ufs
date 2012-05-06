@@ -22,10 +22,10 @@ class taskConsoleThreadWithLog(threading.Thread):
             #print 'after readline'
             if err == '':
                 #print 'err is empty'
-                f.close()
+                f.kill_console_process_tree()
                 self.quit()
             if err is None:
-                f.close()
+                f.kill_console_process_tree()
                 self.quit()
                 #print 'quit'
                 break

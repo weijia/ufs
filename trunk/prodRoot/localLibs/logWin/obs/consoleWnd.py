@@ -50,12 +50,12 @@ class consoleWnd:
         #window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
         #window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
 
-        #window.connect("destroy", self.wnd_close_clicked)
+        #window.connect("destroy", self.on_quit_clicked)
         #window.connect('window-state-event', self.new_window_state)
         window.set_title("Python console log window")
         window.set_border_width(1)
         dic = {
-            "destory_cb":self.wnd_close_clicked,
+            "destory_cb":self.on_quit_clicked,
             "minimize_clicked_cb":self.min,
             'topmost_toggled_cb':self.topMost
         }  
@@ -68,7 +68,7 @@ class consoleWnd:
         #window.show()
         self.isMinimized = True
         self.window.hide()
-    def wnd_close_clicked(self, widget):
+    def on_quit_clicked(self, widget):
         self.close_app()
         
     def close_app(self):
@@ -78,7 +78,7 @@ class consoleWnd:
         except:
             pass
         try:
-            self.console_output_collector.close()
+            self.console_output_collector.kill_console_process_tree()
         except:
             pass
     def updateViewCallback(self, data):
@@ -109,31 +109,7 @@ class consoleWnd:
         self.console_output_collector.runConsoleApp(self, cwd, progAndParam)
         self.window.set_title(' '.join(progAndParam))
         self.progAndParam = progAndParam
-        
-    '''
-    def new_window_state(self, widget, event):
-        """set the minimized variable to change the title to the same as the statusbar text"""
-        if event.changed_mask == gtk.gdk.WINDOW_STATE_ICONIFIED:
-            if not self.minimized:
-                self.minimized = True
-                print 'hide task bar hint'
-                self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_UTILITY)
-            else: # self.minimized:
-                self.minimized = False
-                print 'create task bar hint'
-                self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
-        return False
 
-    def runApp(self, widget):
-        self.quickStart('D:\\sandbox\\developing\\proxySmart\\twistedProxy.py')
-    def quickStart(self, appPath):
-        p = os.path.dirname(appPath)
-        self.startApp(p, [appPath])
-    def startApp(self, cwd = 'D:\\code\\python\\developing\\ufs', progAndParm = ['D:\\code\\python\\developing\\ufs\\webserver-cgi.py']):
-        #print '------------------------------',progAndParm
-        self.console_output_collector.runConsoleApp(self, cwd, progAndParm)
-        self.window.set_title(' '.join(progAndParm))
-    '''
 
         
 def main():
