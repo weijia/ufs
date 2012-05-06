@@ -121,7 +121,11 @@ class FileArchiveService(beanstalkServiceApp):
         self.taskDict[inputTubeName] = t
         t.start()
         return True
-                
+    
+    def stop(self):
+        #Tell all sub process to stop
+        for i in self.taskDict:
+            self.put_item({"cmd": "stop"}, i)
 
 if __name__ == "__main__":
     #print 'starting fileListHandler'

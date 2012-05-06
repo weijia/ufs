@@ -12,6 +12,7 @@ import localLibs.logWin.gui.fileTools as fileTools
 from localLibs.logWin.gui.ConsoleOutputWnd import ConsoleOutputWnd
 from ConsoleOutputCollector import ConsoleOutputCollector
 from localLibs.logSys.logSys import *
+import gobject
 
 class LauncherMain(GtkTaskBarIconApp):
     '''
@@ -40,18 +41,9 @@ class LauncherMain(GtkTaskBarIconApp):
                 continue
             i.send_stop_signal()
         print 'wait for 5 seconds'
-        time.sleep(5)
-        print 'start to killing apps'
-        for i in self.task_to_menu_item_dict.keys():
-            if i == self.beanstalkd_app:
-                continue
-            i.kill_console_process_tree()
+        self.timer_id = gobject.timeout_add(50000, self.final_quit)#Here time value are milliseconds
         
-        if not (self.beanstalkd_app is None):
-            self.beanstalkd_app.kill_console_process_tree()
-        
-        gtk.main_quit()
-        print 'all application killed, after main_quit'
+
         
     def on_dropped(self, data):
         print data.data
@@ -63,6 +55,25 @@ class LauncherMain(GtkTaskBarIconApp):
     ###############################
     # Internal functions
     ###############################
+    def final_quit(self):
+        print 'start to killing apps'
+        self.beanstalkd_launcher.kill_console_process_tree()
+        
+        for i in self.task_to_menu_item_dict.keys():
+            if i == self.beanstalkd_app:
+                continue
+            i.kill_console_process_tree()
+        
+        if not (self.beanstalkd_app is None):
+            self.beanstalkd_app.kill_console_process_tree()
+        
+        gtk.main_quit()
+        print 'all application killed, after main_quit'
+    def start_default_services(self, app_list):
+        for i in app_list:
+            self.start_basic_app(i)
+    
+    
     def start_basic_service(self):
         self.beanstalkd_app = self.start_basic_app('startBeanstalkd.bat')
         if self.beanstalkd_app is None:
@@ -78,6 +89,7 @@ class LauncherMain(GtkTaskBarIconApp):
                 if retry_cnt > 100:
                     print "beanstalkd start failed"
                     break
+        self.beanstalkd_launcher = self.start_basic_app("BeanstalkdLauncherService")
         
     def create_console_wnd_for_app(self, param):
         '''

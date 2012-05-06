@@ -21,19 +21,6 @@ def setPriority(pid=None,priority=1):
     handle = win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, True, pid)
     win32process.SetPriorityClass(handle, priorityclasses[priority])
 
-def findProcessHandle(pid):
-    WMI = win32com.client.GetObject('winmgmts:')
-    processes = WMI.InstancesOf('Win32_Process')
-    for process in processes:
-        currentPid = process.Properties_('ProcessID').Value
-        parent = process.Properties_('ParentProcessId').Value
-        handle = process.Properties_('Handle').Value
-        print handle, currentPid
-        if int(currentPid) == int(pid):
-            #print 'find handle for pid:%d , is %d'%(int(pid), int(handle))
-            return int(handle)
-    raise 'no handle for pid found'
-    
 def terminateProcessByPid(pid):
     PROCESS_TERMINATE = 1
     handle = win32api.OpenProcess(PROCESS_TERMINATE, False, pid)
@@ -48,7 +35,7 @@ def killChildProcessTree(pid, killRoot = False):
         childPid = process.Properties_('ProcessID').Value
         parent = process.Properties_('ParentProcessId').Value
         #handle = process.Properties_('Handle').Value
-        print "child: ",childPid, "parent: ", parent
+        #print "child: ",childPid, "parent: ", parent
         if int(parent) == int(pid):
             #print '--------------------------------------------match'
             killChildProcessTree(childPid, True)

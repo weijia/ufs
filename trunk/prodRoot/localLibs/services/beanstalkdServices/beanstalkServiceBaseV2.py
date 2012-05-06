@@ -101,8 +101,8 @@ class beanstalkServiceApp(beanstalkServiceBase):
             if self.is_term_signal(item):
                 self.stop()
                 job.delete()
-                #return
-                continue
+                return
+                #continue
             print item
             try:
                 if self.processItem(job, item):

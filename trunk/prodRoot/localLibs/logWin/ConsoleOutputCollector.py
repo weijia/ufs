@@ -7,6 +7,7 @@ CREATE_NO_WINDOW = 0x8000000
 from localLibs.services.beanstalkdServices.BeanstalkdLauncherService import BeanstalkdLauncherService
 import beanstalkc
 from localLibs.logSys.logSys import *
+import pywintypes
 
 class taskConsoleThread(threading.Thread):
     def __init__(self, target, fileD, appname = 'unknown'):
@@ -79,7 +80,7 @@ class ConsoleOutputCollector:
             #print self.prog
             p = subprocess.Popen(self.prog, cwd = self.cwd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, bufsize=0, creationflags = CREATE_NO_WINDOW)
             self.pList.append(p)
-            print "created pid:", p.pid
+            #print "created pid:", p.pid
 
             find_flag = False
             for z in self.normal_priority_tasks:
@@ -109,7 +110,10 @@ class ConsoleOutputCollector:
         for i in self.pList:
             print 'processing:', i.pid, ", handle: ", int(i._handle)
             processManager.killChildProcessTree(i.pid)
-            win32api.TerminateProcess(int(i._handle), -1)
+            try:
+                win32api.TerminateProcess(int(i._handle), -1)
+            except pywintypes.error:
+                pass
     
         for i in self.log_collector_thread_list:
             i.quit()
@@ -118,7 +122,7 @@ class ConsoleOutputCollector:
         if not self.stopped:
             try:
                 b = BeanstalkdLauncherService()
-                for i in self.console_output_collector.pList:
+                for i in self.pList:
                     b.addItem({"cmd":"stop", "pid": i.pid})
                     cl("sending stop cmd to: ", i.pid)
             except beanstalkc.SocketError:
