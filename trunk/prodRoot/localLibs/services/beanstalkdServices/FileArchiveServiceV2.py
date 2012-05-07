@@ -94,6 +94,7 @@ class FileArchiveThread(beanstalkWorkingThread):
         self.saving_items = {}
 
     def stop(self):
+        self.finalize()
         print "file archive service stop called"
         
 class FileArchiveService(beanstalkServiceApp):
@@ -122,10 +123,7 @@ class FileArchiveService(beanstalkServiceApp):
         t.start()
         return True
     
-    def stop(self):
-        #Tell all sub process to stop
-        for i in self.taskDict:
-            self.put_item({"cmd": "stop"}, i)
+
 
 if __name__ == "__main__":
     #print 'starting fileListHandler'

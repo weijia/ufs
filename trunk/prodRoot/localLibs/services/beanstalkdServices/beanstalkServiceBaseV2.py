@@ -8,6 +8,7 @@ import time
 import beanstalkc
 import traceback
 import threading
+import sys
 
 import localLibSys
 #from localLibs.windows.changeNotifyThread import changeNotifyThread
@@ -44,11 +45,12 @@ class beanstalkServiceBase(object):
     def watchTube(self):
         print 'watch tube: ', self.tubeName
         self.beanstalk.watch(self.tubeName)
+        self.beanstalk.watch(self.tubeName+"stop_tube")
         self.beanstalk.ignore('default')
         
     def is_term_signal(self, item):
         if item.has_key("cmd"):
-            if item["cmd"] == "quit":
+            if item["cmd"] == "stop":
                 print "got a quit message"
                 return True
         return False
@@ -67,6 +69,7 @@ class beanstalkServiceApp(beanstalkServiceBase):
     def __init__(self, tube_name):
         super(beanstalkServiceApp, self).__init__(tube_name)
         #bridge.subscribe(tube_name)
+        self.taskDict = {}
     '''
         import signal
         signal.signal(signal.SIGTERM, self.term_signal)
@@ -81,7 +84,7 @@ class beanstalkServiceApp(beanstalkServiceBase):
         pid = os.getpid()
         print "current pid: ", pid
         self.put_item({"cmd": "registration", "pid": pid, 
-                       "cmd_tube_name": self.tubeName}, gBeanstalkdLauncherServiceTubeName)
+                       "cmd_tube_name": self.tubeName+"stop_tube"}, gBeanstalkdLauncherServiceTubeName)
         
     def startServer(self):
         print self.__class__, self.tubeName
@@ -109,17 +112,26 @@ class beanstalkServiceApp(beanstalkServiceBase):
                     #If return True, the job was processed but should be still in queue, release and delay it
                     job.release(priority = beanstalkc.DEFAULT_PRIORITY, delay = gItemDelayTime)
             except Exception,e:
+                print >>sys.stderr, "processing task error, ignore the following"
                 traceback.print_exc()
                 #raise e
-                #job.delete()
-
+                job.delete()
+                
+    def stop(self):
+        #Tell all sub process to stop
+        for i in self.taskDict:
+            self.put_item({"cmd": "stop"}, i)
 
 class beanstalkWorkingThread(beanstalkServiceApp, threading.Thread):
     def __init__ ( self, inputTubeName):
         super(beanstalkWorkingThread, self).__init__(inputTubeName)
         threading.Thread.__init__(self)
+        
     def run(self):
         self.startServer()
+        
+    def stop(self):
+        pass
         
 if __name__ == "__main__":
     s = beanstalkServiceBase()

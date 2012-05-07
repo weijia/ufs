@@ -88,9 +88,10 @@ class ConsoleOutputWnd:
         #self.data = data
         #print "updateView:", data
         gobject.idle_add(self.updateView, data)
-        import time
-        time.sleep(0.1)
-
+        #import time
+        #time.sleep(0.1)
+    def set_title(self, title):
+        self.window.set_title(title)
 
     def updateView(self, data):
         #print "updateView:", data

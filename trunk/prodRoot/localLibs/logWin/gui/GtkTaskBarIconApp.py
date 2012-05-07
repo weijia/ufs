@@ -32,7 +32,7 @@ class GtkTaskBarIconApp(object):
         w.set_decorated(False)#Disable window frame board
         self.drag_drop_behavior = DragDropAndMoveBehavior(self.parent)
         self.drag_drop_behavior.startDragMove(w)
-        self.drag_drop_behavior.setDropTarget(w)
+        self.drag_drop_behavior.setDropTarget(w, self.on_dropped)
         
         #The following must be behind the above operations,
         #otherwise, drag drop function will fail
@@ -45,6 +45,10 @@ class GtkTaskBarIconApp(object):
         w.show_all()
 
     def start_gui_msg_loop(self):
+        #The threads_init method must be called, otherwise, gtk will not run in multi thread mode, in such case
+        #the output of the console window will not be output until gtk receive other events from UI (the console
+        #app will continue only when the floating wnd were dragged etc.
+        gtk.gdk.threads_init()
         gtk.gdk.threads_enter()
         gtk.main()
         gtk.gdk.threads_leave()
@@ -56,7 +60,7 @@ class GtkTaskBarIconApp(object):
     def on_quit_clicked(self):
         gtk.main_quit()
         
-    def on_dropped(self, data):
+    def on_dropped(self, wid, context, x, y, data, info, time):
         print data.data
         
     def on_menu_clicked(self, menu_text):

@@ -52,7 +52,7 @@ class BeanstalkdLauncherService(beanstalkWorkingThread):
                 elif item["cmd"] == "stop":
                     if item.has_key("pid"):
                         if self.taskid_cmd_tube_name_dict.has_key(item["pid"]):
-                            self.put_item({"cmd":"quit"}, self.taskid_cmd_tube_name_dict[item["pid"]])
+                            self.put_item({"cmd":"stop"}, self.taskid_cmd_tube_name_dict[item["pid"]])
                         else:
                             print "no tube name registered for pid", item["pid"], self.taskid_cmd_tube_name_dict
                     else:
@@ -62,7 +62,7 @@ class BeanstalkdLauncherService(beanstalkWorkingThread):
             
     def send_stop_signals(self):
         for i in self.taskid_cmd_tube_name_dict:
-            self.put_item({"cmd":"quit"}, self.taskid_cmd_tube_name_dict[i])
+            self.put_item({"cmd":"stop"}, self.taskid_cmd_tube_name_dict[i])
 
 if __name__ == "__main__":
     s = BeanstalkdLauncherService(gBeanstalkdLauncherServiceTubeName)

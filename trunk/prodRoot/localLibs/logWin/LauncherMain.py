@@ -25,6 +25,7 @@ class LauncherMain(GtkTaskBarIconApp):
         self.wnd_to_console_dict = {}
         self.task_to_menu_item_dict = {}
         self.start_basic_service()
+        self.drop_handler = None
     
     #####################################
     # Event handlers
@@ -41,12 +42,15 @@ class LauncherMain(GtkTaskBarIconApp):
                 continue
             i.send_stop_signal()
         print 'wait for 5 seconds'
-        self.timer_id = gobject.timeout_add(50000, self.final_quit)#Here time value are milliseconds
+        self.timer_id = gobject.timeout_add(10000, self.final_quit)#Here time value are milliseconds
         
 
         
-    def on_dropped(self, data):
-        print data.data
+    def on_dropped(self, wid, context, x, y, data, info, time):
+        if not (self.drop_handler is None):
+            self.drop_handler.on_dropped(wid, context, x, y, data, info, time)
+        else:
+            print data.data
         
     def console_wnd_close_clicked(self, console_wnd):
         self.wnd_to_console_dict[console_wnd].send_stop_signal()
@@ -55,6 +59,9 @@ class LauncherMain(GtkTaskBarIconApp):
     ###############################
     # Internal functions
     ###############################
+    def register_drop_handler(self, handler):
+        self.drop_handler = handler
+        
     def final_quit(self):
         print 'start to killing apps'
         self.beanstalkd_launcher.kill_console_process_tree()
@@ -69,7 +76,7 @@ class LauncherMain(GtkTaskBarIconApp):
         
         gtk.main_quit()
         print 'all application killed, after main_quit'
-    def start_default_services(self, app_list):
+    def start_services(self, app_list):
         for i in app_list:
             self.start_basic_app(i)
     

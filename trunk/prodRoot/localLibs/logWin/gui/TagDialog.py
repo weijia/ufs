@@ -5,8 +5,8 @@ import gtk
 pygtk.require("2.0") 
 #import colormap
 import fileTools
-import libSys
-import localLibSys
+#import libSys
+#import localLibSys
 import wwjufsdatabase.libs.tag.tagSystemInterfaceV2 as tagSystem
 import wwjufsdatabase.libs.utils.transform as transform
 
