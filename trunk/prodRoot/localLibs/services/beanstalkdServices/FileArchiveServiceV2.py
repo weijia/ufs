@@ -85,7 +85,7 @@ class FileArchiveThread(beanstalkWorkingThread):
             fileTools.getTimestampWithFreeName(self.working_dir, "."+gInfoFileExt, gInfoFilePrefix))
         logFile = open(infoFilePath, 'w')
         logFile.write(s)
-        logFile.kill_console_process_tree()
+        logFile.close()
         cl(infoFilePath)
         self.storage.add_file(infoFilePath)
         self.storage.finalize_one_trunk()

@@ -8,7 +8,7 @@ import uuid
 import localLibSys
 import localLibs.services.beanstalkdServices.folderScanner as folderScanner
 import localLibs.services.beanstalkdServices.monitorServiceV2 as monitorService
-from localLibs.services.beanstalkdServices.tubeDelayServiceV2 import tubeDelayService
+from localLibs.services.beanstalkdServices.tubeDelayServiceV3 import tubeDelayService
 #from localLibs.services.zippedCollectionListHandlerV2 import zippedCollectionListService
 from localLibs.services.beanstalkdServices.FileArchiveServiceV2 import FileArchiveService
 

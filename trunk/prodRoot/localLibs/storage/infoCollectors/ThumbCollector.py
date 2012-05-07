@@ -57,5 +57,5 @@ class ThumbCollector(InfoCollectorInterface):
             return added_size
             
         else:
-            cl("No thumb generated")
+            cl("No thumb generated", fullPath)
             return 0
