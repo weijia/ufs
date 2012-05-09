@@ -24,11 +24,13 @@ class beanstalkServiceBase(object):
     '''
     classdocs
     '''
-    def __init__(self, tubeName = gMonitorServiceTubeName):
+    def __init__(self, tube_name = None):
         '''
         Constructor
         '''
-        self.tubeName = tubeName
+        if tube_name is None:
+            tube_name = self.__class__.__name__
+        self.tubeName = tube_name
         self.beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
     
     def put_item(self, item_dict, target_tube):
@@ -66,20 +68,11 @@ gBeanstalkdLauncherServiceTubeName = "beanstalkd_launcher_service"
 
 
 class beanstalkServiceApp(beanstalkServiceBase):
-    def __init__(self, tube_name):
+    def __init__(self, tube_name = None):
         super(beanstalkServiceApp, self).__init__(tube_name)
         #bridge.subscribe(tube_name)
         self.taskDict = {}
-    '''
-        import signal
-        signal.signal(signal.SIGTERM, self.term_signal)
-        
-    def term_signal(self):
-        print "term signal"
-        bridge.stop_beanstalkd_service(self.tubeName)
-        import time
-        time.sleep(5)
-    '''
+
     def register_cmd_tube(self):
         pid = os.getpid()
         print "current pid: ", pid
@@ -111,6 +104,9 @@ class beanstalkServiceApp(beanstalkServiceBase):
                 if self.processItem(job, item):
                     #If return True, the job was processed but should be still in queue, release and delay it
                     job.release(priority = beanstalkc.DEFAULT_PRIORITY, delay = gItemDelayTime)
+                ########################################
+                # !!! Otherwise, sub class must delete the item. Or timeout will occur
+                ########################################
             except Exception,e:
                 print >>sys.stderr, "processing task error, ignore the following"
                 traceback.print_exc()

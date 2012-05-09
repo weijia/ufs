@@ -21,12 +21,11 @@ gDefaultTubeDelayServiceTubeName = 'tubeDelayServiceCmdTube'
 
 class tubeDelayThread(beanstalkWorkingThread):
     def __init__ ( self, inputTubeName, outputTubeName, delaySeconds, blackList = []):
+        super(tubeDelayThread, self).__init__(inputTubeName)
         self.blackList = blackList
         self.outputTubeName = outputTubeName
         self.itemToProcess = {}
         self.delaySeconds = delaySeconds
-        super(tubeDelayThread, self).__init__(inputTubeName)
-        threading.Thread.__init__(self)
         self.outputBeanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         self.outputBeanstalk.use(self.outputTubeName)
         self.outputBeanstalk.ignore(self.outputTubeName)

@@ -23,7 +23,6 @@ class TagProcessServiceBase(beanstalkServiceApp):
     '''
     def __init__(self, tubeName = "TagProcessServiceBase"):
         super(TagProcessServiceBase, self).__init__(tubeName)
-        self.taskDict = {}
 
         
     def processItem(self, job, item):
