@@ -29,7 +29,7 @@ class beanstalkServiceBase(object):
         Constructor
         '''
         if tube_name is None:
-            tube_name = self.__class__.__name__
+            tube_name = self.__class__.__name__ + "_default_cmd_tube_name"
         self.tubeName = tube_name
         self.beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
     

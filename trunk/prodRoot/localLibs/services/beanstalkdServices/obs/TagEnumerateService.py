@@ -21,9 +21,7 @@ class TagEnumerateThread(beanstalkWorkingThread):
     input: {"tag":"", "output_tube_name":"", "target_dir":""}
     '''
     def __init__(self, input_tube_name, output_tube_name):
-        super(beanstalkServiceApp, self).__init__(input_tube_name)
-        #bridge.subscribe(tube_name)
-        self.taskDict = {}
+        super(TagEnumerateThread, self).__init__(input_tube_name)
         
     def processItem(self, job, item):
         
