@@ -13,11 +13,12 @@ autoStartAppList = ['mongodb.bat',
                     #'syncXmlRpcServerV2,
                     'tubeDelayServiceV3',
                     'monitorServiceV2',
-                    'folderScanner',
+                    'FolderScannerV2',
                     #'zippedCollectionListHandlerV2',
                     'FileArchiveServiceV2',
-                    'TagProcessServiceBase',
-                    'AutoExtractInfoWiththumbeThread'
+                    #'TagProcessServiceBase',
+                    'AutoExtractInfoWithThumbService',
+                    'TagProcessServiceV2'
                     ]
 
 

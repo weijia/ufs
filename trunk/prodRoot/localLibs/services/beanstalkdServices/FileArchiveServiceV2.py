@@ -63,13 +63,14 @@ class FileArchiveThread(beanstalkWorkingThread):
         if not self.collection.exists(item_obj.getObjUfsUrl()):
             for collector in self.collector_list:
                 addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
-                #print "zipped size", info.compress_size
+                print "zipped size", addedItemSize
                 self.curStorageSize += addedItemSize
-            #print "current size:", self.curStorageSize
+            print "current size:", self.curStorageSize
             self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
             if self.curStorageSize > gMaxZippedCollectionSize:
                 cl("size exceed max")
                 self.finalize()
+                self.curStorageSize = 0
             return True#Return True will release the back to the tube
             
         else:

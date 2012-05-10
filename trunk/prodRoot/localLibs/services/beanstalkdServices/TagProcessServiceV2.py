@@ -14,6 +14,7 @@ from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp, 
 import localLibs.utils.misc as misc
 import wwjufsdatabase.libs.utils.transform as transform 
 import wwjufsdatabase.libs.tag.tagSystemInterfaceV2 as tagSystem
+from localLibs.logSys.logSys import *
 
 
         
@@ -21,7 +22,7 @@ class TagProcessService(beanstalkServiceApp):
     '''
     input: {"tag":"", "output_tube_name":"", "target_dir":"", "working_dir":""}
     '''
-    def __init__(self, input_tube_name):
+    def __init__(self, input_tube_name = None):
         super(TagProcessService, self).__init__(input_tube_name)
         self.processing_tag_dict = {}
         
@@ -56,7 +57,7 @@ class TagProcessService(beanstalkServiceApp):
                 tagged_item_list = transform.transformDirToInternal(item["url"])
             else:
                 #Not a valid item, return
-                print "not a valid item"
+                print "not a valid item or tag not have processor yet"
                 job.delete()
                 return False
             
@@ -73,7 +74,7 @@ class TagProcessService(beanstalkServiceApp):
         b = beanstalkServiceBase(output_tube_name)
 
         for i in tagged_item_list:
-            print i
+            cl(i)
             source_dir = transform.transformDirToInternal(i)
             
             b.addItem({"source_dir":source_dir, "working_dir": working_dir, "target_dir":target_dir})

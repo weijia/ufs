@@ -9,7 +9,7 @@ import fileTools
 import localLibSys
 import wwjufsdatabase.libs.tag.tagSystemInterfaceV2 as tagSystem
 import wwjufsdatabase.libs.utils.transform as transform
-from localLibs.services.beanstalkdServices.TagProcessServiceV2 import TagProcessService
+
 
 class TagDialog(object):
     def __init__(self):
@@ -113,9 +113,11 @@ class TagDialog(object):
             if i[0]:
                 url = i[1]
                 url = url.replace("file:///", "")
+                url = unicode(url)
                 full_path = transform.transformDirToInternal(url)
                 #print "full_path is:", full_path
                 t.tag(full_path, tag_list)
+                from localLibs.services.beanstalkdServices.TagProcessServiceV2 import TagProcessService
                 p = TagProcessService()
                 for cur_tag in tag_list:
                     p.addItem({"url":full_path, "tag":cur_tag})

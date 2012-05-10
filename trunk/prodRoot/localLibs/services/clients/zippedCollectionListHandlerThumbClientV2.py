@@ -6,7 +6,7 @@ Created on 2012-02-20
 
 import uuid
 import localLibSys
-import localLibs.services.beanstalkdServices.folderScanner as folderScanner
+import localLibs.services.beanstalkdServices.FolderScannerV2 as FolderScanner
 import localLibs.services.beanstalkdServices.monitorServiceV2 as monitorService
 from localLibs.services.beanstalkdServices.tubeDelayServiceV3 import tubeDelayService
 #from localLibs.services.zippedCollectionListHandlerV2 import zippedCollectionListService
@@ -34,7 +34,7 @@ def AutoArchiveThumb(source_folder = gAutoArchiveFullPath, target_dir = g_defaul
     inputTubeName = "collectionListTube"+taskUuid
     delayedCollectionListTubeName = "delayedCollectionListTubeName"+taskUuid
     
-    s1 = folderScanner.folderScanner()
+    s1 = FolderScanner.FolderScanner()
     s1.addItem({"command": "folderScanner", "fullPath":source_folder,
                "targetTubeName": inputTubeName,"blackList":[]})
 
