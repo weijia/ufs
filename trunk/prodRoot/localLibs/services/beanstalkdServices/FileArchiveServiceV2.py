@@ -32,6 +32,7 @@ gFileListTubeName = "fileListDelayed"
 gInfoFilePrefix = 'zippedCollFile'
 gInfoFileExt = "log"
 gMaxZippedCollectionSize = 2*1024*1024
+gDefaultFileInfoSize = 20
 
 #g_working_dir = "d:/tmp/working/filearchivethread"
 
@@ -67,6 +68,10 @@ class FileArchiveThread(beanstalkWorkingThread):
                 self.curStorageSize += addedItemSize
             print "current size:", self.curStorageSize
             self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
+            
+            #Add dafault size for file basic info
+            self.curStorageSize += gDefaultFileInfoSize
+            
             if self.curStorageSize > gMaxZippedCollectionSize:
                 cl("size exceed max")
                 self.finalize()
@@ -87,7 +92,7 @@ class FileArchiveThread(beanstalkWorkingThread):
         logFile = open(infoFilePath, 'w')
         logFile.write(s)
         logFile.close()
-        cl(infoFilePath)
+        info(infoFilePath)
         self.storage.add_file(infoFilePath)
         self.storage.finalize_one_trunk()
         for i in self.saving_items:

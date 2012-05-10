@@ -129,6 +129,13 @@ class customLogSys:
                 updateLogConfig(logFile, funcName)
         return realLogger
 
+def info(*args):
+    logStr = ''
+    for i in args:
+        logStr += changeEncoding(i)+" "
+    print logStr
+    
+    
 def cl(*args):
     p = whosdaddy()
     #print 'dady is',p

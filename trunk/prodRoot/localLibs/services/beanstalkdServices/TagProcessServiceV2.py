@@ -74,7 +74,7 @@ class TagProcessService(beanstalkServiceApp):
         b = beanstalkServiceBase(output_tube_name)
 
         for i in tagged_item_list:
-            cl(i)
+            info(i)
             source_dir = transform.transformDirToInternal(i)
             
             b.addItem({"source_dir":source_dir, "working_dir": working_dir, "target_dir":target_dir})

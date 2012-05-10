@@ -34,7 +34,7 @@ class FolderScannerThread(beanstalkWorkingThread):
                 if self.quit_flag:
                     break
                 for j in i[2]:
-                    cl(j)
+                    info(j)
                     fullPath = transform.transformDirToInternal(os.path.join(i[0], j))
                     paramDict = {"fullPath": fullPath, "timestamp": os.stat(fullPath)[ST_MTIME],
                                  "monitoringPath": self.rootFolder}
