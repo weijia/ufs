@@ -135,6 +135,8 @@ def info(*args):
         logStr += changeEncoding(i)+" "
     print logStr
     
+def ninfo(*args):
+    pass
     
 def cl(*args):
     p = whosdaddy()
