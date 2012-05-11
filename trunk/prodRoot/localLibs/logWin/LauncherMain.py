@@ -41,7 +41,7 @@ class LauncherMain(GtkTaskBarIconApp):
             if i == self.beanstalkd_app:
                 continue
             i.send_stop_signal()
-        print 'wait for 5 seconds'
+        print 'wait for 10 seconds'
         self.timer_id = gobject.timeout_add(10000, self.final_quit)#Here time value are milliseconds
         
 
@@ -96,6 +96,29 @@ class LauncherMain(GtkTaskBarIconApp):
                 if retry_cnt > 100:
                     print "beanstalkd start failed"
                     break
+        ###########################
+        # Start mongodb
+        ###########################
+        self.mongodb_app = self.start_basic_app('mongodb.bat')
+        if self.mongodb_app is None:
+            return None
+        #Check if beanstalkd started correctly
+        retry_cnt = 0
+        from pymongo import Connection
+        from pymongo.errors import AutoReconnect
+        while True:
+            try:
+                connection = Connection()
+                break
+            except AutoReconnect:
+                retry_cnt += 1
+                if retry_cnt > 100:
+                    print "mongodb start failed"
+                    break
+        
+        ###########################
+        # Start beanstalkd service manager
+        ###########################
         self.beanstalkd_launcher = self.start_basic_app("BeanstalkdLauncherService")
         
     def create_console_wnd_for_app(self, param):

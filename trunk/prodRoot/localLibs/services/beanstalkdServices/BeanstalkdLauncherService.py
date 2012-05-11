@@ -11,8 +11,8 @@ import beanstalkc
 
 import localLibSys
 import wwjufsdatabase.libs.utils.simplejson as json
-from beanstalkServiceBaseV2 import beanstalkWorkingThread, gBeanstalkdLauncherServiceTubeName
-
+from beanstalkServiceBaseV2 import beanstalkWorkingThread, gBeanstalkdLauncherServiceTubeName, g_stop_msg_priority
+from localLibs.logSys.logSys import *
 
         
 class BeanstalkdLauncherService(beanstalkWorkingThread):
@@ -62,7 +62,13 @@ class BeanstalkdLauncherService(beanstalkWorkingThread):
             
     def send_stop_signals(self):
         for i in self.taskid_cmd_tube_name_dict:
-            self.put_item({"cmd":"stop"}, self.taskid_cmd_tube_name_dict[i])
+            self.put_item({"cmd":"stop"}, self.taskid_cmd_tube_name_dict[i], g_stop_msg_priority)
+            
+    def send_stop_for_pid(self, pid):
+        try:
+            self.addItem({"cmd":"stop", "pid": pid}, g_stop_msg_priority)
+        except beanstalkc.SocketError:
+            cl("beanstalkd seems terminated")
 
 if __name__ == "__main__":
     s = BeanstalkdLauncherService(gBeanstalkdLauncherServiceTubeName)

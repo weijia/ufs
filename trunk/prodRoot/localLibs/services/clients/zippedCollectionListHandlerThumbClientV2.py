@@ -27,7 +27,8 @@ delayedCollectionListTubeName+taskUuid -> fileArchiveService
 gAutoArchiveFullPath = "D:\\userdata\\q19420\\My Documents\\Tencent Files\\10132994\\Image"
 gWorkingDir = "D:/tmp/working/fileArchiveService"
 g_default_target_dir = "D:/tmp/working/default_target_dir"
-
+g_ignore_file_type_list = ["*.c", "*.h", "*.cpp","*.hpp"]
+g_ignore_file_type_list = []
 
 def AutoArchiveThumb(source_folder = gAutoArchiveFullPath, target_dir = g_default_target_dir,
                      workingDir = gWorkingDir,taskUuid = str(uuid.uuid4())):
@@ -36,15 +37,15 @@ def AutoArchiveThumb(source_folder = gAutoArchiveFullPath, target_dir = g_defaul
     
     s1 = FolderScanner.FolderScanner()
     s1.addItem({"command": "folderScanner", "fullPath":source_folder,
-               "targetTubeName": inputTubeName,"blackList":[]})
+               "targetTubeName": inputTubeName,"blackList":g_ignore_file_type_list})
 
     s2 = monitorService.monitorService()
     s2.addItem({"command": "monitorService", "fullPath":source_folder,
-               "targetTubeName": inputTubeName,"blackList":[]})
+               "targetTubeName": inputTubeName,"blackList":g_ignore_file_type_list})
     
     s3 = tubeDelayService()
     s3.addItem({"inputTubeName":inputTubeName,
-               "outputTubeName": delayedCollectionListTubeName,"blackList":[]})
+               "outputTubeName": delayedCollectionListTubeName,"blackList":g_ignore_file_type_list})
     
     s4 = FileArchiveService()
     s4.addItem({"InputTubeName":delayedCollectionListTubeName, "WorkingDir":workingDir, "TargetDir": target_dir})

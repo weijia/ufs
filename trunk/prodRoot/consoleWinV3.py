@@ -2,7 +2,7 @@ from localLibs.logWin.LauncherMain import LauncherMain
 from localLibs.logWin.TagDropHandler import TagDropHandler
 #from localLibs.services.beanstalkdServices.BeanstalkdLauncherService import BeanstalkdLauncherService 
 
-autoStartAppList = ['mongodb.bat',
+autoStartAppList = [#'mongodb.bat',
                     #'startBeanstalkd.bat',
                     'webserver-cgi',
                     #'XmlRpcServer2BeanstalkdServiceBridge',

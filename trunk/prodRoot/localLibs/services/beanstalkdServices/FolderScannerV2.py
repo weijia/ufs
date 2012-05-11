@@ -12,8 +12,16 @@ from beanstalkServiceBaseV2 import beanstalkServiceApp, beanstalkWorkingThread
 import threading
 from stat import *
 from localLibs.logSys.logSys import *
+import re
 
 gFolderScannerTubeName = "folderScannerTube"
+
+def filter(filepath, filter_list):
+    for i in filter_list:
+        if re.search("\." + i.split(".")[1] + "$", i) is None:
+            return True
+        else:
+            return False
 
 class FolderScannerThread(beanstalkWorkingThread):
     def __init__ ( self, tubeName, rootFolder, blackList = []):
@@ -26,6 +34,8 @@ class FolderScannerThread(beanstalkWorkingThread):
         print 'Start scanning'
         if not os.path.isdir(self.rootFolder):
             print "not a folder"
+            if filter(self.rootFolder, self.blackList):
+                return
             paramDict = {"fullPath": self.rootFolder, "timestamp": os.stat(self.rootFolder)[ST_MTIME],
                              "monitoringPath": self.rootFolder}
             self.addItem(paramDict)
@@ -35,6 +45,9 @@ class FolderScannerThread(beanstalkWorkingThread):
                     break
                 for j in i[2]:
                     info(j)
+                    if filter(j, self.blackList):
+                        info("ignoring: ", j)
+                        continue
                     fullPath = transform.transformDirToInternal(os.path.join(i[0], j))
                     paramDict = {"fullPath": fullPath, "timestamp": os.stat(fullPath)[ST_MTIME],
                                  "monitoringPath": self.rootFolder}

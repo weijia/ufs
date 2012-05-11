@@ -34,8 +34,9 @@ class ThumbCollector(InfoCollectorInterface):
         '''
         infoDict = obj_item.getItemInfo()
         fullPath = obj_item["fullPath"]
+        mime_type = obj_item["mime_type"]
         #Add thumb info
-        thumbFullPath = getThumb(fullPath, self.working_dir)
+        thumbFullPath = getThumb(fullPath, self.working_dir, mime_type)
         if not (thumbFullPath is None):
             thumbObj = self.dbInst.getFsObjFromFullPath(thumbFullPath)
             thumbUfsUrl = thumbObj.getObjUfsUrl()

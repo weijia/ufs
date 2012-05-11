@@ -5,7 +5,7 @@ import localLibSys
 import localLibs.windows.processManager as processManager
 CREATE_NO_WINDOW = 0x8000000
 from localLibs.services.beanstalkdServices.BeanstalkdLauncherService import BeanstalkdLauncherService
-import beanstalkc
+#import beanstalkc
 import localLibs.logSys.logDir as logDir
 from localLibs.logSys.logSys import *
 import pywintypes
@@ -38,7 +38,9 @@ class taskConsoleThread(threading.Thread):
                 #print 'quit'
                 break
             if self.output_to_console:
-                print 'got output:', self.appname, ':  ',err
+                #print 'got output:', self.appname, ':  ',err
+                #print err
+                pass
             if not (f is None):
                 f.write(err)
             self.target.updateViewCallback(err)
@@ -144,11 +146,8 @@ class ConsoleOutputCollector:
 
     def send_stop_signal(self):
         if not self.stopped:
-            try:
-                b = BeanstalkdLauncherService()
-                for i in self.pList:
-                    b.addItem({"cmd":"stop", "pid": i.pid})
-                    cl("sending stop cmd to: ", i.pid)
-            except beanstalkc.SocketError:
-                pass
+            b = BeanstalkdLauncherService()
+            for i in self.pList:
+                b.send_stop_for_pid(i.pid)
+                cl("sending stop cmd to: ", i.pid)
             self.stopped = True

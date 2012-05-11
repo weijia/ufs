@@ -19,6 +19,7 @@ gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
 gMonitorServiceTubeName = "monitorQueue"
 gItemDelayTime = 60*60*24#One day
+g_stop_msg_priority = 2**30
 
 class beanstalkServiceBase(object):
     '''
@@ -33,21 +34,21 @@ class beanstalkServiceBase(object):
         self.tubeName = tube_name
         self.beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
     
-    def put_item(self, item_dict, target_tube):
+    def put_item(self, item_dict, target_tube, priority = beanstalkc.DEFAULT_PRIORITY):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         beanstalk.use(target_tube)
         s = json.dumps(item_dict, sort_keys=True, indent=4)
         print "add item:", s, self.tubeName
-        job = beanstalk.put(s)
+        job = beanstalk.put(s, priority = priority)
         return job
     
-    def addItem(self, itemDict):
-        return self.put_item(itemDict, self.tubeName)
+    def addItem(self, itemDict, priority = beanstalkc.DEFAULT_PRIORITY):
+        return self.put_item(itemDict, self.tubeName, priority)
         
     def watchTube(self):
         print 'watch tube: ', self.tubeName
         self.beanstalk.watch(self.tubeName)
-        self.beanstalk.watch(self.tubeName+"stop_tube")
+        self.beanstalk.watch(self.tubeName+"_stop_tube")
         self.beanstalk.ignore('default')
         
     def is_term_signal(self, item):
@@ -76,8 +77,11 @@ class beanstalkServiceApp(beanstalkServiceBase):
     def register_cmd_tube(self):
         pid = os.getpid()
         print "current pid: ", pid
+        
+        #self.put_item({"cmd": "registration", "pid": pid, 
+        #               "cmd_tube_name": self.tubeName}, gBeanstalkdLauncherServiceTubeName)
         self.put_item({"cmd": "registration", "pid": pid, 
-                       "cmd_tube_name": self.tubeName+"stop_tube"}, gBeanstalkdLauncherServiceTubeName)
+                       "cmd_tube_name": self.tubeName+"_stop_tube"}, gBeanstalkdLauncherServiceTubeName)
         
     def startServer(self):
         print self.__class__, self.tubeName
@@ -116,7 +120,7 @@ class beanstalkServiceApp(beanstalkServiceBase):
     def stop(self):
         #Tell all sub process to stop
         for i in self.taskDict:
-            self.put_item({"cmd": "stop"}, i)
+            self.put_item({"cmd": "stop"}, i, g_stop_msg_priority)
 
 class beanstalkWorkingThread(beanstalkServiceApp, threading.Thread):
     def __init__ ( self, inputTubeName):
