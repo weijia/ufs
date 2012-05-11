@@ -107,7 +107,7 @@ class FileArchiveService(beanstalkServiceApp):
     '''
     classdocs
     '''
-    def __init__(self, storage_class = CompressedStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName"):
+    def __init__(self, storage_class = CompressedStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName", passwd = "123"):
         super(FileArchiveService, self).__init__(serviceControlTubeName)
         self.taskDict = {}
         self.storage_class = storage_class
@@ -134,5 +134,13 @@ class FileArchiveService(beanstalkServiceApp):
 if __name__ == "__main__":
     #print 'starting fileListHandler'
     #workingDir = "d:/tmp/working"
-    s = FileArchiveService()
+    passwd = "123"
+    from localLibs.utils.misc import get_prot_root
+    passwd_file = os.path.join(get_prot_root(), "passwd.config")
+    if os.path.exists(passwd_file):
+        f = open(passwd_file)
+        passwd = f.read().replace("\r","").replace("\n", "")
+        f.close()
+    #print "passwd: ", passwd
+    s = FileArchiveService(passwd = passwd)
     s.startServer()

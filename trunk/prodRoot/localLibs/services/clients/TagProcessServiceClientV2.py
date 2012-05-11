@@ -11,7 +11,7 @@ from localLibs.services.beanstalkdServices.AutoExtractInfoWithThumbService impor
 
 
 
-gWorkingDir = "D:/tmp/working/fileArchiveService"
+gWorkingDir = "D:/tmp/working/tmp_generated_files"
 g_default_target_dir = "D:/tmp/working/default_target_dir"
 
 

@@ -29,6 +29,10 @@ class taskConsoleThread(threading.Thread):
         while not self.quitFlag:
             #print 'before readline'
             err = self.fileD.readline()
+            try:
+                err = err.decode("gbk")
+            except:
+                pass
             #print 'after readline'
             if err == '':
                 #print 'err is empty'
@@ -39,7 +43,7 @@ class taskConsoleThread(threading.Thread):
                 break
             if self.output_to_console:
                 #print 'got output:', self.appname, ':  ',err
-                #print err
+                info(err)
                 pass
             if not (f is None):
                 f.write(err)

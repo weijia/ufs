@@ -75,7 +75,9 @@ class LauncherMain(GtkTaskBarIconApp):
             self.beanstalkd_app.kill_console_process_tree()
         
         gtk.main_quit()
+        time.sleep(5)
         print 'all application killed, after main_quit'
+        exit(0)
     def start_services(self, app_list):
         for i in app_list:
             self.start_basic_app(i)
