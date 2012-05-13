@@ -98,6 +98,7 @@ class FileArchiveThread(beanstalkWorkingThread):
         for i in self.saving_items:
             self.collection.addObj(i, self.saving_items[i])
         self.saving_items = {}
+        print "trunk finalized"
 
     def stop(self):
         self.finalize()
@@ -112,6 +113,7 @@ class FileArchiveService(beanstalkServiceApp):
         self.taskDict = {}
         self.storage_class = storage_class
         self.collector_list = collector_list
+        self.passwd = passwd
 
         
     def processItem(self, job, item):
@@ -124,7 +126,7 @@ class FileArchiveService(beanstalkServiceApp):
         if self.taskDict.has_key(inputTubeName):
             job.delete()
             return False
-        t = FileArchiveThread(inputTubeName, self.storage_class(target_dir), self.collector_list, workingDir)
+        t = FileArchiveThread(inputTubeName, self.storage_class(target_dir, passwd=self.passwd), self.collector_list, workingDir)
         self.taskDict[inputTubeName] = t
         t.start()
         return True

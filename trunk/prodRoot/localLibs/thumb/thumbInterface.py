@@ -22,11 +22,14 @@ def getThumb(path, targetDir, mime_type = None):
         try:
             newPath = picThumbGenerator.genPicThumb(path, targetDir, mime_type)
         except picThumbGenerator.pictureFormatNotSupported:
-            try:#if True:
-                    newPath = ffmpegThumb.genVideoThumb(path, targetDir)
-                    #return "complete transform"
-                    #return newPath
-            except:
+            if not (ext in ["zip", "dll", "cab", "txt", "iso", "rar", "pdf", "doc", "docx", "xls", "xlsx"]):
+                try:#if True:
+                        newPath = ffmpegThumb.genVideoThumb(path, targetDir)
+                        #return "complete transform"
+                        #return newPath
+                except:
+                    pass
+            else:
                 pass
     if newPath is None:
         return None

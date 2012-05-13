@@ -42,7 +42,7 @@ class LauncherMain(GtkTaskBarIconApp):
                 continue
             i.send_stop_signal()
         print 'wait for 10 seconds'
-        self.timer_id = gobject.timeout_add(10000, self.final_quit)#Here time value are milliseconds
+        self.timer_id = gobject.timeout_add(60000, self.final_quit)#Here time value are milliseconds
         
 
         

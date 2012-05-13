@@ -72,6 +72,9 @@ class beanstalkServiceApp(beanstalkServiceBase):
     def __init__(self, tube_name = None):
         super(beanstalkServiceApp, self).__init__(tube_name)
         #bridge.subscribe(tube_name)
+        ##############################
+        # The thread should be value not the key in taskDict
+        ##############################
         self.taskDict = {}
 
     def register_cmd_tube(self):
@@ -120,7 +123,7 @@ class beanstalkServiceApp(beanstalkServiceBase):
     def stop(self):
         #Tell all sub process to stop
         for i in self.taskDict:
-            self.put_item({"cmd": "stop"}, i, g_stop_msg_priority)
+            self.put_item({"cmd": "stop"}, self.taskDict[i], g_stop_msg_priority)
 
 class beanstalkWorkingThread(beanstalkServiceApp, threading.Thread):
     def __init__ ( self, inputTubeName):

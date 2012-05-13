@@ -54,7 +54,7 @@ class TagProcessService(beanstalkServiceApp):
             if self.processing_tag_dict.has_key(tag):
                 #Task exist, add the new tagged elment for processing
                 task_item = self.processing_tag_dict[tag]
-                tagged_item_list = transform.transformDirToInternal(item["url"])
+                tagged_item_list = [transform.transformDirToInternal(item["url"])]
             else:
                 #Not a valid item, return
                 print "not a valid item or tag not have processor yet"
