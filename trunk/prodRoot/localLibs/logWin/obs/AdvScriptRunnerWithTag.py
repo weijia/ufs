@@ -36,26 +36,6 @@ class AdvScriptRunnerWithTag(advScriptRunner):
         sys.exit()
         return 0
     def dropped(self, wid, context, x, y, data, info, time):
-        # Got data.
-        #print data.data
-        #print data.format
-        #print data.selection
-        #print data.target
-        #print data
-        #print data.data
-        #print data.get_targets()
-        #Dropped file has a prefix of "file:///", remove it.
-        '''
-        pa = data.data.replace('file:///','')
-        #print '------------------------------dropped:', pa
-        pa = pa.replace('\r','').replace('\n','').replace(chr(0),'')
-        import re
-        if (re.search("\.bat$", pa) is None) and (re.search("\.py$", pa) is None) and (re.search("\.exe$", pa) is None):
-            #Normal file
-            print pa
-        else:
-            self.createConsolWndForApp([pa])
-        '''
         pa = data.data.split("\n")
         res = []
         for i in pa:

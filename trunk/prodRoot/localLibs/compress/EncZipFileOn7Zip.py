@@ -16,7 +16,9 @@ def encode2Local(s):
 def decode2Local(s):
     return s.decode(gLocalEncode)
 
-app = "..\\..\\..\\..\\otherBin\\7za920\\7za.exe"        
+#Every app will be start in the root dir of the source code (prodRoot)
+app = "..\\otherBin\\7za920\\7za.exe"        
+
         
 class EncZipFileOn7Zip(object):
     def __init__(self, filename, mode = "r", passwd = '123'):
@@ -51,6 +53,7 @@ class EncZipFileOn7Zip(object):
             original_size = 0
         cmd = (u'%s -p%s -mhe a "%s" "%s"'%(app, self.passwd, self.filename, adding_file)).encode(gLocalEncode)
         print "command:", cmd
+        print "current dir:", os.getcwd()
         process = subprocess.Popen(cmd, shell=False, creationflags = CREATE_NO_WINDOW)
         #wait is used to wait for the child process to complete
         process.wait()
@@ -58,5 +61,5 @@ class EncZipFileOn7Zip(object):
         return increased_size
 
                 
-    def close(self):
+    def kill_console_process_tree(self):
         pass

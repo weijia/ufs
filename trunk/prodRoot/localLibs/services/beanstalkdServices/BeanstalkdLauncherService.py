@@ -11,14 +11,15 @@ import beanstalkc
 
 import localLibSys
 import wwjufsdatabase.libs.utils.simplejson as json
-from beanstalkServiceBaseV2 import beanstalkServiceBase, gBeanstalkdLauncherServiceTubeName
-
+from beanstalkServiceBaseV2 import beanstalkWorkingThread, gBeanstalkdLauncherServiceTubeName, g_stop_msg_priority
+from localLibs.logSys.logSys import *
 
         
-class BeanstalkdLauncherService(beanstalkServiceBase):
+class BeanstalkdLauncherService(beanstalkWorkingThread):
     def __init__(self, tubeName = gBeanstalkdLauncherServiceTubeName):
         super(BeanstalkdLauncherService, self).__init__(tubeName)
         self.taskid_cmd_tube_name_dict = {}
+        
     def startServer(self):
         print self.__class__, self.tubeName
         self.watchTube()
@@ -51,7 +52,7 @@ class BeanstalkdLauncherService(beanstalkServiceBase):
                 elif item["cmd"] == "stop":
                     if item.has_key("pid"):
                         if self.taskid_cmd_tube_name_dict.has_key(item["pid"]):
-                            self.put_item({"cmd":"quit"}, self.taskid_cmd_tube_name_dict[item["pid"]])
+                            self.put_item({"cmd":"stop"}, self.taskid_cmd_tube_name_dict[item["pid"]])
                         else:
                             print "no tube name registered for pid", item["pid"], self.taskid_cmd_tube_name_dict
                     else:
@@ -59,10 +60,15 @@ class BeanstalkdLauncherService(beanstalkServiceBase):
             
             job.delete()
             
-    def send_stop_singals(self):
+    def send_stop_signals(self):
         for i in self.taskid_cmd_tube_name_dict:
-            self.put_item({"cmd":"quit"}, self.taskid_cmd_tube_name_dict[i])
-
+            self.put_item({"cmd":"stop"}, self.taskid_cmd_tube_name_dict[i], g_stop_msg_priority)
+            
+    def send_stop_for_pid(self, pid):
+        try:
+            self.addItem({"cmd":"stop", "pid": pid}, g_stop_msg_priority)
+        except beanstalkc.SocketError:
+            cl("beanstalkd seems terminated")
 
 if __name__ == "__main__":
     s = BeanstalkdLauncherService(gBeanstalkdLauncherServiceTubeName)

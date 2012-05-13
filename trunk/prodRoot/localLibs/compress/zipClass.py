@@ -56,8 +56,8 @@ class ZFile(object):
             else:
                 self.addfile(path)
             
-    def close(self):
-        self.zfile.close()
+    def kill_console_process_tree(self):
+        self.zfile.kill_console_process_tree()
         
     def extract_to(self, path):
         for p in self.zfile.namelist():
@@ -86,9 +86,9 @@ class ZFile(object):
 def create(zfile, files):
     z = ZFile(zfile, 'w')
     z.addfiles(files)
-    z.close()
+    z.kill_console_process_tree()
     
 def extract(zfile, path):
     z = ZFile(zfile)
     z.extract_to(path)
-    z.close()
+    z.kill_console_process_tree()

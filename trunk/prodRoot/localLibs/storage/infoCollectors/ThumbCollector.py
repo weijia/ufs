@@ -34,8 +34,9 @@ class ThumbCollector(InfoCollectorInterface):
         '''
         infoDict = obj_item.getItemInfo()
         fullPath = obj_item["fullPath"]
+        mime_type = obj_item["mime_type"]
         #Add thumb info
-        thumbFullPath = getThumb(fullPath, self.working_dir)
+        thumbFullPath = getThumb(fullPath, self.working_dir, mime_type)
         if not (thumbFullPath is None):
             thumbObj = self.dbInst.getFsObjFromFullPath(thumbFullPath)
             thumbUfsUrl = thumbObj.getObjUfsUrl()
@@ -53,9 +54,9 @@ class ThumbCollector(InfoCollectorInterface):
             #Add item info, it is not stored until finalize the current trunk
             ####################################################
             info_dict[obj_item.getObjUfsUrl()] = infoDict
-            cl(infoDict)
+            ncl(infoDict)
             return added_size
             
         else:
-            cl("No thumb generated")
+            ncl("No thumb generated", fullPath)
             return 0

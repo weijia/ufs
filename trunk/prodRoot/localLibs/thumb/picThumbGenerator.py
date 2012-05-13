@@ -29,16 +29,19 @@ def picFormatSupported(ext):
         return False
 
         
-def picFormatSupportedV2(fullPath):
-    rootPath = getProdRoot()
-    magicPath = os.path.join(rootPath, "share\\file\\magic")
-    #print 'magic path: ',magicPath
-    if not os.path.exists(magicPath):
-        raise "Magic file lost"
-    #print "magic path is", magicPath
-    #os.environ["MAGIC"] = magicPath
-    m = magic.Magic(magic_file=magicPath)
-    res = m.from_file(fullPath)
+def picFormatSupportedV2(fullPath, mime_type = None):
+    if mime_type is None:
+        rootPath = getProdRoot()
+        magicPath = os.path.join(rootPath, "share\\file\\magic")
+        #print 'magic path: ',magicPath
+        if not os.path.exists(magicPath):
+            raise "Magic file lost"
+        #print "magic path is", magicPath
+        #os.environ["MAGIC"] = magicPath
+        m = magic.Magic(magic_file=magicPath)
+        res = m.from_file(fullPath)
+    else:
+        res = mime_type
     #print res
     if res.find('image') != -1:
         #print 'image', fullPath
@@ -47,7 +50,7 @@ def picFormatSupportedV2(fullPath):
         print "mime type have no thumb:", res
         return False
         
-def genPicThumb(local_path, dest_dir):
+def genPicThumb(local_path, dest_dir, mime_type = None):
     #If no thumbnail exist, create one
     #print '-----------------------localpath:',local_path
     basename = os.path.basename(local_path)
@@ -56,7 +59,7 @@ def genPicThumb(local_path, dest_dir):
     ext = basename.split(".")[-1]
     #print ext
     #if picFormatSupported(ext):
-    if picFormatSupportedV2(local_path):
+    if picFormatSupportedV2(local_path, mime_type = None):
         #It is a jpeg file, currently no other type supported
         import Image #Using PIL lib 
         im = Image.open(local_path)

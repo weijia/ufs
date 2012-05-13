@@ -9,7 +9,8 @@ import beanstalkc
 import localLibSys
 from localLibs.windows.changeNotifyThread import changeNotifyThread
 import wwjufsdatabase.libs.utils.transform as transform
-from beanstalkServiceBaseV2 import beanstalkServiceBase, beanstalkServiceApp
+from beanstalkServiceBaseV2 import beanstalkServiceApp
+import wwjufsdatabase.libs.utils.simplejson as json
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300

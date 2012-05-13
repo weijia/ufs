@@ -15,19 +15,38 @@ class logWnd(consoleWnd.consoleWnd):
         #self.lastLine = ''
         #self.curLines = []
         self.kept_text = ''
+        self.stopped = False
         if logFilePath is None:
             self.logFile = None
         else:
             self.logFile = open(logFilePath, 'w')
-            
-    def close_application(self, widget):
-        consoleWnd.consoleWnd.close_application(self, widget)
+    
+    def close_app(self):
+        cl("killing app:", self.progAndParam)
+        consoleWnd.consoleWnd.close_app(self)
         if self.logFile is None:
             return
-        self.logFile.close()
+        self.logFile.kill_console_process_tree()
         self.logFile = None
         
+    def on_quit_clicked(self, widget):
+        self.send_stop_signal()
+        
+    def send_stop_signal(self):
+        if not self.stopped:
+            try:
+                b = BeanstalkdLauncherService()
+                for i in self.console_output_collector.pList:
+                    b.addItem({"cmd":"stop", "pid": i.pid})
+                    cl("sending stop cmd to: ", i.pid)
+            except beanstalkc.SocketError:
+                pass
+            self.timer_id = gobject.timeout_add(5000, self.close_app)#Here time value are milliseconds
+            self.stopped = True
+
+            
     def updateView(self, data):
+        #print "updateView:", data
         if not (self.logFile is None):
             self.logFile.write(data)
         if not self.isMinimized:

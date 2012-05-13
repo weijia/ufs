@@ -11,6 +11,7 @@ import wwjufsdatabase.libs.utils.transform as transform
 from beanstalkServiceBaseV2 import beanstalkServiceApp
 import threading
 from stat import *
+from localLibs.logSys.logSys import *
 
 gFolderScannerTubeName = "folderScannerTube"
 
@@ -31,7 +32,7 @@ class folderScannerThread(beanstalkServiceApp, threading.Thread):
         else:
             for i in os.walk(self.rootFolder):
                 for j in i[2]:
-                    print j
+                    cl(j)
                     fullPath = transform.transformDirToInternal(os.path.join(i[0], j))
                     paramDict = {"fullPath": fullPath, "timestamp": os.stat(fullPath)[ST_MTIME],
                                  "monitoringPath": self.rootFolder}

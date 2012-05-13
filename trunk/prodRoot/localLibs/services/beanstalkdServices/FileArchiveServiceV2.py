@@ -32,6 +32,7 @@ gFileListTubeName = "fileListDelayed"
 gInfoFilePrefix = 'zippedCollFile'
 gInfoFileExt = "log"
 gMaxZippedCollectionSize = 2*1024*1024
+gDefaultFileInfoSize = 20
 
 #g_working_dir = "d:/tmp/working/filearchivethread"
 
@@ -63,13 +64,18 @@ class FileArchiveThread(beanstalkWorkingThread):
         if not self.collection.exists(item_obj.getObjUfsUrl()):
             for collector in self.collector_list:
                 addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
-                #print "zipped size", info.compress_size
+                print "zipped size", addedItemSize
                 self.curStorageSize += addedItemSize
-            #print "current size:", self.curStorageSize
+            print "current size:", self.curStorageSize
             self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
+            
+            #Add dafault size for file basic info
+            self.curStorageSize += gDefaultFileInfoSize
+            
             if self.curStorageSize > gMaxZippedCollectionSize:
                 cl("size exceed max")
                 self.finalize()
+                self.curStorageSize = 0
             return True#Return True will release the back to the tube
             
         else:
@@ -86,25 +92,28 @@ class FileArchiveThread(beanstalkWorkingThread):
         logFile = open(infoFilePath, 'w')
         logFile.write(s)
         logFile.close()
-        cl(infoFilePath)
+        info(infoFilePath)
         self.storage.add_file(infoFilePath)
         self.storage.finalize_one_trunk()
         for i in self.saving_items:
             self.collection.addObj(i, self.saving_items[i])
         self.saving_items = {}
+        print "trunk finalized"
 
     def stop(self):
+        self.finalize()
         print "file archive service stop called"
         
 class FileArchiveService(beanstalkServiceApp):
     '''
     classdocs
     '''
-    def __init__(self, storage_class = CompressedStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName"):
+    def __init__(self, storage_class = CompressedStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName", passwd = "123"):
         super(FileArchiveService, self).__init__(serviceControlTubeName)
         self.taskDict = {}
         self.storage_class = storage_class
         self.collector_list = collector_list
+        self.passwd = passwd
 
         
     def processItem(self, job, item):
@@ -117,14 +126,23 @@ class FileArchiveService(beanstalkServiceApp):
         if self.taskDict.has_key(inputTubeName):
             job.delete()
             return False
-        t = FileArchiveThread(inputTubeName, self.storage_class(target_dir), self.collector_list, workingDir)
+        t = FileArchiveThread(inputTubeName, self.storage_class(target_dir, passwd=self.passwd), self.collector_list, workingDir)
         self.taskDict[inputTubeName] = t
         t.start()
         return True
-                
+    
+
 
 if __name__ == "__main__":
     #print 'starting fileListHandler'
     #workingDir = "d:/tmp/working"
-    s = FileArchiveService()
+    passwd = "123"
+    from localLibs.utils.misc import get_prot_root
+    passwd_file = os.path.join(get_prot_root(), "passwd.config")
+    if os.path.exists(passwd_file):
+        f = open(passwd_file)
+        passwd = f.read().replace("\r","").replace("\n", "")
+        f.close()
+    #print "passwd: ", passwd
+    s = FileArchiveService(passwd = passwd)
     s.startServer()

@@ -5,7 +5,7 @@ import appThumb
 import localLibSys
 from wwjufsdatabase.libs.utils.transform import transformDirToInternal
         
-def getThumb(path, targetDir):
+def getThumb(path, targetDir, mime_type = None):
     '''
     path: Full Path. The path of the file whose thumbnail will be generated
     targetDir: Directory Path. The target directory where the generated thumbnail will be put in.
@@ -20,13 +20,16 @@ def getThumb(path, targetDir):
             return None
     else:
         try:
-            newPath = picThumbGenerator.genPicThumb(path, targetDir)
+            newPath = picThumbGenerator.genPicThumb(path, targetDir, mime_type)
         except picThumbGenerator.pictureFormatNotSupported:
-            try:#if True:
-                    newPath = ffmpegThumb.genVideoThumb(path, targetDir)
-                    #return "complete transform"
-                    #return newPath
-            except:
+            if not (ext in ["zip", "dll", "cab", "txt", "iso", "rar", "pdf", "doc", "docx", "xls", "xlsx"]):
+                try:#if True:
+                        newPath = ffmpegThumb.genVideoThumb(path, targetDir)
+                        #return "complete transform"
+                        #return newPath
+                except:
+                    pass
+            else:
                 pass
     if newPath is None:
         return None

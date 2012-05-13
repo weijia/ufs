@@ -9,6 +9,8 @@ import localLibs.logSys.logDir as logDir
 import gtkDropTarget
 import gtkDragMove
 import fileTools
+import beanstalkc
+from localLibs.services.beanstalkdServices.beanstalkServiceBaseV2 import gBeanstalkdServerHost, gBeanstalkdServerPort
 
 class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
     '''
@@ -34,8 +36,10 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
         # Some data was dropped, get the data
         wid.drag_get_data(context, context.targets[-1], time)
         return True
-    def clickM(self, mTxt):
+    
+    def on_menu_clicked(self, mTxt):
         self.app_name_to_task_dict[mTxt].show()
+        
     def consoleClose(self, t):
         '''
         Remove the coresponding menu item for the task
@@ -45,7 +49,31 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
             if self.app_name_to_task_dict[i] == t:
                 del self.app_name_to_task_dict[i]
                 break
-      
+    def start_basic_app(self, app_name):
+        full_path = fileTools.findFileInProduct(app_name)
+        if full_path is None:
+            full_path = fileTools.findAppInProduct(app_name)
+            if full_path is None:
+                print app_name, 'not found ---- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+                return None
+        self.create_console_wnd_for_app([full_path])
+        return full_path
+                
+    def start_basic_service(self):
+        if self.start_basic_app('startBeanstalkd.bat') is None:
+            return None
+        #Check if beanstalkd started correctly
+        retry_cnt = 0
+        while True:
+            try:
+                self.beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
+                break
+            except beanstalkc.SocketError:
+                retry_cnt += 1
+                if retry_cnt > 100:
+                    print "beanstalkd start failed"
+                    break
+        
     def startScriptRunnerApp(self):
         self.task_to_menu_item_dict = {}
         self.app_name_to_task_dict = {}
@@ -61,6 +89,7 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
         w.set_opacity(0.5)
         w.set_decorated(False)#Disable window frame board, work in company machine
         w.show_all()
+        self.start_basic_service()
         for i in self.initialApps:
             fullP = fileTools.findFileInProduct(i)
             if fullP is None:
@@ -72,11 +101,11 @@ class dropRunWnd(gtkDropTarget.dropTarget, gtkDragMove.dragMove):
             self.create_console_wnd_for_app([fullP])
         #w.set_skip_taskbar_hint(True)#Hide taskbar icon
 
-    def close_application(self, widget):
+    def on_quit_clicked(self, widget):
         #self.window.hide()
         print 'killing applications'
         for i in self.task_to_menu_item_dict.keys():
-            i.close_application(widget)
+            i.on_quit_clicked(widget)
         self.icon.set_visible(False)
         gtk.main_quit()
         print 'all application killed, after main_quit'

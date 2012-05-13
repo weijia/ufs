@@ -12,6 +12,20 @@ import localLibs.localTasks.infoCollector as infoCollector
 import wwjufsdatabase.libs.utils.transform as transform
 from localLibs.logSys.logSys import *
 import wwjufsdatabase.libs.utils.objTools as objTools
+from localLibs.utils.misc import get_prot_root
+import magic
+
+def get_mime_type(file_full_path):
+    rootPath = get_prot_root()
+    magicPath = os.path.join(rootPath, "share\\file\\magic")
+    #print 'magic path: ',magicPath
+    if not os.path.exists(magicPath):
+        raise "Magic file lost"
+    #print "magic path is", magicPath
+    #os.environ["MAGIC"] = magicPath
+    m = magic.Magic(magic_file=magicPath)
+    res = m.from_file(file_full_path)
+    return res
 
 class objBase(UserDict.DictMixin):
     def __init__(self, existingItemInfo = {}):
@@ -90,6 +104,8 @@ class fsObjBase(objBase):
             return infoCollector.getHeadContentMd5(self.fullPath)
         except IOError:
             return None
+    def mime_type(self):
+        return get_mime_type(self.fullPath)
         
     def getItemInfo(self):
         tmp = self.fillInfo(["timestamp", "fullPath"])
