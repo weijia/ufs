@@ -1,4 +1,4 @@
-import ufsTreeItem
+#import ufsTreeItem
 '''
 import libs.collection.collectionManager as collectionManager
 import libs.ufsDb.dbSys as dbSys
@@ -15,15 +15,18 @@ except ImportError:
 import libs.tag.tagSystemInterface as tagSys
 import libs.utils.odict as odict
 
-class tagCollectionItem(ufsTreeItem.ufsTreeItemBase):
-    def __init__(self, itemId):
-        self.tagS = tagSys.getTagSysObj()
+class tagCollectionItem:
+    def __init__(self, itemId, req):
+        self.tagS = tagSys.getTagSysObj(req.getDbSys())
         print '--------------------------------tagCollectionItem'
         self.itemId = itemId
     def isContainer(self, fullPath):
         '''
         return os.path.isdir(p)
         '''
+        return False
+    
+    def isChildContainer(self, child):
         return False
 
     def child(self, childId):
@@ -32,7 +35,7 @@ class tagCollectionItem(ufsTreeItem.ufsTreeItemBase):
         '''
         pass
         
-    def listNamedChildren(self):
+    def listNamedChildren(self, start, cnt, isTree):
         #Return {fullPath:name}
         res = odict.OrderedDict()
         cnt = 0
@@ -46,7 +49,7 @@ class tagCollectionItem(ufsTreeItem.ufsTreeItemBase):
         return res
 
 
-def getUfsTreeItem(itemUrl, req):
+def getUfsCollection(itemUrl, req):
     #The itemUrl does not include the protocol part
     #For example: for uuid://xxxxx-xxxxx itemUrl will be xxxxx-xxxxx
-    return tagCollectionItem(itemUrl)
+    return tagCollectionItem(itemUrl, req)

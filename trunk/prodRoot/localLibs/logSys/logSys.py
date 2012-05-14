@@ -133,7 +133,7 @@ def info(*args):
     logStr = ''
     for i in args:
         logStr += changeEncoding(i)+" "
-    print logStr
+    print logStr,
     
 def ninfo(*args):
     pass

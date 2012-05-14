@@ -1,6 +1,8 @@
 import libSys
 import os
 #import libs.utils.misc
+from localLibs.logSys.logSys import *
+
 
 class tagSystemInterface:
     def tag(self, url, tagList):
@@ -101,12 +103,13 @@ class tagSystemShoveDb(tagSystemInterface):
             return []
                 
     def getAllTags(self):
+        #cl(self.tagDb.__class__)
         if self.dbSupportsCnt:
             print 'using database count'
             for i, j in self.tagDb.keysWithUsage():
                 yield i, j
         else:
-            import operator
+            #import operator
             tmp = self.tagStatDb.keys()
             dictList = []
             for i in tmp:
