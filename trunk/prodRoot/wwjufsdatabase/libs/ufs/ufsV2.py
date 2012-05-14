@@ -62,6 +62,8 @@ class ufsRootItem(ufsCollectionBase):
         res[u"tasklist://,"] = u"Task List"
         #Hard code the task system
         res[u"zippedColllectionWithInfo://,"] = u"Zipped Collections"
+        #Storage List
+        res[u"storage://"] = u"Storages"
         #Add other item in root item
         ns = nameService.nameService(db.getNameServiceDb())
         for i in co:

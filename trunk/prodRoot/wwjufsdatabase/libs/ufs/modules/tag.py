@@ -14,28 +14,24 @@ except ImportError:
 '''
 import libs.tag.tagSystemInterface as tagSys
 import libs.utils.odict as odict
+from UfsModuleBase import UfsModuleBase
 
-class tagCollectionItem:
+class tagCollectionItem(UfsModuleBase):
     def __init__(self, itemId, req):
+        super(tagCollectionItem, self).__init__()
         self.tagS = tagSys.getTagSysObj(req.getDbSys())
         print '--------------------------------tagCollectionItem'
         self.itemId = itemId
-    def isContainer(self, fullPath):
-        '''
-        return os.path.isdir(p)
-        '''
-        return False
+        
     
     def isChildContainer(self, child):
         return False
 
-    def child(self, childId):
-        '''
-        return abspath
-        '''
-        pass
         
     def listNamedChildren(self, start, cnt, isTree):
+        '''
+        Shall return res = {"D:/file/full/path/filename": "filename",... }
+        '''
         #Return {fullPath:name}
         res = odict.OrderedDict()
         cnt = 0
