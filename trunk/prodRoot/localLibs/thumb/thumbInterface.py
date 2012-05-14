@@ -4,7 +4,15 @@ import ffmpegThumb
 import appThumb
 import localLibSys
 from wwjufsdatabase.libs.utils.transform import transformDirToInternal
-        
+
+
+g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf", 
+                             "doc", "docx", "xls", "xlsx", "7z", "apk", "log",
+                             "sis", "sisx", "asp", "aspx", "py", "pyc", "java",
+                             "class", "php", "c", "cpp", "h", "hpp", "egg", "tar",
+                             "gz", "img", "msi", "jar", "xpi", "crx"]
+
+
 def getThumb(path, targetDir, mime_type = None):
     '''
     path: Full Path. The path of the file whose thumbnail will be generated
@@ -22,7 +30,7 @@ def getThumb(path, targetDir, mime_type = None):
         try:
             newPath = picThumbGenerator.genPicThumb(path, targetDir, mime_type)
         except picThumbGenerator.pictureFormatNotSupported:
-            if not (ext in ["zip", "dll", "cab", "txt", "iso", "rar", "pdf", "doc", "docx", "xls", "xlsx"]):
+            if not (ext in g_non_video_file_ext_list):
                 try:#if True:
                         newPath = ffmpegThumb.genVideoThumb(path, targetDir)
                         #return "complete transform"
