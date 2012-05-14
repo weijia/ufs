@@ -91,9 +91,16 @@ class objectDatabase:
         #objInfoDict["ufsUrl"] = ufsUrl
         objInfoDict["addedTimestamp"] = time.time()
         ncl(objInfoDict)
-        self.objDb.insert(objInfoDict.getItemInfo(), safe=True)
+        #####################
+        # If the object is just a dictionary, it has no getItemInfo method
+        #####################
+        try:
+            self.objDb.insert(objInfoDict.getItemInfo(), safe=True)
+        except AttributeError:
+            pass
         ncl(objInfoDict)
-        del objInfoDict["_id"]
+        if objInfoDict.has_key("_id"):
+            del objInfoDict["_id"]
         ncl('returning new obj', objInfoDict["uuid"])
         ncl(objInfoDict)
         return objInfoDict
@@ -135,7 +142,7 @@ class objectDatabase:
             return res
         ufsUrl = objInFs.getObjUfsUrl()
         if not objInFs.exists():
-            print fullPath
+            cl(fullPath)
             raise 'obj does not exists'
             return None
         for i in self.objDb.find({"ufsUrl": ufsUrl}).sort("timestamp", -1):

@@ -34,7 +34,7 @@ class folder(fsCollection.fileSystemCollection, archiver.archivableItemInterface
         
 class plainArchiveStorage(archiver.archiveStorageInterface):
     def __init__(self, srcRoot, storageRoot, stateStoragePath = 'd:/state.txt'):
-        print srcRoot
+        print "src root is:", srcRoot
         self.srcRoot = transform.transformDirToInternal(srcRoot)
         self.storageRoot = transform.transformDirToInternal(storageRoot)
         self.stateStoragePath = stateStoragePath

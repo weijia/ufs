@@ -36,6 +36,8 @@ gDefaultFileInfoSize = 20
 
 #g_working_dir = "d:/tmp/working/filearchivethread"
 
+g_file_archive_storage_collection_id = "uuid://e4d67513-08e4-40a5-9089-13fa67efcfc9"
+
 class FileArchiveThread(beanstalkWorkingThread):
     def __init__ ( self, input_tube_name, storage, collector_list, working_dir):
         '''
@@ -53,6 +55,9 @@ class FileArchiveThread(beanstalkWorkingThread):
         req = service.req()
         self.dbInst = req.getObjDbSys()
         self.collection = self.dbInst.getCollection(self.collectionId)
+        self.file_archive_collection = self.dbInst.getCollection(g_file_archive_storage_collection_id)
+        collection_virtual_obj_uuid = self.dbInst.addVirtualObj({"storage_collection_id":self.collectionId})
+        self.file_archive_collection.addObj(self.collectionId, collection_virtual_obj_uuid)
         self.saving_items = {}
         
     def processItem(self, job, item):

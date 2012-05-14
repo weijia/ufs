@@ -42,3 +42,20 @@ def getThumb(path, targetDir, mime_type = None):
     if newPath is None:
         return None
     return transformDirToInternal(newPath)
+
+
+def getThumb(path, targetDir, mime_type = None, req = None):
+    if req is None:
+        return internal_get_thumb(path, targetDir, mime_type)
+    else:
+        #We can have a database from the req. So save the thumb info.
+        db = req.getDbSys().getDb("path_to_thumb_db")
+        reverse_db = req.getDbSys().getDb("thumb_to_path_db")
+        res = internal_get_thumb(path, targetDir, mime_type)
+        if not (res is None):
+            src_url = objTools.getUfsUrlForPath(path)
+            thumb_url = objTools.getUfsUrlForPath(res)
+            db[src_url] = thumb_url
+            reverse_db[thumb_url] = src_url
+        return res
+            

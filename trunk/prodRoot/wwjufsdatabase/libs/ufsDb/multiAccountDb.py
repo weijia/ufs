@@ -45,3 +45,7 @@ class ShoveForSession(UserDict.DictMixin):
         
     def getSnapshotTimestamp(self):
         return self.primaryDb.getSnapshotTimestamp()
+    
+    def keys(self):
+        #res = []
+        return self.primaryDb.keys()

@@ -47,8 +47,11 @@ def containerListJson(treeItemToPopulate, start, cnt, isTree = False, req = None
                 item["state"] = "closed"
             if not isTree:
                 #print f
-                #print 'getting tree', f
-                tList = t.getTags(f)
+                #print 'getting tree --------------------------', f
+                try:
+                    tList = t.getTags(f)
+                except:
+                    tList = []
                 item["tags"] = tList
             r.append(item)
             #break
