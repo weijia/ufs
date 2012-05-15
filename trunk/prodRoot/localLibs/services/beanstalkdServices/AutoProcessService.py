@@ -23,7 +23,6 @@ class AutoProcessService(beanstalkServiceApp):
     '''
     def __init__(self, tubeName = "AutoProcessServiceTubeName"):
         super(AutoProcessService, self).__init__(tubeName)
-        self.taskDict = {}
 
         
     def processItem(self, job, item):

@@ -48,9 +48,10 @@ class AutoExtractInfoWithThumbeService(beanstalkServiceApp):
     def processItem(self, job, item):
         input_tube_name = item["input_tube_name"]
         
-        self.taskDict[input_tube_name] = AutoExtractInfoWithThumbThread(input_tube_name)
+        t = AutoExtractInfoWithThumbThread(input_tube_name)
+        self.add_work_thread(input_tube_name, t)
         
-        self.taskDict[input_tube_name].start()
+        t.start()
         #Must delete the job if it is no longer needed and return False so the job will not be put back to tube
         job.delete()
         return False

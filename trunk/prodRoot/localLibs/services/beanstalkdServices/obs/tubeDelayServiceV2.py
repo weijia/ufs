@@ -78,7 +78,6 @@ class tubeDelayService(beanstalkServiceApp):
     '''
     def __init__(self, tubeName = gDefaultTubeDelayServiceTubeName):
         super(tubeDelayService, self).__init__(tubeName)
-        self.taskDict = {}
         
     def processItem(self, job, item):
         #fullPath = transform.transformDirToInternal(item["fullPath"])
@@ -90,13 +89,13 @@ class tubeDelayService(beanstalkServiceApp):
             delaySeconds = item["delaySeconds"]
         except KeyError:
             delaySeconds = gItemDelayTime
-        if self.taskDict.has_key(inputTubeName):
+        if self.is_processing_tube(inputTubeName):
             #Job already exist, delete it
             print "job already exist"
             job.delete()
             return False
         t = tubeDelayThread(inputTubeName, outputTubeName, delaySeconds, blackList)
-        self.taskDict[inputTubeName] = t
+        self.add_work_thread(inputTubeName, t)
         t.start()
         return True
             

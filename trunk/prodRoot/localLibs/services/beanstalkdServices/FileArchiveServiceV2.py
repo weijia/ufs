@@ -116,7 +116,6 @@ class FileArchiveService(beanstalkServiceApp):
     '''
     def __init__(self, storage_class = CompressedStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName", passwd = "123"):
         super(FileArchiveService, self).__init__(serviceControlTubeName)
-        self.taskDict = {}
         self.storage_class = storage_class
         self.collector_list = collector_list
         self.passwd = passwd
@@ -129,11 +128,11 @@ class FileArchiveService(beanstalkServiceApp):
         misc.ensureDir(workingDir)
         inputTubeName = item["InputTubeName"]
         target_dir = item["TargetDir"]
-        if self.taskDict.has_key(inputTubeName):
+        if self.is_processing_tube(inputTubeName):
             job.delete()
             return False
         t = FileArchiveThread(inputTubeName, self.storage_class(target_dir, passwd=self.passwd), self.collector_list, workingDir)
-        self.taskDict[inputTubeName] = t
+        self.add_work_thread(inputTubeName, t)
         t.start()
         return True
     
