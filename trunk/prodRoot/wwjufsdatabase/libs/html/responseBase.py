@@ -46,7 +46,7 @@ class responseBase(responseBaseInterface):
         #self.out += o.encode(self.gGlobalEncoding, 'backslashreplace')
 
     def setCookie(self, cookie):
-        cl('setting cookie to:%s'%str(cookie))
+        info('setting cookie to:%s'%str(cookie))
         self.thiscookie = cookie
 
         

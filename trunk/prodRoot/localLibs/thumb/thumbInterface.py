@@ -11,7 +11,8 @@ g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf",
                              "doc", "docx", "xls", "xlsx", "7z", "apk", "log",
                              "sis", "sisx", "asp", "aspx", "py", "pyc", "java",
                              "class", "php", "c", "cpp", "h", "hpp", "egg", "tar",
-                             "gz", "img", "msi", "jar", "xpi", "crx"]
+                             "gz", "img", "msi", "jar", "xpi", "crx", "mp3", "wav",
+                             "ogg"]
 
 
 def internal_get_thumb(path, targetDir, mime_type = None):

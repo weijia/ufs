@@ -58,6 +58,7 @@ class FileArchiveThread(beanstalkWorkingThread):
         self.file_archive_collection = self.dbInst.getCollection(g_file_archive_storage_collection_id)
         collection_virtual_obj_uuid = self.dbInst.addVirtualObj({"storage_collection_id":self.collectionId})
         self.file_archive_collection.addObj(self.collectionId, collection_virtual_obj_uuid)
+        #The following dictionary is used to update collection.
         self.saving_items = {}
         
     def processItem(self, job, item):
@@ -89,7 +90,9 @@ class FileArchiveThread(beanstalkWorkingThread):
             return False#Do not need to put the item back to the tube
     
     def finalize(self):
-        if len(self.saving_items) == 0:
+        #print self.info_dict
+        #print len(self.info_dict)
+        if len(self.info_dict) == 0:
             print "finalize without any content, return directly"
             return
         s = json.dumps(self.info_dict, sort_keys=True, indent=4)
@@ -98,6 +101,7 @@ class FileArchiveThread(beanstalkWorkingThread):
         logFile = open(infoFilePath, 'w')
         logFile.write(s)
         logFile.close()
+        print s
         info(infoFilePath)
         self.storage.add_file(infoFilePath)
         self.storage.finalize_one_trunk()
