@@ -32,6 +32,7 @@ class beanstalkServiceBase(object):
         if tube_name is None:
             tube_name = self.__class__.__name__ + "_default_cmd_tube_name"
         self.tubeName = tube_name
+        self.quit_signal_channel_name = tube_name + "_stop_tube"
         self.beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
     
     def put_item(self, item_dict, target_tube, priority = beanstalkc.DEFAULT_PRIORITY):
@@ -50,9 +51,17 @@ class beanstalkServiceBase(object):
         
     def watchTube(self):
         print 'watch tube: ', self.tubeName
-        self.beanstalk.watch(self.tubeName)
-        #self.beanstalk.watch(self.tubeName+"_stop_tube")
         self.beanstalk.ignore('default')
+        self.beanstalk.watch(self.quit_signal_channel_name)
+        while True:
+            stop_msg = self.beanstalk.reserve(0)
+            if stop_msg is None:
+                break
+            else:
+                stop_msg.delete()
+            print "ignore existing stop msg"
+        self.beanstalk.watch(self.tubeName)
+        
         
     def is_term_signal(self, item):
         if item.has_key("cmd"):
@@ -74,26 +83,25 @@ gBeanstalkdLauncherServiceTubeName = "beanstalkd_launcher_service"
 class beanstalkServiceApp(beanstalkServiceBase):
     def __init__(self, tube_name = None):
         super(beanstalkServiceApp, self).__init__(tube_name)
-        #bridge.subscribe(tube_name)
         ##############################
         # The thread should be value not the key, input tube should be the key
         ##############################
-        self.work_thread_list = {}
+        self.input_channel_name_to_work_thread_dict = {}
 
     def register_cmd_tube(self):
         pid = os.getpid()
         print "current pid: ", pid
         
-        self.put_item({"cmd": "registration", "pid": pid, 
-                       "cmd_tube_name": self.tubeName}, gBeanstalkdLauncherServiceTubeName)
         #self.put_item({"cmd": "registration", "pid": pid, 
-        #               "cmd_tube_name": self.tubeName+"_stop_tube"}, gBeanstalkdLauncherServiceTubeName)
+        #               "cmd_tube_name": self.tubeName}, gBeanstalkdLauncherServiceTubeName)
+        self.put_item({"cmd": "registration", "pid": pid, 
+                       "cmd_tube_name": self.quit_signal_channel_name}, gBeanstalkdLauncherServiceTubeName)
         
     def add_work_thread(self, work_thread_input_tube, thread_instance):
-        self.work_thread_list[work_thread_input_tube] = thread_instance
+        self.input_channel_name_to_work_thread_dict[work_thread_input_tube] = thread_instance
         
     def is_processing_tube(self, work_thread_input_tube):
-        return self.work_thread_list.has_key(work_thread_input_tube)
+        return self.input_channel_name_to_work_thread_dict.has_key(work_thread_input_tube)
     
     def startServer(self):
         print self.__class__, self.tubeName
@@ -131,8 +139,10 @@ class beanstalkServiceApp(beanstalkServiceBase):
                 
     def stop(self):
         #Tell all sub process to stop
-        for work_thread_input_tube in self.work_thread_list:
-            self.put_item({"cmd": "stop"}, work_thread_input_tube, g_stop_msg_priority)
+        for input_channel_name in self.input_channel_name_to_work_thread_dict:
+            self.put_item({"cmd": "stop"}, 
+                          self.input_channel_name_to_work_thread_dict[input_channel_name].quit_signal_channel_name,
+                          g_stop_msg_priority)
             print "working thread stop msg sent"
 
 

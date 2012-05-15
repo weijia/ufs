@@ -27,8 +27,8 @@ class responseBase(responseBaseInterface):
         import cgi
         self.log += cgi.escape(s)+'<br/>--------------------------------------------<br/>'
     def outputHeaders(self):
-        cl('outputHeaders')
-        cl(self.thiscookie)
+        info('outputHeaders')
+        info(self.thiscookie)
         #Output headers
         for i in self.headers.keys():
             print i,':',self.headers[i],'\n',
