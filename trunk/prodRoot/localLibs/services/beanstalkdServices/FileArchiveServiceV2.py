@@ -90,6 +90,7 @@ class FileArchiveThread(beanstalkWorkingThread):
     
     def finalize(self):
         if len(self.saving_items) == 0:
+            print "finalize without any content, return directly"
             return
         s = json.dumps(self.info_dict, sort_keys=True, indent=4)
         infoFilePath = transform.transformDirToInternal(

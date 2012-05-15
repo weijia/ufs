@@ -19,7 +19,7 @@ gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
 gMonitorServiceTubeName = "monitorQueue"
 gItemDelayTime = 60*60*24#One day
-g_stop_msg_priority = 1000
+g_stop_msg_priority = 0
 
 class beanstalkServiceBase(object):
     '''
@@ -38,7 +38,7 @@ class beanstalkServiceBase(object):
         beanstalk = beanstalkc.Connection(host=gBeanstalkdServerHost, port=gBeanstalkdServerPort)
         beanstalk.use(target_tube)
         s = json.dumps(item_dict, sort_keys=True, indent=4)
-        print "add item:", s, self.tubeName
+        print "add item:", s, self.tubeName, priority
         job = beanstalk.put(s, priority = priority)
         return job
     
@@ -124,6 +124,7 @@ class beanstalkServiceApp(beanstalkServiceBase):
         #Tell all sub process to stop
         for i in self.taskDict:
             self.put_item({"cmd": "stop"}, self.taskDict[i], g_stop_msg_priority)
+            print "working thread stop msg sent"
 
 class beanstalkWorkingThread(beanstalkServiceApp, threading.Thread):
     def __init__ ( self, inputTubeName):

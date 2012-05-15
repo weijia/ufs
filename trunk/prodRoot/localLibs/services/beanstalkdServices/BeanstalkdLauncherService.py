@@ -59,11 +59,12 @@ class BeanstalkdLauncherService(beanstalkWorkingThread):
                         print "not a valid cmd", item
             
             job.delete()
-            
+    '''
+    #This function is not used should be removed later.
     def send_stop_signals(self):
         for i in self.taskid_cmd_tube_name_dict:
             self.put_item({"cmd":"stop"}, self.taskid_cmd_tube_name_dict[i], g_stop_msg_priority)
-            
+    '''
     def send_stop_for_pid(self, pid):
         try:
             self.addItem({"cmd":"stop", "pid": pid}, g_stop_msg_priority)
