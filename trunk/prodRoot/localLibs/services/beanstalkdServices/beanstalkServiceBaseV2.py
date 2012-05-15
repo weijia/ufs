@@ -19,7 +19,7 @@ gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
 gMonitorServiceTubeName = "monitorQueue"
 gItemDelayTime = 60*60*24#One day
-g_stop_msg_priority = 2**30
+g_stop_msg_priority = 1000
 
 class beanstalkServiceBase(object):
     '''
@@ -48,7 +48,7 @@ class beanstalkServiceBase(object):
     def watchTube(self):
         print 'watch tube: ', self.tubeName
         self.beanstalk.watch(self.tubeName)
-        self.beanstalk.watch(self.tubeName+"_stop_tube")
+        #self.beanstalk.watch(self.tubeName+"_stop_tube")
         self.beanstalk.ignore('default')
         
     def is_term_signal(self, item):
@@ -81,10 +81,10 @@ class beanstalkServiceApp(beanstalkServiceBase):
         pid = os.getpid()
         print "current pid: ", pid
         
-        #self.put_item({"cmd": "registration", "pid": pid, 
-        #               "cmd_tube_name": self.tubeName}, gBeanstalkdLauncherServiceTubeName)
         self.put_item({"cmd": "registration", "pid": pid, 
-                       "cmd_tube_name": self.tubeName+"_stop_tube"}, gBeanstalkdLauncherServiceTubeName)
+                       "cmd_tube_name": self.tubeName}, gBeanstalkdLauncherServiceTubeName)
+        #self.put_item({"cmd": "registration", "pid": pid, 
+        #               "cmd_tube_name": self.tubeName+"_stop_tube"}, gBeanstalkdLauncherServiceTubeName)
         
     def startServer(self):
         print self.__class__, self.tubeName

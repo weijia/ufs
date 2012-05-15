@@ -4,6 +4,7 @@ import ffmpegThumb
 import appThumb
 import localLibSys
 from wwjufsdatabase.libs.utils.transform import transformDirToInternal
+from wwjufsdatabase.libs.utils.objTools import getUfsUrlForPath
 
 
 g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf", 
@@ -13,7 +14,7 @@ g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf",
                              "gz", "img", "msi", "jar", "xpi", "crx"]
 
 
-def getThumb(path, targetDir, mime_type = None):
+def internal_get_thumb(path, targetDir, mime_type = None):
     '''
     path: Full Path. The path of the file whose thumbnail will be generated
     targetDir: Directory Path. The target directory where the generated thumbnail will be put in.
@@ -53,8 +54,8 @@ def getThumb(path, targetDir, mime_type = None, req = None):
         reverse_db = req.getDbSys().getDb("thumb_to_path_db")
         res = internal_get_thumb(path, targetDir, mime_type)
         if not (res is None):
-            src_url = objTools.getUfsUrlForPath(path)
-            thumb_url = objTools.getUfsUrlForPath(res)
+            src_url = getUfsUrlForPath(path)
+            thumb_url = getUfsUrlForPath(res)
             db[src_url] = thumb_url
             reverse_db[thumb_url] = src_url
         return res
