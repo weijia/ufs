@@ -2,9 +2,10 @@ import picThumbGenerator
 #import movieThumb
 import ffmpegThumb
 import appThumb
+import os
 import localLibSys
 from wwjufsdatabase.libs.utils.transform import transformDirToInternal
-from wwjufsdatabase.libs.utils.objTools import getUfsUrlForPath
+from wwjufsdatabase.libs.utils.objTools import getUfsUrlForPath, getFullPathFromUfsUrl
 
 
 g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf", 
@@ -55,9 +56,17 @@ def getThumb(path, targetDir = gWorkingDir, mime_type = None, req = None):
         #We can have a database from the req. So save the thumb info.
         db = req.getDbSys().getDb("path_to_thumb_db")
         reverse_db = req.getDbSys().getDb("thumb_to_path_db")
+        src_url = getUfsUrlForPath(path)
+        try:
+            thumb_url = db[src_url]
+            res = getFullPathFromUfsUrl(thumb_url)
+            if os.path.exists(res):
+                return res
+        except KeyError:
+            pass
         res = internal_get_thumb(path, targetDir, mime_type)
         if not (res is None):
-            src_url = getUfsUrlForPath(path)
+            
             thumb_url = getUfsUrlForPath(res)
             db[src_url] = thumb_url
             reverse_db[thumb_url] = src_url
