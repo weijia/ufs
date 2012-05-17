@@ -14,6 +14,8 @@ g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf",
                              "gz", "img", "msi", "jar", "xpi", "crx", "mp3", "wav",
                              "ogg"]
 
+gWorkingDir = "d:/tmp/working/thumbs"
+
 
 def internal_get_thumb(path, targetDir, mime_type = None):
     '''
@@ -46,7 +48,7 @@ def internal_get_thumb(path, targetDir, mime_type = None):
     return transformDirToInternal(newPath)
 
 
-def getThumb(path, targetDir, mime_type = None, req = None):
+def getThumb(path, targetDir = gWorkingDir, mime_type = None, req = None):
     if req is None:
         return internal_get_thumb(path, targetDir, mime_type)
     else:
