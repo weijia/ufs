@@ -40,13 +40,9 @@ class StorageCollectionItem(UfsModuleBase):
         res = odict.OrderedDict()
         cnt = 0
         col = self.obj_db.getCollection(u"zip_file_storage://"+self.item_id)
-        cnt = 0
         #print "start enum"
-        for i in col.enumObjs():
+        for i in col.enumObjsInRange(start, cnt):
             res[unicode(i.getIdInCol())] = unicode(i.getIdInCol())
-            cnt += 1
-            if cnt > 100:
-                break
         #print "returning items"
         return res
             

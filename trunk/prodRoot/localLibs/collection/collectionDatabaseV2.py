@@ -119,3 +119,10 @@ class collectionOnMongoDbBase(collectionDbBase.collectionBaseInterface):
                                "deleted":{"$exists": False}}).sort("timestamp", 1):
             ncl("Got:", i)
             yield objItemInCol(i["idInCol"], i["uuid"], i["timestamp"])
+            
+    def enumObjsInRange(self, start = 0, count = 100, timestamp = 0):
+        ncl("enumering", {"collectionId": self.collectionId, "timestamp":{"$gt": timestamp}})
+        for i in self.collectionDb.find({"collectionId": self.collectionId, "timestamp":{"$gt": timestamp}, 
+                               "deleted":{"$exists": False}}).sort("timestamp", 1).skip(start).limit(count):
+            ncl("Got:", i)
+            yield objItemInCol(i["idInCol"], i["uuid"], i["timestamp"])
