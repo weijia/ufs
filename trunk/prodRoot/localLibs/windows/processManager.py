@@ -23,9 +23,13 @@ def setPriority(pid=None,priority=1):
 
 def terminateProcessByPid(pid):
     PROCESS_TERMINATE = 1
-    handle = win32api.OpenProcess(PROCESS_TERMINATE, False, pid)
-    win32api.TerminateProcess(handle, -1)
-    win32api.CloseHandle(handle)
+    try:
+        handle = win32api.OpenProcess(PROCESS_TERMINATE, False, pid)
+        win32api.TerminateProcess(handle, -1)
+        win32api.CloseHandle(handle)
+    except:
+        pass
+
 
 
 def killChildProcessTree(pid, killRoot = False):

@@ -68,6 +68,6 @@ if __name__ == '__main__':
     cherrypy.config.update({'environment': 'production',
                             'log.error_file': '../../site.log',
                             'log.screen': True,
-                            'engine.autoreload_on' : True,
+                            'engine.autoreload_on' : False,
                             'server.socket_port' : 8805,})
     cherrypy.quickstart(Root(), '/')

@@ -11,6 +11,7 @@ import libs.utils.transform as transform
 import libs.utils.configurationTools as configurationTools
 import libs.utils.stringTools as stringTools
 import libs.services.servicesV2 as service
+import libs.utils.objTools as objTools
 
 import localLibSys
 import localLibs.services.launcherService as launcherService
@@ -35,6 +36,8 @@ def executeAppOrOpenFile(req):
     h.genTxtHead()
     #fullPath = urllib.unquote(fields[u"path"][0])
     fullPath = fields[u"path"][0]
+    if objTools.isUfsFs(fullPath):
+        fullPath = objTools.getFullPathFromUfsUrl(fullPath)
     fullPath = transform.transformDirToInternal(fullPath)
     #print fullPath
     #tags = urllib.unquote(fields[u"tags"][0])

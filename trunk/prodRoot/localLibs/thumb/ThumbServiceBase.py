@@ -53,25 +53,28 @@ class ThumbServiceBase(object):
         self.db_sys = db_sys
         self.src_to_thumb_db = self.db_sys.getDb("src_to_thumb_db")
         self.thumb_to_src_db = self.db_sys.getDb("thumb_to_src_db")
-    def set_thumb(self, src_url, thumb_url):
-        self.src_to_thumb_db.append(src_url, thumb_url)
-        self.thumb_to_src_db[thumb_url] = src_url
+    def set_thumb_cache(self, src_full_path, thumb_url):
+        self.src_to_thumb_db.append(src_full_path, thumb_url)
+        self.thumb_to_src_db[thumb_url] = src_full_path
     
     def get_thumb(self, src_full_path, target_dir, mime_type = None):
         thumb_path = self.get_cached_thumb(src_full_path)
         if thumb_path is None:
-            return internal_get_thumb(src_full_path, target_dir)
+            thumb_path = internal_get_thumb(src_full_path, target_dir, mime_type)
+            if thumb_path is None:
+                return None
+            self.set_thumb_cache(src_full_path, thumb_path)
+            return thumb_path
         else:
             return thumb_path
 
     def get_cached_thumb(self, src_full_path):
         try:
-            for thumb_url in self.src_to_thumb_db[src_full_path]:
-                thumb_path = getFullPathFromUfsUrl(thumb_url)
-                if os.path.exists(thumb_path):
-                    return thumb_path
+            for thumb_full_path in self.src_to_thumb_db[src_full_path]:
+                if os.path.exists(thumb_full_path):
+                    return thumb_full_path
         except KeyError:
-            pass
+            cl(src_full_path, "not in cache")
         return None
 
 
