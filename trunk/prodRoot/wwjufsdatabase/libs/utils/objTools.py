@@ -13,7 +13,7 @@ gUfsObjUrlSeparator = u'/'
 def parseUrl(url):
     return url.split(config.getFsProtocolSeparator(),2)
     
-    
+
 
 def getHostName():
     return unicode(socket.gethostname())
@@ -36,9 +36,14 @@ def getFullPathFromUfsUrl(ufsUrl):
 
 def isUuid(url):
     return (url.find(u"uuid"+config.getFsProtocolSeparator()) == 0)
+
 def getUrlContent(url):
     protocol, content = parseUrl(url)
     return content
+    
+def getPathForUfsUrl(url):
+    url_content = getUrlContent(url)
+    return url_content.split(gUfsObjUrlSeparator, 1)[1]
     
 def getUuid(url):
     return getUrlContent(url)

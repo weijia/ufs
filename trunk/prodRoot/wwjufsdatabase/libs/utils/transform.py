@@ -2,6 +2,7 @@ import os
 import sys
 import localLibSys
 from localLibs.logSys import *
+from wwjufsdatabase.libs.utils.objTools import isUfsFs
 
 localStringEncoding = 'gb2312'
 
@@ -54,6 +55,8 @@ def transformDirToInternal(originalDir):
     '''
     if originalDir is None:
         raise "tried to transform None to standard path"
+    if isUfsFs(originalDir):
+        raise "is ufs url, not path"
     newDir = transformLocalStringToUnicode(os.path.abspath(originalDir))
     #print type(newDir)
     if sys.platform == 'win32':
@@ -88,4 +91,4 @@ def autoDecoder(orig):
     return orig
 
 if __name__ == "__main__":
-    print transformDirToInternal('d:/tmp')
+    print transformDirToInternal('ufsFs://d:/tmp')

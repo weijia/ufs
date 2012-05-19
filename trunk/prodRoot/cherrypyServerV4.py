@@ -7,27 +7,11 @@ import localLibs.thumb.thumbInterface as thumbLib
 #import uuid
 #import logging
 #import pymedia.muxer
+from localLibs.logSys.logSys import *
 
 import wwjufsdatabase.libs.utils.transform as transform
 
 
-#gAppPath = 'd:/tmp/fileman/'
-#gThumbPath = os.path.join(gAppPath, 'thumb')
-
-#misc.ensureDir(gAppPath)
-#misc.ensureDir(gThumbPath)
-
-#import wwjufsdatabase.libs.shove.shoveClientV5 as shoveClient
-#thumbDb = libs.cache.shoveClient.Shove()
-
-'''
-class simpleSysUser:
-    def getUserName(self):
-        return 'system.default'
-    def getPasswd(self):
-        return 'simplePass'
-
-'''
 def getProdRoot():
     c = os.getcwd()
     while c.find('prodRoot') != -1:
@@ -56,23 +40,10 @@ class Root:
         return serve_file(thumbP,content_type=t)
         
     def getThumb(self, fullPath):
-        path = transform.transformDirToInternal(fullPath)
-        '''
-        if not os.path.exists(path):
-            print path.encode("gbk", "replace"), " not exist"
-            raise KeyError
-        try:
-            u = unicode(self.pathDb[path][0])
-        except KeyError:
-            u = unicode(uuid.uuid4())
-            self.pathDb[path] = u
-            self.uuidDb[u] = path
-        newPath = None
-        try:
-            #raise "no"
-            newPath = self.thumbDb[u][0]
-        except KeyError:
-        '''
+        #cl(fullPath)
+        #path = transform.transformDirToInternal(fullPath)
+        path = fullPath
+        ncl(path)
         if True:
             #print path
             if os.path.isdir(path):

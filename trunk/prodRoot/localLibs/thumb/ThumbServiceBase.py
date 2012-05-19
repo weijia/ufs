@@ -4,8 +4,9 @@ import ffmpegThumb
 import appThumb
 import os
 import localLibSys
+from localLibs.logSys.logSys import *
 from wwjufsdatabase.libs.utils.transform import transformDirToInternal
-from wwjufsdatabase.libs.utils.objTools import getUfsUrlForPath, getFullPathFromUfsUrl
+from wwjufsdatabase.libs.utils.objTools import getFullPathFromUfsUrl, isUfsFs, getPathForUfsUrl
 
 
 g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf", 
@@ -13,7 +14,7 @@ g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf",
                              "sis", "sisx", "asp", "aspx", "py", "pyc", "java",
                              "class", "php", "c", "cpp", "h", "hpp", "egg", "tar",
                              "gz", "img", "msi", "jar", "xpi", "crx", "mp3", "wav",
-                             "ogg", "ini", "sys"]
+                             "ogg", "ini", "sys", "db"]
 
 gWorkingDir = "d:/tmp/working/thumbs"
 
@@ -64,18 +65,27 @@ class ThumbServiceBase(object):
             return thumb_path
 
     def get_cached_thumb(self, src_full_path):
-        for thumb_url in self.src_to_thumb_db[src_full_path]:
-            thumb_path = getFullPathFromUfsUrl(thumb_url)
-            if os.path.exists(thumb_path):
-                return thumb_path
+        try:
+            for thumb_url in self.src_to_thumb_db[src_full_path]:
+                thumb_path = getFullPathFromUfsUrl(thumb_url)
+                if os.path.exists(thumb_path):
+                    return thumb_path
+        except KeyError:
+            pass
         return None
 
 
 def getThumb(path, targetDir = gWorkingDir, mime_type = None, req = None):
     if req is None:
-        return internal_get_thumb(path, targetDir, mime_type)
+        import wwjufsdatabase.libs.services.servicesV2 as service
+        req = service.req()
+    #We can have a database from the req. So save the thumb info.
+    t = ThumbServiceBase(req.getDbSys())
+    if isUfsFs(path):
+        full_path = getPathForUfsUrl(path)
     else:
-        #We can have a database from the req. So save the thumb info.
-        t = ThumbServiceBase(req.getDbSys())
-        return t.get_thumb(path, targetDir, mime_type)
+        full_path = path
+    #cl(path)
+    full_path = transformDirToInternal(full_path)
+    return t.get_thumb(full_path, targetDir, mime_type)
         
