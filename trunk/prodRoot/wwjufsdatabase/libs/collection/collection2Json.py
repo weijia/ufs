@@ -6,6 +6,8 @@ import libs.utils.simplejson as json
 import libs.utils.stringTools as stringTools
 import libs.tag.tagSystemInterface as tagSys
 import libs.utils.encodingTools as encodingTools
+import localLibSys
+from localLibs.logSys.logSys import *
 
 class listJsonInterface:
     def listNamedChildren(self, start, cnt, isTree):
@@ -25,6 +27,7 @@ def containerListJson(treeItemToPopulate, start, cnt, isTree = False, req = None
     t = tagSys.getTagSysObj(dbSys)
     try:
         d = treeItemToPopulate.listNamedChildren(start, cnt, isTree)
+        ncl("list children: ", start, cnt)
         for f in d:
             #print f, r
             itemId = f

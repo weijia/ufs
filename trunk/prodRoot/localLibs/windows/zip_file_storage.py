@@ -38,7 +38,7 @@ class StorageCollectionItem(UfsModuleBase):
         '''
         #Return {fullPath:name}
         res = odict.OrderedDict()
-        cnt = 0
+        #cnt = 0
         col = self.obj_db.getCollection(u"zip_file_storage://"+self.item_id)
         #print "start enum"
         for i in col.enumObjsInRange(start, cnt):
