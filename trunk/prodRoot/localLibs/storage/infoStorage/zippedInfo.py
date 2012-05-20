@@ -39,9 +39,9 @@ class zippedInfo(object):
                 fileTools.getTimestampWithFreeName(self.workingDir, "."+gInfoFileExt, gInfoFilePrefix))
         logFile = open(infoFilePath, 'w')
         logFile.write(s)
-        logFile.kill_console_process_tree()
+        logFile.close()
         self.getZipFile().addfile(unicode(infoFilePath), unicode(infoFilePath))
-        self.package_file.kill_console_process_tree()
+        self.package_file.close()
         #Set attribute so new zip will be created if this object is still in use
         self.package_file = None
         self.additionalInfoDict = {}

@@ -74,7 +74,8 @@ class ThumbServiceBase(object):
                 if os.path.exists(thumb_full_path):
                     return thumb_full_path
         except KeyError:
-            cl(src_full_path, "not in cache")
+            ncl(src_full_path, "not in cache")
+            pass
         return None
 
 

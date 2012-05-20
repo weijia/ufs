@@ -60,6 +60,7 @@ class EncZipFileOn7Zip(object):
         increased_size = os.stat(self.filename).st_size - original_size
         return increased_size
 
-                
-    def kill_console_process_tree(self):
+          
+    def close(self):
         pass
+    

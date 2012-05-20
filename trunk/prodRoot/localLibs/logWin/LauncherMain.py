@@ -64,6 +64,7 @@ class LauncherMain(GtkTaskBarIconApp):
         
     def final_quit(self):
         print 'start to killing apps'
+        #Kill Beanstalkd Launcher service
         self.beanstalkd_launcher.kill_console_process_tree()
         
         for i in self.task_to_menu_item_dict.keys():
@@ -71,9 +72,11 @@ class LauncherMain(GtkTaskBarIconApp):
                 continue
             i.kill_console_process_tree()
         
+        
+        '''
         if not (self.beanstalkd_app is None):
             self.beanstalkd_app.kill_console_process_tree()
-        
+        '''
         gtk.main_quit()
         time.sleep(5)
         print 'all application killed, after main_quit'

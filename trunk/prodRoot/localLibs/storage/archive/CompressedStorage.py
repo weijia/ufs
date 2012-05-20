@@ -46,7 +46,7 @@ class CompressedStorage(object):
         return compress_size
 
     def finalize_one_trunk(self):
-        self.package_file.kill_console_process_tree()
+        self.package_file.close()
         #Set attribute so new zip will be created if this object is still in use
         self.package_file = None
         return self.package_file_full_path
