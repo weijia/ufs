@@ -70,16 +70,16 @@ class FileArchiveThread(beanstalkWorkingThread):
         if not self.collection.exists(item_obj.getObjUfsUrl()):
             for collector in self.collector_list:
                 addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
-                print "zipped size", addedItemSize
+                info("saved size", addedItemSize)
                 self.curStorageSize += addedItemSize
-            print "current size:", self.curStorageSize
+            info("current size:", self.curStorageSize)
             self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
             
             #Add dafault size for file basic info
             self.curStorageSize += gDefaultFileInfoSize
             
             if self.curStorageSize > gMaxZippedCollectionSize:
-                cl("size exceed max")
+                info("size exceed max")
                 self.finalize()
                 self.curStorageSize = 0
             return True#Return True will release the back to the tube
@@ -101,14 +101,14 @@ class FileArchiveThread(beanstalkWorkingThread):
         logFile = open(infoFilePath, 'w')
         logFile.write(s)
         logFile.close()
-        print s
+        #print s
         info(infoFilePath)
         self.storage.add_file(infoFilePath)
         self.storage.finalize_one_trunk()
         for i in self.saving_items:
             self.collection.addObj(i, self.saving_items[i])
         self.saving_items = {}
-        print "trunk finalized"
+        info("trunk finalized")
 
     def stop(self):
         self.finalize()
@@ -145,7 +145,7 @@ class FileArchiveService(beanstalkServiceApp):
 if __name__ == "__main__":
     #print 'starting fileListHandler'
     #workingDir = "d:/tmp/working"
-    passwd = "123"
+    passwd = "123qwe"
     from localLibs.utils.misc import get_prot_root
     passwd_file = os.path.join(get_prot_root(), "passwd.config")
     if os.path.exists(passwd_file):
