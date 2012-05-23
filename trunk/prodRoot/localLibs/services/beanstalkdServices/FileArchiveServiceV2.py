@@ -115,6 +115,36 @@ class FileArchiveThread(beanstalkWorkingThread):
     def stop(self):
         self.finalize()
         print "file archive service stop called"
+
+
+from localLibs.compress.EncZipFileOn7Zip import EncZipFileOn7Zip
+gWorkingDir = "d:/tmp/working/zipfilestorage"
+import win32file
+import traceback
+import shutil
+
+class SyncedCompressedStorage(CompressedStorage):
+    def __init__(self, trunk_data_path = gWorkingDir, package_class = EncZipFileOn7Zip, 
+                 ext = ".7z", passwd = '123', sync_folder = "d:/tmp/working/sync"):
+        super(CompressedStorage, self).__init__()
+        self.sync_folder = sync_folder
+    def finalize_one_trunk(self):
+        trunk_path = super(SyncedCompressedStorage, self).finalize_one_trunk()
+        ext = os.path.splitext(trunk_path)
+        target_path = misc.get_date_based_path(self.sync_folder, ext)
+        req = service.req()
+        cache_db = req.getDbSys().getDb("cache_db")
+        obj_db = req.getObjDbSys()
+        obj = obj_db.getFsObjFromFullPath(trunk_path)
+        obj_uuid = obj.get_uuid()
+        cache_db.append(obj_uuid, target_path)
+        try:
+            win32file.CreateSymbolicLink(trunk_path, target_path, 1)
+        except:
+            traceback.print_exc()
+            shutil.copyfile(trunk_path, target_path)
+        
+
         
 class FileArchiveService(beanstalkServiceApp):
     '''
