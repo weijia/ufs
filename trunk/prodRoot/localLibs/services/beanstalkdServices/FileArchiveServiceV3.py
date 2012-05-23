@@ -38,12 +38,13 @@ g_file_archive_storage_collection_id = "uuid://e4d67513-08e4-40a5-9089-13fa67efc
 
 
 class FileArchiveThread(FileListProcessorThreadBase):
-    def __init__ ( self, input_tube_name, storage, collector_list, working_dir, target_tube_name):
+    def __init__ ( self, input_tube_name, storage, collector_list, working_dir):
         '''
         Constructor
         '''
         super(FileArchiveThread, self).__init__(input_tube_name, storage)
         #File Archive specific operations
+        self.collector_list = collector_list
         self.file_archive_collection = self.dbInst.getCollection(g_file_archive_storage_collection_id)
         collection_virtual_obj_uuid = self.dbInst.addVirtualObj({"storage_collection_id":self.collectionId})
         self.file_archive_collection.addObj(self.collectionId, collection_virtual_obj_uuid)
