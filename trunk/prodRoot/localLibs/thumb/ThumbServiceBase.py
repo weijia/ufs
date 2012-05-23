@@ -7,6 +7,7 @@ import localLibSys
 from localLibs.logSys.logSys import *
 from wwjufsdatabase.libs.utils.transform import transformDirToInternal
 from wwjufsdatabase.libs.utils.objTools import getFullPathFromUfsUrl, isUfsFs, getPathForUfsUrl
+import traceback
 
 
 g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf", 
@@ -14,7 +15,7 @@ g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf",
                              "sis", "sisx", "asp", "aspx", "py", "pyc", "java",
                              "class", "php", "c", "cpp", "h", "hpp", "egg", "tar",
                              "gz", "img", "msi", "jar", "xpi", "crx", "mp3", "wav",
-                             "ogg", "ini", "sys", "db"]
+                             "ogg", "ini", "sys", "db", "m"]
 
 gWorkingDir = "d:/tmp/working/thumbs"
 
@@ -60,7 +61,10 @@ class ThumbServiceBase(object):
     def get_thumb(self, src_full_path, target_dir, mime_type = None):
         thumb_path = self.get_cached_thumb(src_full_path)
         if thumb_path is None:
-            thumb_path = internal_get_thumb(src_full_path, target_dir, mime_type)
+            try:
+                thumb_path = internal_get_thumb(src_full_path, target_dir, mime_type)
+            except:
+                traceback.print_exc()
             if thumb_path is None:
                 return None
             self.set_thumb_cache(src_full_path, thumb_path)

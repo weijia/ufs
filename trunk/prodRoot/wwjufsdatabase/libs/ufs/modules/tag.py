@@ -33,6 +33,17 @@ class tagCollectionItem(UfsModuleBase):
         Shall return res = {"D:/file/full/path/filename": "filename",... }
         '''
         #Return {fullPath:name}
+        res = self.itemId.split(",")
+        if len(res) > 1:
+            #print "res 1:", res[1]
+            tag = res[1].replace(" ", "")
+            if tag != "":
+                tagged_item_list = self.tagS.getObjs(unicode(tag))
+                item_dict = {}
+                for i in tagged_item_list:
+                    item_dict[i] = i
+                return item_dict
+        
         res = odict.OrderedDict()
         cnt = 0
         #import sys

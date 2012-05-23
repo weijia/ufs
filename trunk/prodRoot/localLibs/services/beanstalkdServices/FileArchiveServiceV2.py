@@ -55,6 +55,8 @@ class FileArchiveThread(beanstalkWorkingThread):
         req = service.req()
         self.dbInst = req.getObjDbSys()
         self.collection = self.dbInst.getCollection(self.collectionId)
+        
+        #File Archive specific operations
         self.file_archive_collection = self.dbInst.getCollection(g_file_archive_storage_collection_id)
         collection_virtual_obj_uuid = self.dbInst.addVirtualObj({"storage_collection_id":self.collectionId})
         self.file_archive_collection.addObj(self.collectionId, collection_virtual_obj_uuid)
