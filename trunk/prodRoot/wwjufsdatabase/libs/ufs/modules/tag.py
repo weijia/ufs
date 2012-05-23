@@ -20,7 +20,7 @@ class tagCollectionItem(UfsModuleBase):
     def __init__(self, itemId, req):
         super(tagCollectionItem, self).__init__()
         self.tagS = tagSys.getTagSysObj(req.getDbSys())
-        print '--------------------------------tagCollectionItem'
+        print '--------------------------------tagCollectionItem', itemId
         self.itemId = itemId
         
     
@@ -33,6 +33,15 @@ class tagCollectionItem(UfsModuleBase):
         Shall return res = {"D:/file/full/path/filename": "filename",... }
         '''
         #Return {fullPath:name}
+        res = self.itemId.split(",")
+        if len(res) > 1:
+            tag = res[1]
+            tagged_item_list = self.tagS.getObjs(unicode(tag))
+            item_dict = {}
+            for i in tagged_item_list:
+                item_dict[i] = i
+            return item_dict
+        
         res = odict.OrderedDict()
         cnt = 0
         #import sys
