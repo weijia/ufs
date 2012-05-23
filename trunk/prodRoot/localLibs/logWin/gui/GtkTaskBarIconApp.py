@@ -42,8 +42,15 @@ class GtkTaskBarIconApp(object):
         #  | gtk.gdk.BUTTON_RELEASE_MASK)#set_events must be called before connect
         
         w.connect('destroy', lambda w: gtk.main_quit())
+        w.connect('window-state-event', self.window_state_event_cb)
         w.show_all()
-
+    def window_state_event_cb(self, window, event):
+        if event.changed_mask & gtk.gdk.WINDOW_STATE_ICONIFIED:
+            if event.new_window_state & gtk.gdk.WINDOW_STATE_ICONIFIED:
+                print 'Window was minimized!'
+            else:
+                print 'Window was unminimized!'
+        return True
     def start_gui_msg_loop(self):
         #The threads_init method must be called, otherwise, gtk will not run in multi thread mode, in such case
         #the output of the console window will not be output until gtk receive other events from UI (the console

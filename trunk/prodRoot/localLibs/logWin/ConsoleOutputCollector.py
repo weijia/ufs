@@ -89,7 +89,7 @@ class ConsoleOutputCollector:
         ext = os.path.splitext(checkExistPath)[1]
         #print 'ext is:', ext
         if ".py" == ext:
-            pythonWinPathList = ['c:/Python27/pythonw.exe','e:/python27/pythonw.exe','d:/python25/pythonw.exe',
+            pythonWinPathList = ['c:/Python27/pythonw.exe','d:/python27/pythonw.exe','d:/python25/pythonw.exe',
                                  'c:/python27/pythonw.exe', 'c:/python26/pythonw.exe', 'c:/python25/pythonw.exe']
             for i in pythonWinPathList:
                 if os.path.exists(i):

@@ -126,11 +126,12 @@ import shutil
 class SyncedCompressedStorage(CompressedStorage):
     def __init__(self, trunk_data_path = gWorkingDir, package_class = EncZipFileOn7Zip, 
                  ext = ".7z", passwd = '123', sync_folder = "d:/tmp/working/sync"):
-        super(CompressedStorage, self).__init__()
+        super(SyncedCompressedStorage, self).__init__(trunk_data_path, package_class, 
+                                                ext, passwd)
         self.sync_folder = sync_folder
     def finalize_one_trunk(self):
         trunk_path = super(SyncedCompressedStorage, self).finalize_one_trunk()
-        ext = os.path.splitext(trunk_path)
+        root, ext = os.path.splitext(trunk_path)
         target_path = misc.get_date_based_path(self.sync_folder, ext)
         req = service.req()
         cache_db = req.getDbSys().getDb("cache_db")
@@ -150,7 +151,7 @@ class FileArchiveService(beanstalkServiceApp):
     '''
     classdocs
     '''
-    def __init__(self, storage_class = CompressedStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName", passwd = "123"):
+    def __init__(self, storage_class = SyncedCompressedStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName", passwd = "123"):
         super(FileArchiveService, self).__init__(serviceControlTubeName)
         self.storage_class = storage_class
         self.collector_list = collector_list
@@ -158,16 +159,26 @@ class FileArchiveService(beanstalkServiceApp):
 
         
     def processItem(self, job, item):
-        #fullPath = transform.transformDirToInternal(item["fullPath"])
-        #monitoringFullPath = transform.transformDirToInternal(item["monitoringPath"])
-        workingDir = item["WorkingDir"]
-        misc.ensureDir(workingDir)
+        working_dir = item["WorkingDir"]
+        misc.ensureDir(working_dir)
+        
+        tmp_file_path = os.path.join(working_dir, "tmp_file_path")
+        misc.ensureDir(tmp_file_path)
+
+        other_tmp_file_path = os.path.join(working_dir, "other_tmp_file_path")
+        misc.ensureDir(other_tmp_file_path)        
+        
+        
         inputTubeName = item["InputTubeName"]
         target_dir = item["TargetDir"]
         if self.is_processing_tube(inputTubeName):
             job.delete()
             return False
-        t = FileArchiveThread(inputTubeName, self.storage_class(target_dir, passwd=self.passwd), self.collector_list, workingDir)
+        t = FileArchiveThread(inputTubeName, 
+                              self.storage_class(tmp_file_path, 
+                                                 passwd=self.passwd, 
+                                                 sync_folder = target_dir), 
+                              self.collector_list, other_tmp_file_path)
         self.add_work_thread(inputTubeName, t)
         t.start()
         return True
