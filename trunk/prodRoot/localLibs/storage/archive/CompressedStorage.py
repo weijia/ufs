@@ -6,7 +6,7 @@ import wwjufsdatabase.libs.utils.transform as transform
 import wwjufsdatabase.libs.utils.fileTools as fileTools
 import localLibs.utils.misc as misc
 from localLibs.compress.EncZipFileOn7Zip import EncZipFileOn7Zip
-
+import traceback
 
 from localLibs.logSys.logSys import *
 
@@ -29,7 +29,7 @@ class StorageInterface(object):
 
     
 class CompressedStorage(object):
-    def __init__(self, trunk_data_path = gWorkingDir, package_class = EncZipFileOn7Zip, ext = ".7z", passwd = '123'):
+    def __init__(self, trunk_data_path = gWorkingDir, package_class = EncZipFileOn7Zip, ext = ".7z", passwd = '123', finalize_callback = None):
         super(CompressedStorage, self).__init__()
         self.trunk_data_path = trunk_data_path
         misc.ensureDir(self.trunk_data_path)
@@ -40,13 +40,19 @@ class CompressedStorage(object):
         self.ext = ext
         self.package_file = None
         self.package_file_full_path = None
-            
+        self.finalize_callback = finalize_callback
+        
     def add_file(self, full_path):
         compress_size = self.getZipFile().addfile(unicode(full_path), unicode(full_path))
         return compress_size
 
     def finalize_one_trunk(self):
-        self.package_file.kill_console_process_tree()
+        self.package_file.close()
+        if not (self.finalize_callback is None):
+            try:
+                self.finalize_callback(self, self.package_file_full_path)
+            except:
+                traceback.print_exc()
         #Set attribute so new zip will be created if this object is still in use
         self.package_file = None
         return self.package_file_full_path

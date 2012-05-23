@@ -70,6 +70,8 @@ class TagProcessService(beanstalkServiceApp):
         target_dir = task_item["target_dir"]
         misc.ensureDir(transform.transformDirToInternal(target_dir))
         
+        sync_folder = item["sync_folder"]
+        misc.ensureDir(transform.transformDirToInternal(sync_folder))
         
         b = beanstalkServiceBase(output_tube_name)
 
@@ -77,7 +79,7 @@ class TagProcessService(beanstalkServiceApp):
             info(i)
             source_dir = transform.transformDirToInternal(i)
             
-            b.addItem({"source_dir":source_dir, "working_dir": working_dir, "target_dir":target_dir})
+            b.addItem({"source_dir":source_dir, "working_dir": working_dir, "target_dir":target_dir, "sync_folder": sync_folder})
 
         job.delete()
         return False

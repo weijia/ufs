@@ -57,8 +57,16 @@ class objBase(UserDict.DictMixin):
     def keys(self):
         return self.itemInfo.keys()
         
+    def get_full_path(self):
+        #self.fillInfo("fullPath")
+        return self.itemInfo["fullPath"]
+    
+    def get_uuid(self):
+        return self.itemInfo["uuid"]
+
     def getItemInfo(self):
         return self.itemInfo
+    
 
 class fsObjBase(objBase):
     def __init__(self, fullPath, existingItemInfo = {}):

@@ -74,5 +74,11 @@ class FileListProcessorThreadBase(beanstalkWorkingThread):
             print "skipping item which is already in collection"
             return False#Do not need to put the item back to the tube
 
+    def set_processed(self, idInCol, objUuid):
+        self.collection.addObj(idInCol, objUuid)
+
     def process_file(self):
+        '''
+        If the item should no be processed again, this method must add it to collection.
+        '''
         pass

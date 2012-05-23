@@ -31,8 +31,11 @@ class AutoExtractInfoWithThumbThread(beanstalkWorkingThread):
         
         target_dir = item["target_dir"]
         misc.ensureDir(transform.transformDirToInternal(target_dir))
+        
+        sync_folder = item["sync_folder"]
+        misc.ensureDir(transform.transformDirToInternal(sync_folder))
 
-        AutoArchiveThumb(source_dir, target_dir, working_dir)
+        AutoArchiveThumb(source_dir, target_dir, working_dir, sync_folder)
         
         #Must delete the job if it is no longer needed and return False so the job will not be put back to tube
         job.delete()

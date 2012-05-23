@@ -14,7 +14,7 @@ import localLibSys
 #from localLibs.storage.infoStorage.zippedInfoWithThumb import zippedInfoWithThumb
 #from localLibs.localFs.tmpFile import getStorgePathWithDateFolder
 #import localLibs.archiver.encryptionStorageBase as encryptionStorageBase
-from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp
+from beanstalkServiceBaseV2 import beanstalkServiceApp, beanstalkServiceBase
 #import localLibs.objSys.objectDatabaseV3 as objectDatabase
 import localLibs.utils.misc as misc
 from localLibs.storage.infoCollectors.ThumbCollector import ThumbCollector
@@ -24,11 +24,8 @@ import wwjufsdatabase.libs.utils.fileTools as fileTools
 from localLibs.storage.archive.CompressedStorage import CompressedStorage
 import wwjufsdatabase.libs.services.servicesV2 as service
 from localLibs.logSys.logSys import *
+from FileListProcessorThreadBase import FileListProcessorThreadBase
 
-gBeanstalkdServerHost = '127.0.0.1'
-gBeanstalkdServerPort = 11300
-gMonitorServiceTubeName = "monitorQueue"
-gFileListTubeName = "fileListDelayed"
 gInfoFilePrefix = 'zippedCollFile'
 gInfoFileExt = "log"
 gMaxZippedCollectionSize = 2*1024*1024
@@ -38,58 +35,37 @@ gDefaultFileInfoSize = 20
 
 g_file_archive_storage_collection_id = "uuid://e4d67513-08e4-40a5-9089-13fa67efcfc9"
 
-class FileArchiveThread(beanstalkWorkingThread):
-    def __init__ ( self, input_tube_name, storage, collector_list, working_dir):
+
+
+class FileArchiveThread(FileListProcessorThreadBase):
+    def __init__ ( self, input_tube_name, storage, collector_list, working_dir, target_tube_name):
         '''
         Constructor
         '''
-        super(FileArchiveThread, self).__init__(input_tube_name)
-        self.storage = storage
-        self.curStorageSize = 0
-        self.monitoring_list = []
-        #self.dbInst = objectDatabase.objectDatabase()
-        self.info_dict = {}
-        self.collector_list = collector_list
-        self.working_dir = working_dir
-        self.collectionId = storage.get_storage_id()
-        req = service.req()
-        self.dbInst = req.getObjDbSys()
-        self.collection = self.dbInst.getCollection(self.collectionId)
-        
+        super(FileArchiveThread, self).__init__(input_tube_name, storage)
         #File Archive specific operations
         self.file_archive_collection = self.dbInst.getCollection(g_file_archive_storage_collection_id)
         collection_virtual_obj_uuid = self.dbInst.addVirtualObj({"storage_collection_id":self.collectionId})
         self.file_archive_collection.addObj(self.collectionId, collection_virtual_obj_uuid)
         #The following dictionary is used to update collection.
         self.saving_items = {}
+            
+    def process_file(self, item_obj, job):
+        for collector in self.collector_list:
+            addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
+            info("saved size", addedItemSize)
+            self.curStorageSize += addedItemSize
+        info("current size:", self.curStorageSize)
+        self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
         
-    def processItem(self, job, item):
-        if not (item['monitoringPath'] in self.monitoring_list):
-            self.monitoring_list.append(item['monitoringPath'])
-
-        #Add item
-        item_obj = self.dbInst.getFsObjFromFullPath(item["fullPath"])
-        if not self.collection.exists(item_obj.getObjUfsUrl()):
-            for collector in self.collector_list:
-                addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
-                info("saved size", addedItemSize)
-                self.curStorageSize += addedItemSize
-            info("current size:", self.curStorageSize)
-            self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
-            
-            #Add dafault size for file basic info
-            self.curStorageSize += gDefaultFileInfoSize
-            
-            if self.curStorageSize > gMaxZippedCollectionSize:
-                info("size exceed max")
-                self.finalize()
-                self.curStorageSize = 0
-            return True#Return True will release the back to the tube
-            
-        else:
-            job.delete()
-            print "skipping item which is already in collection"
-            return False#Do not need to put the item back to the tube
+        #Add dafault size for file basic info
+        self.curStorageSize += gDefaultFileInfoSize
+        
+        if self.curStorageSize > gMaxZippedCollectionSize:
+            info("size exceed max")
+            self.finalize()
+            self.curStorageSize = 0
+        return True#Return True will release the back to the tube
     
     def finalize(self):
         #print self.info_dict
@@ -108,7 +84,7 @@ class FileArchiveThread(beanstalkWorkingThread):
         self.storage.add_file(infoFilePath)
         self.storage.finalize_one_trunk()
         for i in self.saving_items:
-            self.collection.addObj(i, self.saving_items[i])
+            self.set_processed(i, self.saving_items[i])
         self.saving_items = {}
         info("trunk finalized")
 
@@ -125,7 +101,11 @@ class FileArchiveService(beanstalkServiceApp):
         self.storage_class = storage_class
         self.collector_list = collector_list
         self.passwd = passwd
-
+        self.storage_to_sync_folder_dir = {}
+    def notify_finalize(self, storage, full_path):
+        if self.storage_to_sync_folder_dir.has_key(storage):
+            b = beanstalkServiceBase(self.storage_to_sync_folder_dir[storage])
+            self.addItem({"fullPath": full_path})
         
     def processItem(self, job, item):
         #fullPath = transform.transformDirToInternal(item["fullPath"])
@@ -134,10 +114,13 @@ class FileArchiveService(beanstalkServiceApp):
         misc.ensureDir(workingDir)
         inputTubeName = item["InputTubeName"]
         target_dir = item["TargetDir"]
+        finalize_notify_tube_name = item["finalizeNotifyTubeName"]
         if self.is_processing_tube(inputTubeName):
             job.delete()
             return False
-        t = FileArchiveThread(inputTubeName, self.storage_class(target_dir, passwd=self.passwd), self.collector_list, workingDir)
+        storage_instance = self.storage_class(target_dir, passwd=self.passwd, finalize_callback = self.notify_finalize)
+        self.storage_to_sync_folder_dir[storage_instance] = finalize_notify_tube_name
+        t = FileArchiveThread(inputTubeName, storage_instance, self.collector_list, workingDir)
         self.add_work_thread(inputTubeName, t)
         t.start()
         return True
