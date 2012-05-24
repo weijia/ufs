@@ -28,7 +28,7 @@ def terminateProcessByPid(pid):
         win32api.TerminateProcess(handle, -1)
         win32api.CloseHandle(handle)
     except:
-        pass
+        print "pid: %d not killed, exception occurs", pid
 
 
 

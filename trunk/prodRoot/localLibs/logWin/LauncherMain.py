@@ -73,10 +73,10 @@ class LauncherMain(GtkTaskBarIconApp):
             i.kill_console_process_tree()
         
         
-        '''
+        
         if not (self.beanstalkd_app is None):
             self.beanstalkd_app.kill_console_process_tree()
-        '''
+        
         gtk.main_quit()
         time.sleep(5)
         print 'all application killed, after main_quit'

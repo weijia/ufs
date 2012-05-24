@@ -139,6 +139,7 @@ class ConsoleOutputCollector:
         # TODO: do we need to kill applications?
         for i in self.pList:
             print 'processing:', i.pid, ", handle: ", int(i._handle)
+            #print "cmd:", self.progAndParm
             processManager.killChildProcessTree(i.pid)
             try:
                 win32api.TerminateProcess(int(i._handle), -1)
