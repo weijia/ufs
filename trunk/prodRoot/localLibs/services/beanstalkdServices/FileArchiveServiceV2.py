@@ -144,7 +144,8 @@ class SyncedCompressedStorage(CompressedStorage):
         except:
             traceback.print_exc()
             shutil.copyfile(trunk_path, target_path)
-        
+    def get_storage_id(self):
+        return "zip_file_storage://"+transform.transformDirToInternal(self.sync_folder)
 
         
 class FileArchiveService(beanstalkServiceApp):
