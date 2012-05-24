@@ -110,6 +110,7 @@ class FileArchiveThread(beanstalkWorkingThread):
         for i in self.saving_items:
             self.collection.addObj(i, self.saving_items[i])
         self.saving_items = {}
+        self.info_dict = {}
         info("trunk finalized")
 
     def stop(self):
