@@ -5,13 +5,13 @@ from datetime import datetime, timedelta
 
 import localLibSys
 from localLibs.logSys.logSys import *
-import libs.http.queryParam as query
+import wwjufsdatabase.libs.http.queryParam as query
 
-import libs.html.response as response
-import libs.ufsDb.ufsDbSingleUser as dbSys
-import libs.ufsDb.multiAccountDbSys as multiAccountDbSys
-import libs.user.sessionV2 as sess
-import libs.user.userManagerV2 as userMan
+import wwjufsdatabase.libs.html.response as response
+import wwjufsdatabase.libs.ufsDb.ufsDbSingleUser as dbSys
+import wwjufsdatabase.libs.ufsDb.multiAccountDbSys as multiAccountDbSys
+import wwjufsdatabase.libs.user.sessionV2 as sess
+import wwjufsdatabase.libs.user.userManagerV2 as userMan
 import localLibs.objSys.objectDatabaseV3 as objectDatabase
 
 gSessionCookieName = "aparam"

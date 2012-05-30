@@ -1,7 +1,8 @@
 import StringIO
 import sys
 import libSys
-import libs.utils.encodingTools as encodingTools
+import localLibSys
+import wwjufsdatabase.libs.utils.encodingTools as encodingTools
 import localLibSys
 from localLibs.logSys.logSys import *
 #gGlobalEncoding = 'gbk'

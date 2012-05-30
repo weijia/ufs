@@ -2,8 +2,7 @@ import cgi
 import sys
 import os
 import StringIO
-import libSys
-import libs.utils.encodingTools as encodingTools
+import wwjufsdatabase.libs.utils.encodingTools as encodingTools
 import localLibSys
 from localLibs.logSys.logSys import *
 

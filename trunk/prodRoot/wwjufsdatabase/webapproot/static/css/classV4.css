@@ -35,7 +35,7 @@ body{font-size:12px;}
 /* start of item list style ---------------------------------------------------------------------*/
 #bigIconView ul{ list-style-type: none;}
 #bigIconView li:hover{background-color:#FECA40;}
-#bigIconView li.thumbDiv{width:200px;}
+#bigIconView li.thumbDiv{width:200px; height:220px;}
 #bigIconView .objDescriptionTxt{max-width:150px;min-width:150px;overflow:hidden}
 #bigIconView .thumbImage{padding:5px;width:150px;height:150px}
 #bigIconView .tagEditor{max-width:150px;min-width:150px;}
