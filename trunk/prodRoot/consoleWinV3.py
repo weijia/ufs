@@ -19,7 +19,9 @@ autoStartAppList = [#'mongodb.bat',
                     #'TagProcessServiceBase',
                     'AutoExtractInfoWithThumbService',
                     'TagProcessServiceV2',
-                    'TagProcessServiceClientV2'
+                    'UpdateCheckingService',
+                    'ReqDumpService'
+                    #'TagProcessServiceClientV2'
                     ]
 
 

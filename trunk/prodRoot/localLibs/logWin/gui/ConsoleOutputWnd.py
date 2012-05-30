@@ -82,6 +82,9 @@ class ConsoleOutputWnd:
             
     def on_close_clicked(self, widget):
         self.parent.console_wnd_close_clicked(self)
+        self.isMinimized = True
+        self.window.hide()
+        return False
         
     def updateViewCallback(self, data):
         #print 'callback called'
