@@ -69,12 +69,12 @@ class UpdateCheckingThread(beanstalkWorkingThread):
                 for j in files:
                     info(j)
                     if filter(j, self.blackList):
-                        info("ignoring: ", j)
+                        info("ignoring: ", j, "\n")
                         continue
                     
                     fullPath = transform.transformDirToInternal(os.path.join(root, j))
                     if self.add_to_collection(fullPath):
-                        info("ignoring: ", j)
+                        info("ignoring: ", j, "\n")
                         continue
                     
                     paramDict = {"fullPath": fullPath, "timestamp": os.stat(fullPath)[ST_MTIME],
