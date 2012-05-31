@@ -36,12 +36,20 @@ class UpdateCheckingThread(beanstalkWorkingThread):
         self.collection = self.obj_db.getCollection(state_collection_id)
     
     def add_to_collection(self, full_path):
+        '''
+        Return true if the item is already in collection
+        '''
         full_path = transform.transformDirToInternal(full_path)
         obj_id_in_col = transform.getRelativePathFromFull(full_path, self.rootFolder)
         dir_obj = self.obj_db.getFsObjFromFullPath(full_path)
-        res = self.collection.isSame(obj_id_in_col, dir_obj.get_uuid())
+        obj_uuid = dir_obj.get_uuid()
+        res = self.collection.isSame(obj_id_in_col, obj_uuid)
         if not res:
+            cl("updated:", obj_uuid, obj_id_in_col)
             self.collection.addObj(obj_id_in_col, dir_obj.get_uuid())
+        else:
+            #cl("not updated:", obj_uuid, obj_id_in_col)
+            pass
         return res
             
 
@@ -58,13 +66,15 @@ class UpdateCheckingThread(beanstalkWorkingThread):
             for root, dirs, files in os.walk(self.rootFolder):
                 if self.quit_flag:
                     break
-                #Process dirs, ignore not updated dirs
+                #Process dirs, ignore not updated dirs, must not remove when enumerating
+                already_in_collection = []
                 for dir in dirs:
                     if self.add_to_collection(os.path.join(root, dir)):
-                        info("ignoring: ", dir)
-                        dirs.remove(dir)
-                        
-                
+                        info("ignoring: ", os.path.join(root, dir), "\n")
+                        already_in_collection.append(dir)
+                for i in already_in_collection:
+                    dirs.remove(i)
+                #cl("remaining:", dirs)
                 #Process files
                 for j in files:
                     info(j)
@@ -74,7 +84,7 @@ class UpdateCheckingThread(beanstalkWorkingThread):
                     
                     fullPath = transform.transformDirToInternal(os.path.join(root, j))
                     if self.add_to_collection(fullPath):
-                        info("ignoring: ", j, "\n")
+                        info("ignoring: ", fullPath, "\n")
                         continue
                     
                     paramDict = {"fullPath": fullPath, "timestamp": os.stat(fullPath)[ST_MTIME],

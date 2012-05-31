@@ -48,7 +48,7 @@ class managedXmlRpcServerBase(xmlRpcServerBase):
         pass
     stop.exposed = True
     
-def startMainServer(rpcObj, auto_reload = True):
+def startMainServer(rpcObj, auto_reload = False):
     class Root:
         def index(self):
             return "I'm a standard index!"

@@ -112,12 +112,12 @@ class objectDatabase:
             cl('obj does not exists', fullPath)
             raise 'obj does not exists'
             return None
-        ncl('finding url:', ufsUrl)
+        #cl('finding url:', ufsUrl)
         for i in self.objDb.find({"ufsUrl": ufsUrl}).sort("timestamp", -1):
             #Check if the item is updated
             if dirObjInFs["timestamp"] == i["timestamp"]:
-                #Object size and time NOT changed, treated it as NOT changed.
-                ncl(i)
+                #Object time NOT changed, treated it as NOT changed.
+                #cl("item not changed:", i)
                 return ufsObj.ufsUrlObj(ufsUrl, i)
         #The item is updated add the new item
         latestInfo = dirObjInFs.getItemInfo()

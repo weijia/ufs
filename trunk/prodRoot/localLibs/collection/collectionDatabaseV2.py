@@ -62,6 +62,7 @@ class collectionOnMongoDbBase(collectionDbBase.collectionBaseInterface):
 
     def isSame(self, idInCol, newObjId):
         oldUuid = self.getObjUuidRaw(idInCol)
+        #cl(oldUuid)
         if oldUuid == newObjId:
             return True
         else:
