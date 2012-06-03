@@ -65,44 +65,53 @@ class FolderArchiveThread(beanstalkWorkingThread):
         self.quit_flag = False
         
     def processItem(self, job, item):
-        folder_root = item["folder_root"]
-        cur_folder_path = item["current_folder_full_path"]
-        obj_id_in_col = transform.getRelativePathFromFull(folder_root, cur_folder_path)
-        folder_obj = self.obj_db.getFsObjFromFullPath(cur_folder_path)
-        obj_uuid = folder_obj.get_uuid()
-        res = self.collection.isSame(obj_id_in_col, obj_uuid)
-        if not res:
-            #The 2 folders are different
-            #while(self.quit_flag):
-            for file_element in os.listdir(cur_folder_path):
-                full_path = os.path.join(cur_folder_path, file_element)
-                self.ProcessFile(full_path)
-                if self.quit_flag:
-                    #break
-                    return True
-            return True#Return True will release the back to the tube
+        #Get the processing folder
+        full_path = item["fullPath"]
+        item_obj = self.obj_db.getFsObjFromFullPath(full_path)
+        #Check if the item is a directory
+        if os.path.isdir(full_path):
+            #It is a directory
+            #Check if the directory is in the collection using full path URL as key
+            obj_uuid = item_obj.get_uuid()
+            res = self.collection.isSame(item_obj.get_uuid(), obj_uuid)
+            if not res:
+                #The 2 folders are different
+                for file_element in os.listdir(full_path):
+                    full_path = os.path.join(full_path, file_element)
+                    self.ProcessFile(full_path)
+                    if self.quit_flag:
+                        #break
+                        return True
+            else:
+                #The 2 folders are same
+                job.delete()
+                return False#Do not need to put the item back to the tube
         else:
-            job.delete()
-            print "skipping item which is already in collection"
-            return False#Do not need to put the item back to the tube
+            #It is a file, process it
+            if not self.collection.exists(item_obj.getObjUfsUrl()):
+                self.ProcessFile(full_path)
+            else:
+                job.delete()
+                print "skipping item which is already in collection"
+                return False#Do not need to put the item back to the tube
+            
     def ProcessFile(self, full_path):
         #Add item
         item_obj = self.dbInst.getFsObjFromFullPath(full_path)
-        if not self.collection.exists(item_obj.getObjUfsUrl()):
-            for collector in self.collector_list:
-                addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
-                info("saved size", addedItemSize)
-                self.curStorageSize += addedItemSize
-            info("current size:", self.curStorageSize)
-            self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
-            
-            #Add dafault size for file basic info
-            self.curStorageSize += gDefaultFileInfoSize
-            
-            if self.curStorageSize > gMaxZippedCollectionSize:
-                info("size exceed max")
-                self.finalize()
-                self.curStorageSize = 0
+        for collector in self.collector_list:
+            addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
+            info("saved size", addedItemSize)
+            self.curStorageSize += addedItemSize
+        info("current size:", self.curStorageSize)
+        self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
+        
+        #Add dafault size for file basic info
+        self.curStorageSize += gDefaultFileInfoSize
+        
+        if self.curStorageSize > gMaxZippedCollectionSize:
+            info("size exceed max")
+            self.finalize()
+            self.curStorageSize = 0
             
             
 
