@@ -15,7 +15,7 @@ g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf",
                              "sis", "sisx", "asp", "aspx", "py", "pyc", "java",
                              "class", "php", "c", "cpp", "h", "hpp", "egg", "tar",
                              "gz", "img", "msi", "jar", "xpi", "crx", "mp3", "wav",
-                             "ogg", "ini", "sys", "db", "m"]
+                             "ogg", "ini", "sys", "db", "m", "rtf"]
 
 gWorkingDir = "d:/tmp/working/thumbs"
 
