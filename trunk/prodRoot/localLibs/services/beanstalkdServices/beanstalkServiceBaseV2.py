@@ -138,13 +138,22 @@ class beanstalkServiceApp(beanstalkServiceBase):
                 job.delete()
                 
     def stop(self):
+        #Set this flag here as well.
+        self.quit_flag = True
         #Tell all sub process to stop
         for input_channel_name in self.input_channel_name_to_work_thread_dict:
             self.put_item({"cmd": "stop"}, 
                           self.input_channel_name_to_work_thread_dict[input_channel_name].quit_signal_channel_name,
                           g_stop_msg_priority)
+            self.input_channel_name_to_work_thread_dict[input_channel_name].external_stop()
             print "working thread stop msg sent"
-
+            
+    #############################
+    # The following function will be called from outside of this.
+    # So it must be thread safe
+    #############################
+    def external_stop(self):
+        self.quit_flag = True
 
 
 class beanstalkWorkingThread(beanstalkServiceApp, threading.Thread):
@@ -156,8 +165,7 @@ class beanstalkWorkingThread(beanstalkServiceApp, threading.Thread):
         self.startServer()
         
     def stop(self):
-        pass
-    
+        self.quit_flag = True
 
         
 if __name__ == "__main__":

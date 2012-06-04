@@ -73,27 +73,35 @@ class FolderArchiveThread(beanstalkWorkingThread):
             #It is a directory
             #Check if the directory is in the collection using full path URL as key
             obj_uuid = item_obj.get_uuid()
-            res = self.collection.isSame(item_obj.get_uuid(), obj_uuid)
-            if not res:
+            if self.collection.isSame(item_obj.getObjUfsUrl(), obj_uuid):
+                #The 2 folders are same
+                #Default operation is delete the job and return False to indicate no further processing
+                #needed by the caller
+                pass
+            else:
                 #The 2 folders are different
                 for file_element in os.listdir(full_path):
                     full_path = os.path.join(full_path, file_element)
                     self.ProcessFile(full_path)
                     if self.quit_flag:
-                        #break
-                        return True
-            else:
-                #The 2 folders are same
-                job.delete()
-                return False#Do not need to put the item back to the tube
+                        #break if quit is requested.
+                        return True#Return True so the item will be released back to the tube
+                #Add the folder to collection
+                self.collection.addObj(item_obj.getObjUfsUrl(), obj_uuid)
+                #Default operation is delete the job and return False to indicate no further processing
+                #needed by the caller
         else:
             #It is a file, process it
             if not self.collection.exists(item_obj.getObjUfsUrl()):
                 self.ProcessFile(full_path)
+                #Return true so the element will be released back to tube, and we will remove it the next time
+                #it is got from tube. It will be deleted when checking if it is already in the collection
+                return True
             else:
-                job.delete()
+                
                 print "skipping item which is already in collection"
-                return False#Do not need to put the item back to the tube
+        job.delete()
+        return False#Do not need to put the item back to the tube
             
     def ProcessFile(self, full_path):
         #Add item
@@ -139,15 +147,11 @@ class FolderArchiveThread(beanstalkWorkingThread):
         info("trunk finalized")
 
     def stop(self):
+        super(FolderArchiveThread, self).stop()
         self.finalize()
         print "file archive service stop called"
         
-    #############################
-    # The following function will be called from outside of this.
-    # So it must be thread safe
-    #############################
-    def external_stop(self):
-        self.quit_flag = True
+
     
 
 
@@ -234,5 +238,5 @@ if __name__ == "__main__":
         passwd = f.read().replace("\r","").replace("\n", "")
         f.close()
     #print "passwd: ", passwd
-    s = FileArchiveService(passwd = passwd)
+    s = FolderArchiveService(passwd = passwd)
     s.startServer()

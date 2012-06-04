@@ -7,11 +7,11 @@ Created on 2012-02-20
 import uuid
 import localLibSys
 #import localLibs.services.beanstalkdServices.FolderScannerV2 as FolderScanner
-import localLibs.services.beanstalkdServices.UpdateCheckingService as UpdateCheckingService
+import localLibs.services.beanstalkdServices.FolderEnumeratingService as FolderEnumeratingService
 import localLibs.services.beanstalkdServices.monitorServiceV2 as monitorService
 from localLibs.services.beanstalkdServices.tubeDelayServiceV3 import tubeDelayService
 #from localLibs.services.zippedCollectionListHandlerV2 import zippedCollectionListService
-from localLibs.services.beanstalkdServices.FileArchiveServiceV2 import FileArchiveService
+from localLibs.services.beanstalkdServices.FolderArchiveService import FolderArchiveService
 import wwjufsdatabase.libs.utils.transform as transform 
 
 '''
@@ -43,11 +43,10 @@ def AutoArchiveThumb(source_folder = gAutoArchiveFullPath, target_dir = g_defaul
     target_dir = transform.transformDirToInternal(target_dir)
     source_folder = transform.transformDirToInternal(source_folder)
     
-    storage_state_collection_name = "storage_state://"+source_folder+":"+target_dir
-    s1 = UpdateCheckingService.UpdateCheckingService()
+    #storage_state_collection_name = "storage_state://"+source_folder+":"+target_dir
+    s1 = FolderEnumeratingService.FolderEnumeratingService()
     s1.addItem({"full_path": source_folder, "black_list":[], 
-                "target_tube_name": inputTubeName, "state_collection_id": storage_state_collection_name
-                })
+                "target_tube_name": inputTubeName})
 
     s2 = monitorService.monitorService()
     s2.addItem({"command": "monitorService", "fullPath":source_folder,
@@ -57,7 +56,7 @@ def AutoArchiveThumb(source_folder = gAutoArchiveFullPath, target_dir = g_defaul
     s3.addItem({"inputTubeName":inputTubeName,
                "outputTubeName": delayedCollectionListTubeName,"blackList":g_ignore_file_type_list})
     
-    s4 = FileArchiveService()
+    s4 = FolderArchiveService()
     s4.addItem({"InputTubeName":delayedCollectionListTubeName, "WorkingDir":workingDir, "TargetDir": target_dir})
     
     
