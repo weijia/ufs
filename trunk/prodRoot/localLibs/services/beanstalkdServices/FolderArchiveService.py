@@ -67,7 +67,7 @@ class FolderArchiveThread(beanstalkWorkingThread):
     def processItem(self, job, item):
         #Get the processing folder
         full_path = item["fullPath"]
-        item_obj = self.obj_db.getFsObjFromFullPath(full_path)
+        item_obj = self.dbInst.getFsObjFromFullPath(full_path)
         #Check if the item is a directory
         if os.path.isdir(full_path):
             #It is a directory
@@ -77,6 +77,7 @@ class FolderArchiveThread(beanstalkWorkingThread):
                 #The 2 folders are same
                 #Default operation is delete the job and return False to indicate no further processing
                 #needed by the caller
+                cl("folder already processed:", item_obj.getObjUfsUrl(), obj_uuid)
                 pass
             else:
                 #The 2 folders are different
@@ -105,21 +106,25 @@ class FolderArchiveThread(beanstalkWorkingThread):
             
     def ProcessFile(self, full_path):
         #Add item
-        item_obj = self.dbInst.getFsObjFromFullPath(full_path)
-        for collector in self.collector_list:
-            addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
-            info("saved size", addedItemSize)
-            self.curStorageSize += addedItemSize
-        info("current size:", self.curStorageSize)
-        self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
-        
-        #Add dafault size for file basic info
-        self.curStorageSize += gDefaultFileInfoSize
-        
-        if self.curStorageSize > gMaxZippedCollectionSize:
-            info("size exceed max")
-            self.finalize()
-            self.curStorageSize = 0
+        info("processing: ", full_path)
+        try:
+            item_obj = self.dbInst.getFsObjFromFullPath(full_path)
+            for collector in self.collector_list:
+                addedItemSize = collector.collect_info(item_obj, self.info_dict, self.storage)   
+                info("saved size", addedItemSize)
+                self.curStorageSize += addedItemSize
+            info("current size:", self.curStorageSize)
+            self.saving_items[item_obj.getObjUfsUrl()] = item_obj["uuid"]
+            
+            #Add dafault size for file basic info
+            self.curStorageSize += gDefaultFileInfoSize
+            
+            if self.curStorageSize > gMaxZippedCollectionSize:
+                info("size exceed max")
+                self.finalize()
+                self.curStorageSize = 0
+        except:
+            cl("object not exist", full_path)
             
             
 
