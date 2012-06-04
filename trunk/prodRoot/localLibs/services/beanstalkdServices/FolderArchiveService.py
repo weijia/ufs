@@ -77,7 +77,7 @@ class FolderArchiveThread(beanstalkWorkingThread):
                 #The 2 folders are same
                 #Default operation is delete the job and return False to indicate no further processing
                 #needed by the caller
-                cl("folder already processed:", item_obj.getObjUfsUrl(), obj_uuid)
+                info("folder already processed:", item_obj.getObjUfsUrl(), obj_uuid)
                 pass
             else:
                 #The 2 folders are different
