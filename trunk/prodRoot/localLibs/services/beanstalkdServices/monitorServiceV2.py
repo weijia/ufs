@@ -55,6 +55,10 @@ class monitorService(beanstalkServiceApp):
         if not os.path.exists(fullPath) or self.notifyThreads.has_key(fullPath):
             job.delete()
             return False
+        if not os.path.isdir(fullPath):
+            cl("file change is not supported yet:", fullPath)
+            job.delete()
+            return False
         t = changeNotifyForBeanstalkd(fullPath, targetTube, blackList)
         self.notifyThreads[fullPath] = t
         t.start()

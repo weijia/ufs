@@ -2,8 +2,8 @@ import cgi
 import sys
 import os
 import StringIO
-import wwjufsdatabase.libs.utils.encodingTools as encodingTools
 import localLibSys
+import wwjufsdatabase.libs.utils.encodingTools as encodingTools
 from localLibs.logSys.logSys import *
 
 def getClientIp():

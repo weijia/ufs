@@ -10,12 +10,16 @@ from wwjufsdatabase.libs.utils.objTools import getFullPathFromUfsUrl, isUfsFs, g
 import traceback
 
 
-g_non_video_file_ext_list = ["zip", "dll", "cab", "txt", "iso", "rar", "pdf", 
-                             "doc", "docx", "xls", "xlsx", "7z", "apk", "log",
-                             "sis", "sisx", "asp", "aspx", "py", "pyc", "java",
-                             "class", "php", "c", "cpp", "h", "hpp", "egg", "tar",
-                             "gz", "img", "msi", "jar", "xpi", "crx", "mp3", "wav",
-                             "ogg", "ini", "sys", "db", "m", "rtf"]
+g_non_video_file_ext_list = ["7z", "apk","asp", "aspx", "cab", "chm", "c", "class", "cpp", "crx", 
+                             "doc", "docx", "dll", 
+                             "h", "hpp", "egg", "iso", "java", "html", "gz", "img", 
+                             "log","php", 
+                             "sis", "sisx", "py", "pyc", "htm",
+                             "tar","txt", "rar", "pdf", 
+                             "msi", "jar", "xpi", "mp3", "wav",
+                             "ogg", "ini", "sys", "db", "m", "rtf", "xls", "xlsx",  "zip"]
+
+g_video_file_ext_list = ["mov", "avi", "mkv", "mp4", "flv", "rm", "rmvb"]
 
 gWorkingDir = "d:/tmp/working/thumbs"
 
@@ -36,7 +40,7 @@ def internal_get_thumb(path, targetDir, mime_type = None):
         try:
             newPath = picThumbGenerator.genPicThumb(path, targetDir, mime_type)
         except picThumbGenerator.pictureFormatNotSupported:
-            if not (ext in g_non_video_file_ext_list):
+            if ext in g_video_file_ext_list:
                 try:#if True:
                         newPath = ffmpegThumb.genVideoThumb(path, targetDir)
                         #return "complete transform"

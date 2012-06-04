@@ -81,9 +81,11 @@ class FolderArchiveThread(beanstalkWorkingThread):
                 pass
             else:
                 #The 2 folders are different
+                #Need to release the job so we will not expire before processing a big folder
+                job.release()
                 for file_element in os.listdir(full_path):
-                    full_path = os.path.join(full_path, file_element)
-                    self.ProcessFile(full_path)
+                    file_element_full_path = os.path.join(full_path, file_element)
+                    self.ProcessFile(file_element_full_path)
                     if self.quit_flag:
                         #break if quit is requested.
                         return True#Return True so the item will be released back to the tube
@@ -91,6 +93,8 @@ class FolderArchiveThread(beanstalkWorkingThread):
                 self.collection.addObj(item_obj.getObjUfsUrl(), obj_uuid)
                 #Default operation is delete the job and return False to indicate no further processing
                 #needed by the caller
+                #Do not need to delete the job again and do not need to release the job as we released it before processing
+                return False
         else:
             #It is a file, process it
             if not self.collection.exists(item_obj.getObjUfsUrl()):
