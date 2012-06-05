@@ -9,7 +9,13 @@ gWorkingDir = "d:/tmp/working/thumbs"
 class InfoCollectorInterface(object):
     def collect_info(self, item_obj, info_dict, trunk_storage):
         pass
-
+    
+    def add_new_info(self, info_dict, item_url, item_info_dict):
+        if info_dict.has_key(item_url):
+            info_dict[item_url] = dict(info_dict[item_url].items() + item_info_dict)
+        else:
+            info_dict[item_url] = item_info_dict
+                
 class ThumbCollector(InfoCollectorInterface):
     
     default_thumb_info_size = 100
@@ -32,7 +38,7 @@ class ThumbCollector(InfoCollectorInterface):
             in dict, such as thumb compressed size and file compressed size
         Schema 2: only return size, store collected info directly to trunk storage
         '''
-        infoDict = obj_item.getItemInfo()
+        item_info_dict = obj_item.getItemInfo()
         fullPath = obj_item["fullPath"]
         mime_type = obj_item["mime_type"]
         #Add thumb info
@@ -40,10 +46,10 @@ class ThumbCollector(InfoCollectorInterface):
         if not (thumbFullPath is None):
             thumbObj = self.dbInst.getFsObjFromFullPath(thumbFullPath)
             thumbUfsUrl = thumbObj.getObjUfsUrl()
-            infoDict["thumbnailFullPath"] = thumbFullPath
-            infoDict["thumbnailUuid"] = thumbObj["uuid"]
-            infoDict["thumbnailUrl"] = thumbUfsUrl
-            infoDict["thumbnailHeadMd5"] = thumbObj.headMd5()
+            item_info_dict["thumbnailFullPath"] = thumbFullPath
+            item_info_dict["thumbnailUuid"] = thumbObj["uuid"]
+            item_info_dict["thumbnailUrl"] = thumbUfsUrl
+            item_info_dict["thumbnailHeadMd5"] = thumbObj.headMd5()
             #Store thumbnail info
             info_dict[thumbUfsUrl] = thumbObj.getItemInfo()
             #########################################
@@ -53,8 +59,8 @@ class ThumbCollector(InfoCollectorInterface):
             ####################################################
             #Add item info, it is not stored until finalize the current trunk
             ####################################################
-            info_dict[obj_item.getObjUfsUrl()] = infoDict
-            ncl(infoDict)
+            self.add_new_info(info_dict, obj_item.getObjUfsUrl(), item_info_dict)
+            ncl(item_info_dict)
             return added_size
             
         else:

@@ -18,7 +18,6 @@ from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp
 #import localLibs.objSys.objectDatabaseV3 as objectDatabase
 import localLibs.utils.misc as misc
 from localLibs.storage.infoCollectors.ThumbCollector import ThumbCollector
-from localLibs.storage.infoCollectors.FullContentCollector import FullContentCollector
 import wwjufsdatabase.libs.utils.simplejson as json
 import wwjufsdatabase.libs.utils.transform as transform
 import wwjufsdatabase.libs.utils.fileTools as fileTools
@@ -39,12 +38,12 @@ gDefaultFileInfoSize = 20
 
 g_file_archive_storage_collection_id = "uuid://e4d67513-08e4-40a5-9089-13fa67efcfc9"
 
-class FolderArchiveThread(beanstalkWorkingThread):
+class FolderInfoArchiveThread(beanstalkWorkingThread):
     def __init__ ( self, input_tube_name, storage, collector_list, working_dir):
         '''
         Constructor
         '''
-        super(FolderArchiveThread, self).__init__(input_tube_name)
+        super(FolderInfoArchiveThread, self).__init__(input_tube_name)
         self.storage = storage
         self.curStorageSize = 0
         #self.monitoring_list = []
@@ -157,7 +156,7 @@ class FolderArchiveThread(beanstalkWorkingThread):
         info("trunk finalized")
 
     def stop(self):
-        super(FolderArchiveThread, self).stop()
+        super(FolderInfoArchiveService, self).stop()
         self.finalize()
         print "file archive service stop called"
         
@@ -196,14 +195,12 @@ class SyncedCompressedStorage(CompressedStorage):
         return "zip_file_storage://"+transform.transformDirToInternal(self.sync_folder)
 
         
-class FolderArchiveService(beanstalkServiceApp):
+class FolderInfoArchiveService(beanstalkServiceApp):
     '''
     classdocs
     '''
-    def __init__(self, storage_class = SyncedCompressedStorage, collector_list = [ThumbCollector(), 
-                                                                                  FullContentCollector()], 
-                 serviceControlTubeName = "fileArchiveServiceTubeName", passwd = "123"):
-        super(FolderArchiveService, self).__init__(serviceControlTubeName)
+    def __init__(self, storage_class = SyncedCompressedStorage, collector_list = [ThumbCollector()], serviceControlTubeName = "fileArchiveServiceTubeName", passwd = "123"):
+        super(FolderInfoArchiveService, self).__init__(serviceControlTubeName)
         self.storage_class = storage_class
         self.collector_list = collector_list
         self.passwd = passwd
@@ -225,7 +222,7 @@ class FolderArchiveService(beanstalkServiceApp):
         if self.is_processing_tube(inputTubeName):
             job.delete()
             return False
-        t = FolderArchiveThread(inputTubeName, 
+        t = FolderInfoArchiveThread(inputTubeName, 
                               self.storage_class(tmp_file_path, 
                                                  passwd=self.passwd, 
                                                  sync_folder = target_dir), 
@@ -234,7 +231,7 @@ class FolderArchiveService(beanstalkServiceApp):
         t.start()
         return True
     def stop(self):
-        super(FolderArchiveService, self).stop()
+        super(FolderInfoArchiveThread, self).stop()
         for input_channel_name in self.input_channel_name_to_work_thread_dict:
             self.input_channel_name_to_work_thread_dict[input_channel_name]
 
@@ -250,5 +247,5 @@ if __name__ == "__main__":
         passwd = f.read().replace("\r","").replace("\n", "")
         f.close()
     #print "passwd: ", passwd
-    s = FolderArchiveService(passwd = passwd)
+    s = FolderInfoArchiveService(passwd = passwd)
     s.startServer()

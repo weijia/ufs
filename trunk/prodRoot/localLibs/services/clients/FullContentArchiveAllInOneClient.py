@@ -11,7 +11,7 @@ import localLibs.services.beanstalkdServices.FolderEnumeratingService as FolderE
 import localLibs.services.beanstalkdServices.monitorServiceV2 as monitorService
 from localLibs.services.beanstalkdServices.tubeDelayServiceV3 import tubeDelayService
 #from localLibs.services.zippedCollectionListHandlerV2 import zippedCollectionListService
-from localLibs.services.beanstalkdServices.FolderInfoArchiveService import FolderInfoArchiveService
+from localLibs.services.beanstalkdServices.FolderArchiveService import FolderArchiveService
 import wwjufsdatabase.libs.utils.transform as transform 
 
 '''
@@ -27,12 +27,12 @@ delayedCollectionListTubeName+taskUuid -> fileArchiveService
 
 
 gAutoArchiveFullPath = "D:\\userdata\\q19420\\My Documents\\Tencent Files\\10132994\\Image"
-gWorkingDir = "D:/tmp/working/file_info_archive_service"
-g_default_target_dir = "D:/tmp/working/default_target_dir"
+gWorkingDir = "D:/tmp/working/fileArchiveService"
+g_default_target_dir = "D:/tmp/working/default_archive_dir"
 g_ignore_file_type_list = ["*.c", "*.h", "*.cpp","*.hpp"]
 g_ignore_file_type_list = []
 
-def AutoArchiveThumb(source_folder = gAutoArchiveFullPath, target_dir = g_default_target_dir,
+def AutoArchive(source_folder = gAutoArchiveFullPath, target_dir = g_default_target_dir,
                      workingDir = gWorkingDir,taskUuid = str(uuid.uuid4())):
     inputTubeName = "collectionListTube"+taskUuid
     delayedCollectionListTubeName = "delayedCollectionListTubeName"+taskUuid
@@ -56,9 +56,9 @@ def AutoArchiveThumb(source_folder = gAutoArchiveFullPath, target_dir = g_defaul
     s3.addItem({"inputTubeName":inputTubeName,
                "outputTubeName": delayedCollectionListTubeName,"blackList":g_ignore_file_type_list})
     
-    s4 = FolderInfoArchiveService()
+    s4 = FolderArchiveService()
     s4.addItem({"InputTubeName":delayedCollectionListTubeName, "WorkingDir":workingDir, "TargetDir": target_dir})
     
     
 if __name__ == "__main__":
-    AutoArchiveThumb()
+    AutoArchive()

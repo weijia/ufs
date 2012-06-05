@@ -23,6 +23,7 @@ autoStartAppList = [#'mongodb.bat',
                     'ReqDumpService',
                     'TagProcessServiceClientV2',
                     'FolderEnumeratingService',
+                    'FolderInfoArchiveService',
                     'FolderArchiveService'
                     ]
 

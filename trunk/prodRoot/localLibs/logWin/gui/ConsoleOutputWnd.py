@@ -61,7 +61,8 @@ class ConsoleOutputWnd:
         dic = {
             "destory_cb":self.on_close_clicked,
             "minimize_clicked_cb":self.min,
-            'topmost_toggled_cb':self.topMost
+            'topmost_toggled_cb':self.topMost,
+            'on_window1_destroy_event':self.on_close_clicked
         }  
         self.builder.connect_signals (dic)  
         self.textview = self.builder.get_object(self.textWndName)

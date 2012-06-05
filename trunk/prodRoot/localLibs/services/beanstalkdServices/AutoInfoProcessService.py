@@ -10,7 +10,7 @@ import beanstalkc
 
 import localLibSys
 from localLibs.storage.infoStorage.zippedCollectionWithInfo import zippedCollectionWithInfo
-from localLibs.services.clients.FullContentArchiveAllInOneClient import AutoArchive
+from localLibs.services.clients.zippedCollectionListHandlerThumbClientV2 import AutoArchiveThumb
 from beanstalkServiceBaseV2 import beanstalkWorkingThread, beanstalkServiceApp
 import localLibs.utils.misc as misc
 
@@ -37,7 +37,7 @@ class AutoProcessService(beanstalkServiceApp):
         target_dir = item["TargetDir"]
         misc.ensureDir(target_dir)
         
-        AutoArchive(source_dir, target_dir, working_dir)
+        AutoArchiveThumb(source_dir, target_dir, working_dir)
         return True
                 
 
