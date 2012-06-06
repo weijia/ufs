@@ -156,7 +156,7 @@ class FolderInfoArchiveThread(beanstalkWorkingThread):
         info("trunk finalized")
 
     def stop(self):
-        super(FolderInfoArchiveService, self).stop()
+        super(FolderInfoArchiveThread, self).stop()
         self.finalize()
         print "file archive service stop called"
         
@@ -230,10 +230,6 @@ class FolderInfoArchiveService(beanstalkServiceApp):
         self.add_work_thread(inputTubeName, t)
         t.start()
         return True
-    def stop(self):
-        super(FolderInfoArchiveThread, self).stop()
-        for input_channel_name in self.input_channel_name_to_work_thread_dict:
-            self.input_channel_name_to_work_thread_dict[input_channel_name]
 
 
 if __name__ == "__main__":

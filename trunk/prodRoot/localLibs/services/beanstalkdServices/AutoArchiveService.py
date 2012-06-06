@@ -48,7 +48,7 @@ class AutoArchiveService(beanstalkServiceApp):
     def processItem(self, job, item):
         input_tube_name = item["input_tube_name"]
         
-        t = AutoArchiveService(input_tube_name)
+        t = AutoArchiveThread(input_tube_name)
         self.add_work_thread(input_tube_name, t)
         
         t.start()
