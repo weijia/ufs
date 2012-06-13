@@ -1,6 +1,7 @@
 import pygtk
 pygtk.require('2.0')
 import gtk
+import os
 #import gtkTaskbarIconForConsole
 #import gtkTxtWndMod
 import localLibSys
@@ -140,7 +141,9 @@ class LauncherMain(GtkTaskBarIconApp):
         
         
         cnt = 1
-        app_path_and_param_gen_str = str(param)
+        app_name = os.path.basename(param[0])
+        app_path = os.path.dirname(param[0])
+        app_path_and_param_gen_str = "%s(%s) %s"%(app_name, app_path, str(param[1:]))
         if self.app_name_to_task_dict.has_key(app_path_and_param_gen_str):
             while self.app_name_to_task_dict.has_key(app_path_and_param_gen_str + '-' + str(cnt)):
                 cnt +=1

@@ -9,7 +9,8 @@ import win32con
 import cPickle
 from stat import ST_SIZE
 #from dbus.mainloop.glib import threads_init
-
+import localLibSys
+from localLibs.logSys.logSys import *
 
 ACTIONS = {
   1 : "Created",
@@ -30,7 +31,7 @@ class changeNotifyThread(threading.Thread):
         #threads_init()
         self.need_to_quit = False
         self.path_to_watch = os.path.abspath (self.path_to_watch)
-        print "Watching %s at %s" % (self.path_to_watch, time.asctime ())
+        info("Watching %s at %s" % (self.path_to_watch, time.asctime ()))
         hDir = win32file.CreateFile(
             self.path_to_watch,
             win32con.GENERIC_READ,
