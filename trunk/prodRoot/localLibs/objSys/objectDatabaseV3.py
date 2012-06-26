@@ -9,6 +9,9 @@ from localLibs.logSys.logSys import *
 import localLibs.collection.collectionDatabaseV2 as collectionDatabase
 import wwjufsdatabase.libs.utils.transform as transform
 import ufsObj
+
+class ObjectDoesNotExistInLocalFileSystem: pass
+
 '''
 class objectDatabaseInterface:
     def __init__(self):
@@ -110,7 +113,7 @@ class objectDatabase:
         ufsUrl = dirObjInFs.getObjUfsUrl()
         if not dirObjInFs.exists():
             cl('obj does not exists', fullPath)
-            raise 'obj does not exists'
+            raise ObjectDoesNotExistInLocalFileSystem()
             return None
         #cl('finding url:', ufsUrl)
         for i in self.objDb.find({"ufsUrl": ufsUrl}).sort("timestamp", -1):
@@ -143,7 +146,7 @@ class objectDatabase:
         ufsUrl = objInFs.getObjUfsUrl()
         if not objInFs.exists():
             ncl(fullPath)
-            raise 'obj does not exists'
+            raise ObjectDoesNotExistInLocalFileSystem()
             return None
         for i in self.objDb.find({"ufsUrl": ufsUrl}).sort("timestamp", -1):
             #Check if the item is updated

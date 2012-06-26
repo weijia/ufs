@@ -25,6 +25,7 @@ import wwjufsdatabase.libs.utils.fileTools as fileTools
 from localLibs.storage.archive.CompressedStorage import CompressedStorage
 import wwjufsdatabase.libs.services.servicesV2 as service
 from localLibs.logSys.logSys import *
+from localLibs.objSys.objectDatabaseV3 import ObjectDoesNotExistInLocalFileSystem
 
 gBeanstalkdServerHost = '127.0.0.1'
 gBeanstalkdServerPort = 11300
@@ -128,8 +129,11 @@ class FolderArchiveThread(beanstalkWorkingThread):
                 info("size exceed max")
                 self.finalize()
                 self.curStorageSize = 0
-        except:
+        except ObjectDoesNotExistInLocalFileSystem:
             cl("object not exist", full_path)
+        except:
+            #import traceback
+            traceback.print_exc()
             
             
 
