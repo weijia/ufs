@@ -23,10 +23,13 @@ class ApplicationList(QtGui.QWidget):
         self.ui = uic.loadUi('app_list.ui', self)
         self.model = QStandardItemModel()
         item = QStandardItem('Hello world')
-        #item.setCheckState(Qt.Checked)
-        #item.setCheckable(True)
+        item1 = QStandardItem('Hello world1')
+        item.setCheckState(Qt.Checked)
+        item.setCheckable(True)
+        item1.setCheckState(Qt.Checked)
+        item1.setCheckable(True)
         self.model.appendRow(item)
-        self.model.appendRow(item)
+        self.model.appendRow(item1)
         self.listView.setModel(self.model)
         self.connect(self.listView.selectionModel(),  
                      QtCore.SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),  
@@ -35,7 +38,14 @@ class ApplicationList(QtGui.QWidget):
 
     #---------------------------------------------------------------------------
     def store_current_selection(self, newSelection, oldSelection):
-        print "changed"
+        indexes = newSelection.indexes()
+
+        for index in indexes:
+
+            text = u"(%i,%i)" % (index.row(), index.column())
+            #self.model.setData(index, text)
+            print text
+            print self.model.item(index.row()).text()
         
 class List2SystemTray(UserDict.DictMixin):
     def __init__(self, icon, parent=None):
