@@ -23,11 +23,20 @@ class ApplicationList(QtGui.QWidget):
         self.ui = uic.loadUi('app_list.ui', self)
         self.model = QStandardItemModel()
         item = QStandardItem('Hello world')
-        item.setCheckState(Qt.Checked)
-        item.setCheckable(True)
+        #item.setCheckState(Qt.Checked)
+        #item.setCheckable(True)
+        self.model.appendRow(item)
         self.model.appendRow(item)
         self.listView.setModel(self.model)
-    
+        self.connect(self.listView.selectionModel(),  
+                     QtCore.SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),  
+                     self.store_current_selection) 
+        self.show()
+
+    #---------------------------------------------------------------------------
+    def store_current_selection(self, newSelection, oldSelection):
+        print "changed"
+        
 class List2SystemTray(UserDict.DictMixin):
     def __init__(self, icon, parent=None):
         self.systemTrayIcon = SystemTrayIcon(icon, parent)
@@ -51,12 +60,18 @@ def exampleAction():
 from PyQt4 import QtCore, QtGui, uic
 
     
-class ConsoleManager:
+class ConsoleManager(UserDict.DictMixin):
     def __init__(self):
         self.app_list = ApplicationList()
         #self.app_list.show()
     def show_app_list(self):
         self.app_list.show()
+        
+    def __setitem__(self, key, value):
+        item = QStandardItem(key)
+        self.model.appendRow()
+        self.actionDict[key] = value
+
 
 def main():
     app = QtGui.QApplication(sys.argv)
