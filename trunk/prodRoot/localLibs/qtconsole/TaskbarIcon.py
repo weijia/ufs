@@ -15,8 +15,19 @@ class SystemTrayIcon(QtGui.QSystemTrayIcon):
         
         
 import UserDict
-
-
+from PyQt4.QtGui import QStandardItemModel, QStandardItem
+from PyQt4.QtCore import  Qt
+class ApplicationList(QtGui.QWidget):
+    def __init__(self):
+        super(ApplicationList, self).__init__()
+        self.ui = uic.loadUi('app_list.ui', self)
+        self.model = QStandardItemModel()
+        item = QStandardItem('Hello world')
+        item.setCheckState(Qt.Checked)
+        item.setCheckable(True)
+        self.model.appendRow(item)
+        self.listView.setModel(self.model)
+    
 class List2SystemTray(UserDict.DictMixin):
     def __init__(self, icon, parent=None):
         self.systemTrayIcon = SystemTrayIcon(icon, parent)
@@ -31,15 +42,28 @@ class List2SystemTray(UserDict.DictMixin):
         action = self.systemTrayIcon.menu.removeAction(key)
         action.triggered.connect(value)
         del self.actionDict[key]
+    
 
 def exampleAction():
     print "Example action triggered"
-        
+
+    
+from PyQt4 import QtCore, QtGui, uic
+
+    
+class ConsoleManager:
+    def __init__(self):
+        self.app_list = ApplicationList()
+        #self.app_list.show()
+    def show_app_list(self):
+        self.app_list.show()
+
 def main():
     app = QtGui.QApplication(sys.argv)
     w = QtGui.QWidget()
     trayIcon = List2SystemTray(QtGui.QIcon("gf-16x16.png"), w)
-    trayIcon["Example"] = exampleAction
+    console_man =  ConsoleManager()
+    trayIcon["Applications"] = console_man.show_app_list
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
