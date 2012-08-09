@@ -79,7 +79,7 @@ class ConsoleManager(UserDict.DictMixin):
         
     def __setitem__(self, key, value):
         item = QStandardItem(key)
-        self.model.appendRow()
+        self.model.appendRow(item)
         self.actionDict[key] = value
 
 
@@ -89,6 +89,7 @@ def main():
     trayIcon = List2SystemTray(QtGui.QIcon("gf-16x16.png"), w)
     console_man =  ConsoleManager()
     trayIcon["Applications"] = console_man.show_app_list
+    #console_man["Good"] = 
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
