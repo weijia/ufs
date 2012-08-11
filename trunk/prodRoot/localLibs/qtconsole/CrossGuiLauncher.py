@@ -11,7 +11,7 @@ class CrossGuiLauncher(object):
     def __init__(self, gui_factory):
         self.gui_factory = gui_factory
         self.taskbar_icon_app = self.gui_factory.create_taskbar_icon_app()
-        self.taskbar_icon_app["Exit"] = self.on_exit_clicked
+        self.taskbar_icon_app["Exit"] = self.on_quit_clicked
         self.app_list = self.gui_factory.get_app_list()
         
         super(CrossGuiLauncher, self).__init__()
@@ -23,8 +23,6 @@ class CrossGuiLauncher(object):
         #self.drop_handler = None
         
         
-    def on_exit_clicked(self):
-        pass
     def start_msg_loop(self):
         self.gui_factory.start_msg_loop()
         
@@ -46,7 +44,8 @@ class CrossGuiLauncher(object):
                 continue
             i.send_stop_signal()
         print 'wait for 10 seconds'
-        self.timer_id = gobject.timeout_add(50000, self.final_quit)#Here time value are milliseconds
+        #self.timer_id = gobject.timeout_add(50000, self.final_quit)#Here time value are milliseconds
+        self.gui_factory.timeout(5000, self.final_quit)
         
 
     '''
@@ -86,7 +85,7 @@ class CrossGuiLauncher(object):
         time.sleep(5)
         
         '''
-        self.taskbar_icon_app.exit()
+        self.gui_factory.exit()
         print 'all application killed, after main_quit'
         exit(0)
     def start_services(self, app_list):

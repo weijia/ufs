@@ -7,11 +7,11 @@ class SystemTrayIcon(QtGui.QSystemTrayIcon):
     def __init__(self, icon, parent=None):
         QtGui.QSystemTrayIcon.__init__(self, icon, parent)
         self.menu = QtGui.QMenu(parent)
-        exitAction = self.menu.addAction("Exit")
-        exitAction.triggered.connect(self.exitHandler)
+        #exitAction = self.menu.addAction("Exit")
+        #exitAction.triggered.connect(self.exitHandler)
         self.setContextMenu(self.menu)
-    def exitHandler(self):
-        QApplication.quit()
+    #def exitHandler(self):
+    #    QApplication.quit()
         
         
 import UserDict

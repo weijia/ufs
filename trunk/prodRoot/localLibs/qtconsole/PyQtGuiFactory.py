@@ -2,6 +2,7 @@ from PyQtConsoleOutputWnd import PyQtConsoleOutputWnd
 import PyQt4.QtGui as QtGui
 import sys
 from TaskbarIcon import List2SystemTray
+from PyQt4 import QtCore
 
 class GuiFactoryBase(object):
     def __init__(self):
@@ -33,3 +34,10 @@ class PyQtGuiFactory(GuiFactoryBase):
         
     def start_msg_loop(self):
         sys.exit(self.app.exec_())
+    def timeout(self, milliseconds, callback):
+        self.ctimer = QtCore.QTimer()
+        # constant timer
+        QtCore.QObject.connect(self.ctimer, QtCore.SIGNAL("timeout()"), callback)
+        self.ctimer.start(milliseconds)
+    def exit(self):
+        QtGui.QApplication.quit()
