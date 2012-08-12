@@ -2,7 +2,7 @@ import sys
 from PyQt4 import QtGui
 from PyQt4.QtGui import QApplication
 import fileTools
-
+from PyQtConsoleOutputWnd import MinimizeOnClose
 class SystemTrayIcon(QtGui.QSystemTrayIcon):
 
     def __init__(self, icon, parent=None):
@@ -18,12 +18,13 @@ class SystemTrayIcon(QtGui.QSystemTrayIcon):
 import UserDict
 from PyQt4.QtGui import QStandardItemModel, QStandardItem
 from PyQt4.QtCore import  Qt
-class ApplicationList(QtGui.QWidget):
+class ApplicationList(QtGui.QWidget, MinimizeOnClose):
     def __init__(self):
         super(ApplicationList, self).__init__()
         ui_full_path = fileTools.findFileInProduct('app_list.ui')
         self.ui = uic.loadUi(ui_full_path, self)
         self.model = QStandardItemModel()
+        '''
         item = QStandardItem('Hello world')
         item1 = QStandardItem('Hello world1')
         item.setCheckState(Qt.Checked)
@@ -32,6 +33,7 @@ class ApplicationList(QtGui.QWidget):
         item1.setCheckable(True)
         self.model.appendRow(item)
         self.model.appendRow(item1)
+        '''
         self.listView.setModel(self.model)
         self.connect(self.listView.selectionModel(),  
                      QtCore.SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),  
@@ -81,6 +83,8 @@ class ConsoleManager(UserDict.DictMixin):
         
     def __setitem__(self, key, value):
         item = QStandardItem(key)
+        item.setCheckState(Qt.Checked)
+        item.setCheckable(True)
         self.app_list.model.appendRow(item)
 
 
