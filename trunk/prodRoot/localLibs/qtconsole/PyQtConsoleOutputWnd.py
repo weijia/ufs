@@ -46,14 +46,19 @@ class PyQtConsoleOutputWnd(QTextBrowser):
         #return False
         
     def updateViewCallback(self, data):
-        self.log_updated_signal.emit(data)
+        self.log_updated_signal.emit(data.replace('\r\n', '\n'))
         
     def updateView(self, data):
         #print "updateView:", data
         if not (self.logFile is None):
             self.logFile.write(data)
         self.append(data)
-
+    def closeEvent(self,event):
+        # Let the Exit button handle tab closing
+        print "close event captured. Do nothing.", event
+        #"minimize"
+        self.hide()
+        event.ignore()
     '''
     def set_title(self, title):
         self.window.set_title(title)
