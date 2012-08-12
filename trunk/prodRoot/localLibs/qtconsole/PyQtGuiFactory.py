@@ -3,6 +3,7 @@ import PyQt4.QtGui as QtGui
 import sys
 from TaskbarIcon import List2SystemTray
 from PyQt4 import QtCore
+import fileTools
 
 class GuiFactoryBase(object):
     def __init__(self):
@@ -25,7 +26,8 @@ class PyQtGuiFactory(GuiFactoryBase):
         
     def create_taskbar_icon_app(self):
         self.w = QtGui.QWidget()
-        self.trayIcon = List2SystemTray(QtGui.QIcon("gf-16x16.png"), self.w)
+        icon_full_path = fileTools.findFileInProduct("gf-16x16.png")
+        self.trayIcon = List2SystemTray(QtGui.QIcon(icon_full_path), self.w)
         #self.trayIcon["Example"] = exampleAction
         return self.trayIcon
         
