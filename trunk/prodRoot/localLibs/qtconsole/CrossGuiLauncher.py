@@ -171,10 +171,14 @@ class CrossGuiLauncher(object):
                 return None
         return self.create_console_wnd_for_app([full_path])
         
-def main():
+def start_cross_gui_launcher(applist = []):
     from PyQtGuiFactory import PyQtGuiFactory
     g = CrossGuiLauncher(PyQtGuiFactory())
+    g.start_services(applist)
     g.start_msg_loop()
+    
+def main():
+    start_cross_gui_launcher()
 
 if __name__ == '__main__':
     main()

@@ -1,4 +1,4 @@
-from localLibs.qtconsole.CrossGuiLauncher import main
+from localLibs.qtconsole.CrossGuiLauncher import start_cross_gui_launcher
 
 autoStartAppList = [#'mongodb.bat',
                     #'startBeanstalkd.bat',
@@ -28,4 +28,4 @@ autoStartAppList = [#'mongodb.bat',
 
 
 if __name__ == "__main__":
-    main()
+    start_cross_gui_launcher(autoStartAppList)
