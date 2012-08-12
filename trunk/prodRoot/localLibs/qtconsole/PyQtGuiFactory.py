@@ -1,7 +1,7 @@
 from PyQtConsoleOutputWnd import PyQtConsoleOutputWnd
 import PyQt4.QtGui as QtGui
 import sys
-from TaskbarIcon import List2SystemTray
+from TaskbarIcon import List2SystemTray, ConsoleManager
 from PyQt4 import QtCore
 import fileTools
 
@@ -43,3 +43,6 @@ class PyQtGuiFactory(GuiFactoryBase):
         self.ctimer.start(milliseconds)
     def exit(self):
         QtGui.QApplication.quit()
+    def get_app_list(self):
+        self.console_man = ConsoleManager()
+        return self.console_man

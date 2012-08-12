@@ -12,7 +12,7 @@ class CrossGuiLauncher(object):
         self.gui_factory = gui_factory
         self.taskbar_icon_app = self.gui_factory.create_taskbar_icon_app()
         self.taskbar_icon_app["Exit"] = self.on_quit_clicked
-        self.app_list = self.gui_factory.get_app_list()
+        self.app_list_ui = self.gui_factory.get_app_list()
         
         super(CrossGuiLauncher, self).__init__()
         self.app_name_to_task_dict = {}
@@ -157,7 +157,8 @@ class CrossGuiLauncher(object):
           
         self.app_name_to_task_dict[app_path_and_param_gen_str] = t
         self.task_to_menu_item_dict[collector] = t
-        self.taskbar_icon_app[app_path_and_param_gen_str] = self.on_app_item_selected
+        #self.taskbar_icon_app[app_path_and_param_gen_str] = self.on_app_item_selected
+        self.app_list_ui[app_path_and_param_gen_str] = self.on_app_item_selected
         return collector
         
         

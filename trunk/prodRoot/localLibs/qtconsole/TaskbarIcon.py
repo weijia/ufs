@@ -1,6 +1,7 @@
 import sys
 from PyQt4 import QtGui
 from PyQt4.QtGui import QApplication
+import fileTools
 
 class SystemTrayIcon(QtGui.QSystemTrayIcon):
 
@@ -20,7 +21,8 @@ from PyQt4.QtCore import  Qt
 class ApplicationList(QtGui.QWidget):
     def __init__(self):
         super(ApplicationList, self).__init__()
-        self.ui = uic.loadUi('app_list.ui', self)
+        ui_full_path = fileTools.findFileInProduct('app_list.ui')
+        self.ui = uic.loadUi(ui_full_path, self)
         self.model = QStandardItemModel()
         item = QStandardItem('Hello world')
         item1 = QStandardItem('Hello world1')
@@ -79,8 +81,7 @@ class ConsoleManager(UserDict.DictMixin):
         
     def __setitem__(self, key, value):
         item = QStandardItem(key)
-        self.model.appendRow(item)
-        self.actionDict[key] = value
+        self.app_list.model.appendRow(item)
 
 
 def main():
