@@ -1,0 +1,35 @@
+from PyQtConsoleOutputWnd import PyQtConsoleOutputWnd
+import PyQt4.QtGui as QtGui
+import sys
+from TaskbarIcon import List2SystemTray
+
+class GuiFactoryBase(object):
+    def __init__(self):
+        pass
+        
+    def create_taskbar_icon_app(self):
+        pass
+        
+    def create_console_output_wnd(self, parent, logFilePath = None):
+        pass
+    def start_msg_loop(self):
+        pass
+    def get_app_list(self):
+        pass
+        
+class PyQtGuiFactory(GuiFactoryBase):
+    def __init__(self):
+        super(PyQtGuiFactory, self).__init__()
+        self.app = QtGui.QApplication(sys.argv)
+        
+    def create_taskbar_icon_app(self):
+        self.w = QtGui.QWidget()
+        self.trayIcon = List2SystemTray(QtGui.QIcon("gf-16x16.png"), self.w)
+        #self.trayIcon["Example"] = exampleAction
+        return self.trayIcon
+        
+    def create_console_output_wnd(self, parent, logFilePath = None):
+        return PyQtConsoleOutputWnd(parent, logFilePath)
+        
+    def start_msg_loop(self):
+        sys.exit(self.app.exec_())
