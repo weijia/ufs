@@ -88,9 +88,15 @@ class ConsoleOutputCollector:
         #self.prog = ['D:\\cygwin\\bin\\ls.exe','-l']
         ext = os.path.splitext(checkExistPath)[1]
         #print 'ext is:', ext
+        pythonWinPathList = []
+        try:
+            pythonWinPathList.append(os.path.join(os.environ['VIRTUAL_ENV'], 'script/pythonw.exe'))
+            print pythonWinPathList[0]
+        except:
+            pass
         if ".py" == ext:
-            pythonWinPathList = ['c:/Python27/pythonw.exe','d:/python27/pythonw.exe','d:/python25/pythonw.exe',
-                                 'c:/python27/pythonw.exe', 'c:/python26/pythonw.exe', 'c:/python25/pythonw.exe']
+            pythonWinPathList.extend(['c:/Python27/pythonw.exe','d:/python27/pythonw.exe','d:/python25/pythonw.exe',
+                                 'c:/python27/pythonw.exe', 'c:/python26/pythonw.exe', 'c:/python25/pythonw.exe'])
             for i in pythonWinPathList:
                 if os.path.exists(i):
                     targetPythonExePath = i
