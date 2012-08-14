@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-  
 from PyQt4.QtGui import QApplication, QTextBrowser
 from PyQt4 import QtCore
 import sys
@@ -24,10 +23,9 @@ class PyQtConsoleOutputWnd(QTextBrowser, MinimizeOnClose):
     '''
         
     def __init__(self, parent, logFilePath = None):
-        #self.browser = QTextBrowser() #实例化一个textbrowser
-        #self.browser.setDocumentTitle('dsds') #设置文档标题
+        #self.browser.setDocumentTitle('dsds')
         super(PyQtConsoleOutputWnd, self).__init__()
-        self.show()
+        #self.show()
         #if not self.signal_registered:
         self.log_updated_signal.connect(self.updateView)
         #signal_registerd = True
