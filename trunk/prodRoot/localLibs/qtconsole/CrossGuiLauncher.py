@@ -11,8 +11,8 @@ class CrossGuiLauncher(object):
     def __init__(self, gui_factory):
         self.gui_factory = gui_factory
         self.taskbar_icon_app = self.gui_factory.create_taskbar_icon_app()
-        self.taskbar_icon_app["Exit"] = self.on_exit_clicked
-        self.app_list = self.gui_factory.get_app_list()
+        self.taskbar_icon_app["Exit"] = self.on_quit_clicked
+        self.app_list_ui = self.gui_factory.get_app_list()
         
         super(CrossGuiLauncher, self).__init__()
         self.app_name_to_task_dict = {}
@@ -23,8 +23,6 @@ class CrossGuiLauncher(object):
         #self.drop_handler = None
         
         
-    def on_exit_clicked(self):
-        pass
     def start_msg_loop(self):
         self.gui_factory.start_msg_loop()
         
@@ -46,7 +44,8 @@ class CrossGuiLauncher(object):
                 continue
             i.send_stop_signal()
         print 'wait for 10 seconds'
-        self.timer_id = gobject.timeout_add(50000, self.final_quit)#Here time value are milliseconds
+        #self.timer_id = gobject.timeout_add(50000, self.final_quit)#Here time value are milliseconds
+        self.gui_factory.timeout(5000, self.final_quit)
         
 
     '''
@@ -86,7 +85,7 @@ class CrossGuiLauncher(object):
         time.sleep(5)
         
         '''
-        self.taskbar_icon_app.exit()
+        self.gui_factory.exit()
         print 'all application killed, after main_quit'
         exit(0)
     def start_services(self, app_list):
@@ -158,7 +157,8 @@ class CrossGuiLauncher(object):
           
         self.app_name_to_task_dict[app_path_and_param_gen_str] = t
         self.task_to_menu_item_dict[collector] = t
-        self.taskbar_icon_app[app_path_and_param_gen_str] = self.on_app_item_selected
+        #self.taskbar_icon_app[app_path_and_param_gen_str] = self.on_app_item_selected
+        self.app_list_ui[app_path_and_param_gen_str] = self.on_app_item_selected
         return collector
         
         
@@ -171,10 +171,14 @@ class CrossGuiLauncher(object):
                 return None
         return self.create_console_wnd_for_app([full_path])
         
-def main():
+def start_cross_gui_launcher(applist = []):
     from PyQtGuiFactory import PyQtGuiFactory
     g = CrossGuiLauncher(PyQtGuiFactory())
+    g.start_services(applist)
     g.start_msg_loop()
+    
+def main():
+    start_cross_gui_launcher()
 
 if __name__ == '__main__':
     main()

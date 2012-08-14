@@ -1,27 +1,30 @@
 import sys
 from PyQt4 import QtGui
 from PyQt4.QtGui import QApplication
-
+import fileTools
+from PyQtConsoleOutputWnd import MinimizeOnClose
 class SystemTrayIcon(QtGui.QSystemTrayIcon):
 
     def __init__(self, icon, parent=None):
         QtGui.QSystemTrayIcon.__init__(self, icon, parent)
         self.menu = QtGui.QMenu(parent)
-        exitAction = self.menu.addAction("Exit")
-        exitAction.triggered.connect(self.exitHandler)
+        #exitAction = self.menu.addAction("Exit")
+        #exitAction.triggered.connect(self.exitHandler)
         self.setContextMenu(self.menu)
-    def exitHandler(self):
-        QApplication.quit()
+    #def exitHandler(self):
+    #    QApplication.quit()
         
         
 import UserDict
 from PyQt4.QtGui import QStandardItemModel, QStandardItem
 from PyQt4.QtCore import  Qt
-class ApplicationList(QtGui.QWidget):
+class ApplicationList(QtGui.QWidget, MinimizeOnClose):
     def __init__(self):
         super(ApplicationList, self).__init__()
-        self.ui = uic.loadUi('app_list.ui', self)
+        ui_full_path = fileTools.findFileInProduct('app_list.ui')
+        self.ui = uic.loadUi(ui_full_path, self)
         self.model = QStandardItemModel()
+        '''
         item = QStandardItem('Hello world')
         item1 = QStandardItem('Hello world1')
         item.setCheckState(Qt.Checked)
@@ -30,6 +33,7 @@ class ApplicationList(QtGui.QWidget):
         item1.setCheckable(True)
         self.model.appendRow(item)
         self.model.appendRow(item1)
+        '''
         self.listView.setModel(self.model)
         self.connect(self.listView.selectionModel(),  
                      QtCore.SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),  
@@ -79,8 +83,9 @@ class ConsoleManager(UserDict.DictMixin):
         
     def __setitem__(self, key, value):
         item = QStandardItem(key)
-        self.model.appendRow(item)
-        self.actionDict[key] = value
+        item.setCheckState(Qt.Checked)
+        item.setCheckable(True)
+        self.app_list.model.appendRow(item)
 
 
 def main():
