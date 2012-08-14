@@ -35,11 +35,16 @@ class ApplicationList(QtGui.QWidget, MinimizeOnClose):
         self.model.appendRow(item1)
         '''
         self.listView.setModel(self.model)
+        '''
         self.connect(self.listView.selectionModel(),  
                      QtCore.SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),  
                      self.store_current_selection) 
+        '''
         self.show()
-
+        self.listView.clicked.connect(self.item_clicked)
+    def item_clicked(self, index):
+        self.callback_func(str(self.model.item(index.row()).text()))
+    '''
     #---------------------------------------------------------------------------
     def store_current_selection(self, newSelection, oldSelection):
         indexes = newSelection.indexes()
@@ -48,8 +53,13 @@ class ApplicationList(QtGui.QWidget, MinimizeOnClose):
 
             text = u"(%i,%i)" % (index.row(), index.column())
             #self.model.setData(index, text)
-            print text
-            print self.model.item(index.row()).text()
+            #print text
+            #print self.model.item(index.row()).text()
+            self.callback_func(str(self.model.item(index.row()).text())
+    '''
+    def set_callback(self, callback_func):
+        self.callback_func = callback_func
+
         
 class List2SystemTray(UserDict.DictMixin):
     def __init__(self, icon, parent=None):
@@ -77,16 +87,23 @@ from PyQt4 import QtCore, QtGui, uic
 class ConsoleManager(UserDict.DictMixin):
     def __init__(self):
         self.app_list = ApplicationList()
+        self.app_list.set_callback(self.app_list_callback)
+        self.actionDict = {}
+        
         #self.app_list.show()
     def show_app_list(self):
         self.app_list.show()
         
     def __setitem__(self, key, value):
         item = QStandardItem(key)
-        item.setCheckState(Qt.Checked)
+        #item.setCheckState(Qt.Checked)
         item.setCheckable(True)
         self.app_list.model.appendRow(item)
-
+        self.actionDict[key] = value
+        
+    def app_list_callback(self, str):
+        print 'callback called:', str
+        self.actionDict[str](str)
 
 def main():
     app = QtGui.QApplication(sys.argv)
